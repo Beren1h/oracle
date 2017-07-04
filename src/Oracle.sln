@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frame", "Frame\Frame.csproj", "{F8F1C0B0-FEE8-46CB-B24B-33AC137B4558}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frame", "Frame\Frame.csproj", "{F8F1C0B0-FEE8-46CB-B24B-33AC137B4558}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harness", "Harness\Harness.csproj", "{73982A8E-E98A-40AD-8006-6CB270A631B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harness", "Harness\Harness.csproj", "{73982A8E-E98A-40AD-8006-6CB270A631B3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
