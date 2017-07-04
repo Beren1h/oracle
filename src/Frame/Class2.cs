@@ -1,7 +1,10 @@
-﻿using Frame.Models;
+﻿using Frame.Collections;
+using Frame.Models;
 using LiteDB;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace Frame
@@ -17,24 +20,48 @@ namespace Frame
 
     public class Class2
     {
+        public void DoOtherThings()
+        {
+            var data = new AssignmentCollection();
+
+            var assignment = new Assignment
+            {
+                Date = DateTime.Now,
+                Amount = 334.51M,
+                Envelope = Envelope.cable,
+                Note = "test note",
+                IsPoolDebit = true
+            };
+
+            // data.InsertAssignment(assignment);
+
+            Expression<Func<Assignment, bool>> q = a => a.IsPoolDebit == true && a.Envelope == Envelope.cable;
+
+            var get = data.Get(q).ToList();
+
+            
+
+            int z = 1;
+        }
+
         public void DoThings()
         {
             using (var db = new LiteDatabase("c:\\oracle\\2017.db"))
             {
-                var barrels = db.GetCollection<Barrel>("barrels");
+                //var barrels = db.GetCollection<Barrel>("barrels");
 
-                var barrel = new Barrel
-                {
-                    Date = DateTime.Now,
-                    Amount = 334.51M,
-                    Stamp = Stamp.cell,
-                    Pool = true,
-                    Note = "testing enums"
-                };
+                //var assignment = new Assignment
+                //{
+                //    Date = DateTime.Now,
+                //    Amount = 334.51M,
+                //    Stamp = Stamp.cell,
+                //    Pool = true,
+                //    Note = "testing enums"
+                //};
 
-                barrels.Insert(barrel);
+                //barrels.Insert(barrel);
 
-                var get = barrels.FindOne(x => x.Stamp == Stamp.cell);
+                //var get = barrels.FindOne(x => x.Stamp == Stamp.cell);
 
                 int z = 1;
                 // var bills = db.GetCollection<Bill>("bills");

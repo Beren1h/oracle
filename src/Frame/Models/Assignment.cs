@@ -3,17 +3,17 @@ using System;
 
 namespace Frame.Models
 {
-    public class Barrel
+    public class Assignment 
     {
         public ObjectId _id { get; set; }
         public DateTime Date { get; set; }
         public Decimal Amount { get; set; }
-        public Stamp Stamp { get; set; }
+        public Envelope Envelope { get; set; }
         public string Note { get; set; }
-        public bool Pool { get; set; }
+        public bool IsPoolDebit { get; set; }
     }
 
-    public enum Stamp
+    public enum Envelope
     {
         mortgage,
         power,
@@ -32,6 +32,7 @@ namespace Frame.Models
         credit_1398,
         credit_2809,
         mei_mei,
-        car_payment
+        car_payment,
+        sweep
     };
 }

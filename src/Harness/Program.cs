@@ -9,7 +9,7 @@ namespace Harness
         {
             // var x = new Class1();
             var x = new Class2();
-            x.DoThings();
+            x.DoOtherThings();
             // Console.WriteLine(x.OpenConnection());
 
             Console.Read();
