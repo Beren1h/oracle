@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <PackageTargetFallback>portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\Scripts\src\oracle\index.jsx" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.2" />
@@ -19,7 +23,6 @@
   <ItemGroup>
     <Folder Include="Views\Test\" />
     <Folder Include="Views\Test\" />
-    <Folder Include="wwwroot\Scripts\src\" />
   </ItemGroup>
   <ItemGroup>
         <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
