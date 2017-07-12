@@ -24,7 +24,7 @@ namespace Frame
                 IsPoolDebit = true
             };
 
-            // data.InsertAssignment(assignment);
+            data.Insert(assignment);
 
             Expression<Func<Assignment, bool>> q = a => a.IsPoolDebit == true && a.Envelope == Envelope.cable;
 
