@@ -7,6 +7,8 @@
 
   <ItemGroup>
     <Content Include="wwwroot\Scripts\src\oracle\index.jsx" />
+    <Content Include="wwwroot\Scripts\src\oracle\pool\pool.jsx" />
+    <Content Include="wwwroot\Scripts\src\oracle\pool\pool.scss" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />

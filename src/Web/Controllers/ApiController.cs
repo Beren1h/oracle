@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Frame.Collections;
 using Frame.Models;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using LiteDB;
 
 namespace Web.Controllers
@@ -28,6 +24,29 @@ namespace Web.Controllers
             _assignments = assignments;
             _settings = settings.Value;
         }
+        
+        [HttpPost, Route("pool/commit")]
+        public IActionResult PoolHandler([FromBody] Pool pool)
+        {
+            if (pool.Date.Year != _settings.Year)
+            {
+                return BadRequest($"Configured for {_settings.Year}");
+            }
+
+            Expression<Func<Pool, bool>> q = a => a._id == pool._id;
+
+            if (_pools.Get(q).Count() != 0)
+            {
+                _pools.Update(pool);
+            }
+            else
+            {
+                _pools.Insert(pool);
+            }
+
+            return Ok();
+        }
+
 
         [HttpPost, Route("pool/insert")]
         public IActionResult InsertPool([FromBody] Pool pool)
@@ -49,15 +68,14 @@ namespace Web.Controllers
             return Ok();
         }
 
-        [HttpPost, Route("pool/test")]
-        public IActionResult GetOnePool(ObjectId id)
+        [HttpGet, Route("pool/get/{id}")]
+        public IActionResult GetPools(string id)
         {
-            Expression<Func<Pool, bool>> q = a => a._id != id;
+            Expression<Func<Pool, bool>> q = a => a._id == new ObjectId(id);
 
-            var result = _pools.Get(q).ToList();
+            var result = _pools.Get(q).First();
 
             return Ok(result);
-
         }
 
         [HttpGet, Route("pool/get")]
@@ -67,26 +85,7 @@ namespace Web.Controllers
 
             var result = _pools.Get(q).ToList();
 
-            //foreach(var item in result)
-            //{
-            //    item.x = item._id.ToString();
-            //}
-
-            //var test = JsonConvert.SerializeObject(result);
-
             return Ok(result.ToList());
-
         }
-
-        [Route("test")]
-        public IActionResult Test()
-        {
-            Expression<Func<Assignment, bool>> q = a => a.IsPoolDebit == true && a.Envelope == Envelope.cable;
-
-            var x = _assignments.Get(q).ToList();
-
-            return Ok("abc");
-        }
-
     }
 }
