@@ -10,9 +10,10 @@ namespace Frame.Collections
     {
         private LiteCollection<Pool> _collection;
 
-        public PoolCollection()
+        public PoolCollection(string database)
         {
-            using (var db = new LiteDatabase(Resources.Database.PATH))
+            // using (var db = new LiteDatabase(Resources.Database.PATH))
+            using (var db = new LiteDatabase(database))
             {
                 _collection = db.GetCollection<Pool>("pools");
             }

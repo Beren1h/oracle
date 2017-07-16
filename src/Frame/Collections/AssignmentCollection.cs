@@ -10,9 +10,9 @@ namespace Frame.Collections
     {
         private LiteCollection<Assignment> _collection;
 
-        public AssignmentCollection()
+        public AssignmentCollection(string database)
         {
-            using (var db = new LiteDatabase(Resources.Database.PATH))
+            using (var db = new LiteDatabase(database))
             {
                 _collection = db.GetCollection<Assignment>("assignments");
             }

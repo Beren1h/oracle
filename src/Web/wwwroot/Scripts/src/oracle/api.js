@@ -1,5 +1,16 @@
 import axios from 'axios';
 
+
+export const GetEnvelopes = () => {
+    return axios({
+        method: 'get',
+        contentType: 'application/json',
+        url: '/api/envelope/all',
+    });
+};
+
+
+
 export const InsertPool = (pool, result) => {
     return axios({
         method: 'post',
@@ -13,7 +24,7 @@ export const GetPools = () => {
     return axios({
         method: 'get',
         contentType: 'application/json',
-        url: '/api/pool/get'
+        url: '/api/pool/all'
     });
 };
 

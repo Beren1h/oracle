@@ -2,6 +2,7 @@
 import moment from 'moment';
 import './pool.scss';
 import { InsertPool, GetPools, GetPostResult, GetPostError } from '../api.js';
+import Dole from '../dole/dole.jsx';
 
 class Pool extends Component {
     constructor(props) {
@@ -68,7 +69,7 @@ class Pool extends Component {
 
     handlePoolClick(index){
         this.setState({
-           pool: Object.assign({}, this.state.pools[index])
+            pool: Object.assign({}, this.state.pools[index])
         });
     }
 
@@ -89,6 +90,10 @@ class Pool extends Component {
         };
         update.pool[field] = e.target.value;
         this.setState(update);
+    }
+
+    renderDole(){
+        return <Dole date={this.state.pool.date} />;
     }
 
     render() {
@@ -118,7 +123,10 @@ class Pool extends Component {
                 this.state.pools.map((pool, index) => {
                     return <div key={index} onClick={() => this.handlePoolClick(index)}>{pool.date}</div>;
                 })
-            }            
+            }  
+            {
+                this.state.pool.date && this.renderDole()
+            }
         </div>);
     }
 }

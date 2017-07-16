@@ -25,6 +25,15 @@ namespace Web.Controllers
             _settings = settings.Value;
         }
         
+        [HttpGet, Route("envelope/all")]
+        public IActionResult GetEnvelopes()
+        {
+            return Ok(Frame.Resources.Database.Envelopes);
+        }
+
+
+
+
         [HttpPost, Route("pool/commit")]
         public IActionResult PoolHandler([FromBody] Pool pool)
         {
@@ -48,27 +57,27 @@ namespace Web.Controllers
         }
 
 
-        [HttpPost, Route("pool/insert")]
-        public IActionResult InsertPool([FromBody] Pool pool)
-        {
-            if(pool.Date.Year != _settings.Year)
-            {
-                return BadRequest($"Configured for {_settings.Year}");
-            }
+        //[HttpPost, Route("pool/insert")]
+        //public IActionResult InsertPool([FromBody] Pool pool)
+        //{
+        //    if(pool.Date.Year != _settings.Year)
+        //    {
+        //        return BadRequest($"Configured for {_settings.Year}");
+        //    }
             
-            Expression<Func<Pool, bool>> q = a => a.Date == pool.Date;
+        //    Expression<Func<Pool, bool>> q = a => a.Date == pool.Date;
 
-            if(_pools.Get(q).Count() != 0)
-            {
-                return BadRequest($"Pool already exists for {pool.Date.Display()}");
-            }
+        //    if(_pools.Get(q).Count() != 0)
+        //    {
+        //        return BadRequest($"Pool already exists for {pool.Date.Display()}");
+        //    }
 
-            _pools.Insert(pool);
+        //    _pools.Insert(pool);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
-        [HttpGet, Route("pool/get/{id}")]
+        [HttpGet, Route("pool/{id}")]
         public IActionResult GetPools(string id)
         {
             Expression<Func<Pool, bool>> q = a => a._id == new ObjectId(id);
@@ -78,7 +87,7 @@ namespace Web.Controllers
             return Ok(result);
         }
 
-        [HttpGet, Route("pool/get")]
+        [HttpGet, Route("pool/all")]
         public IActionResult GetPools()
         {
             Expression<Func<Pool, bool>> q = a => a._id != null;

@@ -13,26 +13,26 @@ namespace Frame
     {
         public void DoOtherThings()
         {
-            var data = new AssignmentCollection();
+            //var data = new AssignmentCollection();
 
-            var assignment = new Assignment
-            {
-                Date = DateTime.Now,
-                Amount = 334.51M,
-                Envelope = Envelope.cable,
-                Note = "test note",
-                IsPoolDebit = true
-            };
+            //var assignment = new Assignment
+            //{
+            //    Date = DateTime.Now,
+            //    Amount = 334.51M,
+            //    Envelope = Envelope.cable,
+            //    Note = "test note",
+            //    IsPoolDebit = true
+            //};
 
-            data.Insert(assignment);
+            //data.Insert(assignment);
 
-            Expression<Func<Assignment, bool>> q = a => a.IsPoolDebit == true && a.Envelope == Envelope.cable;
+            //Expression<Func<Assignment, bool>> q = a => a.IsPoolDebit == true && a.Envelope == Envelope.cable;
 
-            var get = data.Get(q).ToList();
+            //var get = data.Get(q).ToList();
 
             
 
-            int z = 1;
+            //int z = 1;
         }
     }
 }

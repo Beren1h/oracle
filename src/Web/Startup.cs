@@ -40,10 +40,15 @@ namespace Web
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
 
-            // services.AddMvc(config => config.ModelBinderProviders.Insert(0, new PoolModelBinderProvider()));
+            //services.Configure<AppSettings>(options =>
+            //{
+            //   options.DatabasePath = $"{Frame.Resources.Database.PATH}\\{options.Year}.db";
+            //});
 
-            services.AddSingleton<IDbCollection<Pool>, PoolCollection>();
-            services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>();
+            var database = $"{Configuration.GetValue<string>("databasePath")}\\{Configuration.GetValue<string>("year")}.db";
+
+            services.AddSingleton<IDbCollection<Pool>, PoolCollection>(provider => new PoolCollection(database));
+            services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(database));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,11 +63,6 @@ namespace Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            //app.Run(async (context) =>
-            //{
-            //    await context.Response.WriteAsync("Hello World!");
-            //});
         }
     }
 }
