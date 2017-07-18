@@ -7,13 +7,19 @@ class Edit extends Component{
         this.state = {
             status: '',
             message: ''
-        }
+        };
+
+        this.onChange = this.onChange.bind(this);
     }
 
     componentWillMount() {
         console.log('props = ', this.props);
     }
 
+    onChange() {
+
+    }
+    
     render() {
         return (<div>
             <h3>{this.state.status}</h3>

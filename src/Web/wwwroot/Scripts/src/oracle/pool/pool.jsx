@@ -14,7 +14,7 @@ class Pool extends Component {
             mode: '',
             index: '',
             pools: []
-        }
+        };
 
         this.refreshPoolList = this.refreshPoolList.bind(this);
         this.onClick = this.onClick.bind(this);
@@ -64,18 +64,21 @@ class Pool extends Component {
     updateMode(mode) {
         this.setState({
             mode: mode
-        })
+        });
     }
 
     renderMode() {
         switch (this.state.mode){
-            case 'new':
-                return <New />
+        case 'new':
+            return <New />;
             break;
-            case 'edit':
-                return this.state.index ? <Edit pool={this.state.pools[this.state.index]} /> : '';
+        case 'edit':
+            return this.state.index ? <Edit 
+                pool={this.state.pools[this.state.index]} 
+                handleEdit={this.handleEdit}
+            /> : '';
             break;
-            case 'dole':
+        case 'dole':
             break;
         }
 

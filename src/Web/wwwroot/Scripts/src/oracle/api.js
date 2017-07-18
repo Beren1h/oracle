@@ -5,7 +5,7 @@ export const GetEnvelopes = () => {
     return axios({
         method: 'get',
         contentType: 'application/json',
-        url: '/api/envelope/all',
+        url: '/api/envelope/all'
     });
 };
 
