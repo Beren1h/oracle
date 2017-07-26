@@ -11,7 +11,7 @@ export const GetEnvelopes = () => {
 
 
 
-export const InsertPool = (pool, result) => {
+export const CommitPool = (pool, result) => {
     return axios({
         method: 'post',
         contentType: 'application/json',

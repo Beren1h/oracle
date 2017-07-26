@@ -26190,7 +26190,7 @@ return zhTw;
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.GetPostResult = exports.GetPostError = exports.GetPools = exports.InsertPool = exports.GetEnvelopes = undefined;
+exports.GetPostResult = exports.GetPostError = exports.GetPools = exports.CommitPool = exports.GetEnvelopes = undefined;
 
 var _axios = __webpack_require__(324);
 
@@ -26206,7 +26206,7 @@ var GetEnvelopes = exports.GetEnvelopes = function GetEnvelopes() {
     });
 };
 
-var InsertPool = exports.InsertPool = function InsertPool(pool, result) {
+var CommitPool = exports.CommitPool = function CommitPool(pool, result) {
     return (0, _axios2.default)({
         method: 'post',
         contentType: 'application/json',
@@ -39428,6 +39428,7 @@ var Pool = function (_Component) {
 
         _this.refreshPoolList = _this.refreshPoolList.bind(_this);
         _this.onClick = _this.onClick.bind(_this);
+        _this.onReset = _this.onReset.bind(_this);
         _this.updateMode = _this.updateMode.bind(_this);
         _this.renderMode = _this.renderMode.bind(_this);
         _this.handleEdit = _this.handleEdit.bind(_this);
@@ -39457,16 +39458,29 @@ var Pool = function (_Component) {
                 _this2.setState({
                     pools: _this2.formatDates(response.data)
                 });
+                _this2.onReset();
+            });
+        }
+    }, {
+        key: 'onReset',
+        value: function onReset() {
+            this.setState({
+                mode: 'off',
+                date: ''
             });
         }
     }, {
         key: 'onClick',
         value: function onClick(index) {
+            if (this.state.mode != 'off') {
+                return;
+            }
+
             var selected = this.state.pools[index];
             this.setState({
                 date: selected.date,
-                index: index,
-                mode: 'off'
+                index: index
+                // mode: 'off'
             });
         }
     }, {
@@ -39494,7 +39508,8 @@ var Pool = function (_Component) {
                 case 'edit':
                     return this.state.index ? _react2.default.createElement(_edit2.default, {
                         pool: this.state.pools[this.state.index],
-                        handleEdit: this.handleEdit
+                        handleEdit: this.handleEdit,
+                        handleCancel: this.onReset
                     }) : '';
                     break;
                 case 'dole':
@@ -39506,12 +39521,21 @@ var Pool = function (_Component) {
     }, {
         key: 'handleEdit',
         value: function handleEdit(pool) {
-            console.log('handle edit ', pool);
+            var _this3 = this;
+
+            (0, _api.CommitPool)(pool).then(function (response) {
+                _this3.setState({
+                    result: (0, _api.GetPostResult)(response)
+                });
+                _this3.refreshPoolList();
+            }).catch(function (error) {
+                _this3.handlePostResult((0, _api.GetPostError)(error));
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             return _react2.default.createElement(
                 'div',
@@ -39524,21 +39548,21 @@ var Pool = function (_Component) {
                 _react2.default.createElement(
                     'button',
                     { onClick: function onClick() {
-                            return _this3.updateMode('new');
+                            return _this4.updateMode('new');
                         } },
                     'new'
                 ),
                 _react2.default.createElement(
                     'button',
                     { onClick: function onClick() {
-                            return _this3.updateMode('edit');
+                            return _this4.updateMode('edit');
                         } },
                     'edit'
                 ),
                 _react2.default.createElement(
                     'button',
                     { onClick: function onClick() {
-                            return _this3.updateMode('dole');
+                            return _this4.updateMode('dole');
                         } },
                     'dole'
                 ),
@@ -39547,7 +39571,7 @@ var Pool = function (_Component) {
                     return _react2.default.createElement(
                         'div',
                         { key: index, onClick: function onClick() {
-                                return _this3.onClick(index);
+                                return _this4.onClick(index);
                             } },
                         pool.date
                     );
@@ -40848,11 +40872,13 @@ var Edit = function (_Component) {
         var _this = _possibleConstructorReturn(this, (Edit.__proto__ || Object.getPrototypeOf(Edit)).call(this, props));
 
         _this.state = {
+            pool: {},
             status: '',
             message: ''
         };
 
         _this.onChange = _this.onChange.bind(_this);
+        _this.onCancel = _this.onCancel.bind(_this);
         return _this;
     }
 
@@ -40860,10 +40886,33 @@ var Edit = function (_Component) {
         key: 'componentWillMount',
         value: function componentWillMount() {
             console.log('props = ', this.props);
+            this.setState({
+                // pool: this.props.pool
+                // pool: { ...this.props.pool}
+                pool: Object.assign({}, this.props.pool)
+                //{ ...state, visibilityFilter: action.filter }
+            });
         }
     }, {
         key: 'onChange',
         value: function onChange() {}
+    }, {
+        key: 'onChange',
+        value: function onChange(field, e) {
+            var update = {
+                pool: this.state.pool
+            };
+            update.pool[field] = e.target.value;
+            this.setState(update);
+        }
+    }, {
+        key: 'onCancel',
+        value: function onCancel() {
+            this.setState({
+                pool: this.props.pool
+            });
+            this.props.handleCancel();
+        }
     }, {
         key: 'render',
         value: function render() {
@@ -40890,7 +40939,7 @@ var Edit = function (_Component) {
                 _react2.default.createElement('input', {
                     id: 'pool-amount',
                     type: 'text',
-                    value: this.props.pool.amount,
+                    value: this.state.pool.amount,
                     onChange: function onChange(e) {
                         return _this2.onChange('amount', e);
                     }
@@ -40898,15 +40947,22 @@ var Edit = function (_Component) {
                 _react2.default.createElement('input', {
                     id: 'pool-note',
                     type: 'text',
-                    value: this.props.pool.note ? this.props.pool.note : '',
+                    value: this.state.pool.note ? this.state.pool.note : '',
                     onChange: function onChange(e) {
                         return _this2.onChange('note', e);
                     }
                 }),
                 _react2.default.createElement(
                     'button',
-                    { type: 'submit', onClick: this.props.handleEdit },
+                    { type: 'submit', onClick: function onClick() {
+                            return _this2.props.handleEdit(_this2.state.pool);
+                        } },
                     'submit'
+                ),
+                _react2.default.createElement(
+                    'button',
+                    { type: 'cancel', onClick: this.onCancel },
+                    'cancel'
                 )
             );
         }

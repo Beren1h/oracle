@@ -1,7 +1,7 @@
 ﻿import React, { Component } from 'react';
 import moment from 'moment';
 import './pool.scss';
-import { GetPools } from '../api.js';
+import { GetPools, CommitPool, GetPostResult, GetPostError } from '../api.js';
 import New from './new.jsx';
 import Edit from './edit.jsx';
 
@@ -18,6 +18,7 @@ class Pool extends Component {
 
         this.refreshPoolList = this.refreshPoolList.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onReset = this.onReset.bind(this);
         this.updateMode = this.updateMode.bind(this);
         this.renderMode = this.renderMode.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
@@ -42,15 +43,27 @@ class Pool extends Component {
                 this.setState({
                     pools: this.formatDates(response.data)
                 });
+                this.onReset();
             });
     }
 
+    onReset() {
+        this.setState({
+            mode: 'off',
+            date: ''
+        });
+    }
+
     onClick(index) {
+        if (this.state.mode != 'off'){
+            return;
+        }
+
         let selected = this.state.pools[index];
         this.setState({
             date: selected.date,
-            index: index,
-            mode: 'off'
+            index: index
+            // mode: 'off'
         });
     }
 
@@ -76,6 +89,7 @@ class Pool extends Component {
             return this.state.index ? <Edit 
                 pool={this.state.pools[this.state.index]} 
                 handleEdit={this.handleEdit}
+                handleCancel={this.onReset}
             /> : '';
             break;
         case 'dole':
@@ -86,7 +100,16 @@ class Pool extends Component {
     }
 
     handleEdit(pool) {
-        console.log('handle edit ', pool);
+        CommitPool(pool)
+            .then((response) => {
+                this.setState({
+                    result: GetPostResult(response)
+                });
+                this.refreshPoolList();
+            })
+            .catch((error) => {
+                this.handlePostResult(GetPostError(error));
+            });      
     }
 
     render() {
