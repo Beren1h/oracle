@@ -1,35 +1,29 @@
 ﻿import React, { Component } from 'react';
 import moment from 'moment';
 import './pool.scss';
-import { InsertPool, GetPools, GetPostResult, GetPostError } from '../api.js';
-import Dole from '../dole/dole.jsx';
+import { GetPools, CommitPool, GetPostResult, GetPostError } from '../api.js';
+import Input from './input.jsx';
 
 class Pool extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            pool: {
-                date: '',
-                amount: '',
-                note: ''
-            },
-            result: {
-                status: '',
-                message: ''
-            },
+            date: '',
+            mode: '',
+            index: '',
             pools: []
         };
 
-        this.onClick = this.onClick.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.handlePostResult = this.handlePostResult.bind(this);
-        this.handlePoolClick = this.handlePoolClick.bind(this);
         this.refreshPoolList = this.refreshPoolList.bind(this);
-        this.formatDates = this.formatDates.bind(this);
+        this.onDateClick = this.onDateClick.bind(this);
+        this.onReset = this.onReset.bind(this);
+        this.updateMode = this.updateMode.bind(this);
+        this.renderMode = this.renderMode.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
-    componentWillMount(){
+    componentWillMount() {
         this.refreshPoolList();
     }
 
@@ -48,7 +42,27 @@ class Pool extends Component {
                 this.setState({
                     pools: this.formatDates(response.data)
                 });
+                this.onReset();
             });
+    }
+
+    onReset() {
+        this.setState({
+            mode: 'off',
+            date: ''
+        });
+    }
+
+    onDateClick(index) {
+        if (this.state.mode != 'off'){
+            return;
+        }
+
+        let selected = this.state.pools[index];
+        this.setState({
+            date: selected.date,
+            index: index
+        });
     }
 
     formatDates(pools){
@@ -58,74 +72,71 @@ class Pool extends Component {
         return pools;
     }
 
-    handlePostResult(result) {
+    updateMode(mode) {
         this.setState({
-            result: {
-                status: result.status,
-                message: result.message
-            }
+            mode: mode
         });
     }
 
-    handlePoolClick(index){
-        this.setState({
-            pool: Object.assign({}, this.state.pools[index])
-        });
+    renderMode() {
+        switch (this.state.mode){
+        case 'new':
+            return <Input
+                pool={{date: '', amount: '', note: ''}}
+                handleRefresh={this.refreshPoolList}
+                handleCancel={this.onReset}
+            />;
+            break;
+        case 'edit':
+            return this.state.index && <Input 
+                pool={this.state.pools[this.state.index]} 
+                handleRefresh={this.refreshPoolList}
+                handleCancel={this.onReset}
+            />;
+            break;
+        case 'dole':
+            break;
+        }
+
+        return '';
     }
 
-    onClick() {
-        InsertPool(this.state.pool)
+    handleEdit(pool) {
+        CommitPool(pool)
             .then((response) => {
-                this.handlePostResult(GetPostResult(response));
+                this.setState({
+                    result: GetPostResult(response)
+                });
                 this.refreshPoolList();
             })
             .catch((error) => {
-                this.handlePostResult(GetPostError(error));
-            });
-    }
-
-    onChange(field, e) {
-        let update = { 
-            pool: this.state.pool
-        };
-        update.pool[field] = e.target.value;
-        this.setState(update);
-    }
-
-    renderDole(){
-        return <Dole date={this.state.pool.date} />;
+                this.setState({
+                    mode: 'off',
+                    result: GetPostError(error)
+                });
+            });      
     }
 
     render() {
         return (<div>
-            <h3>{this.state.result.status}</h3>
-            <h3>{this.state.result.message}</h3>
-            <input
-                id="pool-date"
-                type="text"
-                value={this.state.pool.date}
-                onChange={(e) => this.onChange('date', e)}
-            />
-            <input
-                id="pool-amount"
-                type="text"
-                value={this.state.pool.amount}
-                onChange={(e) => this.onChange('amount', e)}
-            />
-            <input
-                id="pool-note"
-                type="text"
-                value={this.state.pool.note ? this.state.pool.note : ''}
-                onChange={(e) => this.onChange('note', e)}
-            />
-            <button type="submit" onClick={this.onClick}>submit</button>
+            <h3>{this.state.result}</h3>
+            { this.state.mode == 'off' &&
+                <div>
+                    <h3>{this.state.date}</h3>
+                    <button onClick={() => this.updateMode('new')}>new</button>
+                    <button onClick={() => this.updateMode('edit')}>edit</button>
+                    <button onClick={() => this.updateMode('dole')}>dole</button>
+                    { 
+                        this.state.pools.map((pool, index) => {
+                            return <div key={index} onClick={() => this.onDateClick(index)}>
+                                {pool.date}
+                            </div>;
+                        })
+                    }
+                </div>
+            }
             {
-                this.state.pools.map((pool, index) => {
-                    return <div key={index} onClick={() => this.handlePoolClick(index)}>{pool.date}</div>;
-                })
-            }  
-            {
-                this.state.pool.date && this.renderDole()
+                this.renderMode()
             }
         </div>);
     }

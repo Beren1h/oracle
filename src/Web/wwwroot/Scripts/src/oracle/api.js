@@ -5,13 +5,13 @@ export const GetEnvelopes = () => {
     return axios({
         method: 'get',
         contentType: 'application/json',
-        url: '/api/envelope/all',
+        url: '/api/envelope/all'
     });
 };
 
 
 
-export const InsertPool = (pool, result) => {
+export const CommitPool = (pool, result) => {
     return axios({
         method: 'post',
         contentType: 'application/json',
