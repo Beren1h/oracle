@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { CommitPool, GetPostResult, GetPostError } from '../api.js';
 
-class New extends Component{
+class Input extends Component{
     constructor(props){
         super(props);
 
         this.state = {
-            pool: {},
+            pool: {
+                date: '',
+                amount: '',
+                note: ''
+            },
             result: {
                 status: '',
                 message: ''
@@ -18,6 +22,12 @@ class New extends Component{
         this.onPost = this.onPost.bind(this);
     }
 
+    componentWillMount() {
+        this.setState({
+            pool: Object.assign({}, this.props.pool)
+        });
+    }
+
     onChange(field, e) {
         let update = { 
             pool: this.state.pool
@@ -26,9 +36,9 @@ class New extends Component{
         this.setState(update);
     }
 
-    onCancel() {
+    onCancel(){
         this.setState({
-            pool: {}
+            pool: this.props.pool
         });
         this.props.handleCancel();
     }
@@ -39,7 +49,7 @@ class New extends Component{
                 this.setState({
                     result: GetPostResult(response)
                 });
-                setTimeout(this.props.handleRefresh, 1500);
+                setTimeout(this.props.handleRefresh, 1000);
             })
             .catch((error) => {
                 this.setState({
@@ -54,8 +64,9 @@ class New extends Component{
                 id="pool-date"
                 type="text"
                 value={this.state.pool.date}
+                disabled={this.props.pool.date}
                 onChange={(e) => this.onChange('date', e)}
-            />
+            />            
             <input
                 id="pool-amount"
                 type="text"
@@ -68,7 +79,6 @@ class New extends Component{
                 value={this.state.pool.note ? this.state.pool.note : ''}
                 onChange={(e) => this.onChange('note', e)}
             />
-            {/* <button type="submit" onClick={() => this.props.handleEdit(this.state.pool)}>submit</button> */}
             <button type="submit" onClick={this.onPost}>submit</button>
             <button type="cancel" onClick={this.onCancel}>cancel</button>
             <h3>{this.state.result.status}</h3>
@@ -77,4 +87,4 @@ class New extends Component{
     }
 }
 
-export default New;
+export default Input;

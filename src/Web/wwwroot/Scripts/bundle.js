@@ -39395,13 +39395,9 @@ __webpack_require__(322);
 
 var _api = __webpack_require__(35);
 
-var _new = __webpack_require__(343);
+var _input = __webpack_require__(348);
 
-var _new2 = _interopRequireDefault(_new);
-
-var _edit = __webpack_require__(344);
-
-var _edit2 = _interopRequireDefault(_edit);
+var _input2 = _interopRequireDefault(_input);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39502,14 +39498,14 @@ var Pool = function (_Component) {
         value: function renderMode() {
             switch (this.state.mode) {
                 case 'new':
-                    return _react2.default.createElement(_edit2.default, {
+                    return _react2.default.createElement(_input2.default, {
                         pool: { date: '', amount: '', note: '' },
                         handleRefresh: this.refreshPoolList,
                         handleCancel: this.onReset
                     });
                     break;
                 case 'edit':
-                    return this.state.index && _react2.default.createElement(_edit2.default, {
+                    return this.state.index && _react2.default.createElement(_input2.default, {
                         pool: this.state.pools[this.state.index],
                         handleRefresh: this.refreshPoolList,
                         handleCancel: this.onReset
@@ -40800,307 +40796,8 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 343 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(18);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _api = __webpack_require__(35);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var New = function (_Component) {
-    _inherits(New, _Component);
-
-    function New(props) {
-        _classCallCheck(this, New);
-
-        var _this = _possibleConstructorReturn(this, (New.__proto__ || Object.getPrototypeOf(New)).call(this, props));
-
-        _this.state = {
-            pool: {},
-            result: {
-                status: '',
-                message: ''
-            }
-        };
-
-        _this.onChange = _this.onChange.bind(_this);
-        _this.onCancel = _this.onCancel.bind(_this);
-        _this.onPost = _this.onPost.bind(_this);
-        return _this;
-    }
-
-    _createClass(New, [{
-        key: 'onChange',
-        value: function onChange(field, e) {
-            var update = {
-                pool: this.state.pool
-            };
-            update.pool[field] = e.target.value;
-            this.setState(update);
-        }
-    }, {
-        key: 'onCancel',
-        value: function onCancel() {
-            this.setState({
-                pool: {}
-            });
-            this.props.handleCancel();
-        }
-    }, {
-        key: 'onPost',
-        value: function onPost() {
-            var _this2 = this;
-
-            (0, _api.CommitPool)(this.state.pool).then(function (response) {
-                _this2.setState({
-                    result: (0, _api.GetPostResult)(response)
-                });
-                setTimeout(_this2.props.handleRefresh, 1500);
-            }).catch(function (error) {
-                _this2.setState({
-                    result: (0, _api.GetPostError)(error)
-                });
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this3 = this;
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement('input', {
-                    id: 'pool-date',
-                    type: 'text',
-                    value: this.state.pool.date,
-                    onChange: function onChange(e) {
-                        return _this3.onChange('date', e);
-                    }
-                }),
-                _react2.default.createElement('input', {
-                    id: 'pool-amount',
-                    type: 'text',
-                    value: this.state.pool.amount,
-                    onChange: function onChange(e) {
-                        return _this3.onChange('amount', e);
-                    }
-                }),
-                _react2.default.createElement('input', {
-                    id: 'pool-note',
-                    type: 'text',
-                    value: this.state.pool.note ? this.state.pool.note : '',
-                    onChange: function onChange(e) {
-                        return _this3.onChange('note', e);
-                    }
-                }),
-                _react2.default.createElement(
-                    'button',
-                    { type: 'submit', onClick: this.onPost },
-                    'submit'
-                ),
-                _react2.default.createElement(
-                    'button',
-                    { type: 'cancel', onClick: this.onCancel },
-                    'cancel'
-                ),
-                _react2.default.createElement(
-                    'h3',
-                    null,
-                    this.state.result.status
-                ),
-                _react2.default.createElement(
-                    'h3',
-                    null,
-                    this.state.result.message
-                )
-            );
-        }
-    }]);
-
-    return New;
-}(_react.Component);
-
-exports.default = New;
-
-/***/ }),
-/* 344 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(18);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _api = __webpack_require__(35);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Edit = function (_Component) {
-    _inherits(Edit, _Component);
-
-    function Edit(props) {
-        _classCallCheck(this, Edit);
-
-        var _this = _possibleConstructorReturn(this, (Edit.__proto__ || Object.getPrototypeOf(Edit)).call(this, props));
-
-        _this.state = {
-            pool: {
-                date: '',
-                amount: '',
-                note: ''
-            },
-            result: {
-                status: '',
-                message: ''
-            }
-        };
-
-        _this.onChange = _this.onChange.bind(_this);
-        _this.onCancel = _this.onCancel.bind(_this);
-        _this.onPost = _this.onPost.bind(_this);
-        return _this;
-    }
-
-    _createClass(Edit, [{
-        key: 'componentWillMount',
-        value: function componentWillMount() {
-            this.setState({
-                pool: Object.assign({}, this.props.pool)
-            });
-        }
-    }, {
-        key: 'onChange',
-        value: function onChange(field, e) {
-            var update = {
-                pool: this.state.pool
-            };
-            update.pool[field] = e.target.value;
-            this.setState(update);
-        }
-    }, {
-        key: 'onCancel',
-        value: function onCancel() {
-            this.setState({
-                pool: this.props.pool
-            });
-            this.props.handleCancel();
-        }
-    }, {
-        key: 'onPost',
-        value: function onPost() {
-            var _this2 = this;
-
-            (0, _api.CommitPool)(this.state.pool).then(function (response) {
-                _this2.setState({
-                    result: (0, _api.GetPostResult)(response)
-                });
-                setTimeout(_this2.props.handleRefresh, 1500);
-            }).catch(function (error) {
-                _this2.setState({
-                    result: (0, _api.GetPostError)(error)
-                });
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this3 = this;
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                this.props.pool.date ? _react2.default.createElement(
-                    'span',
-                    null,
-                    this.state.pool.date
-                ) : _react2.default.createElement('input', {
-                    id: 'pool-date',
-                    type: 'text',
-                    value: this.state.pool.date,
-                    onChange: function onChange(e) {
-                        return _this3.onChange('date', e);
-                    }
-                }),
-                _react2.default.createElement('input', {
-                    id: 'pool-amount',
-                    type: 'text',
-                    value: this.state.pool.amount,
-                    onChange: function onChange(e) {
-                        return _this3.onChange('amount', e);
-                    }
-                }),
-                _react2.default.createElement('input', {
-                    id: 'pool-note',
-                    type: 'text',
-                    value: this.state.pool.note ? this.state.pool.note : '',
-                    onChange: function onChange(e) {
-                        return _this3.onChange('note', e);
-                    }
-                }),
-                _react2.default.createElement(
-                    'button',
-                    { type: 'submit', onClick: this.onPost },
-                    'submit'
-                ),
-                _react2.default.createElement(
-                    'button',
-                    { type: 'cancel', onClick: this.onCancel },
-                    'cancel'
-                ),
-                _react2.default.createElement(
-                    'h3',
-                    null,
-                    this.state.result.status
-                ),
-                _react2.default.createElement(
-                    'h3',
-                    null,
-                    this.state.result.message
-                )
-            );
-        }
-    }]);
-
-    return Edit;
-}(_react.Component);
-
-exports.default = Edit;
-
-/***/ }),
+/* 343 */,
+/* 344 */,
 /* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -41202,6 +40899,161 @@ exports.push([module.i, "", ""]);
 
 // exports
 
+
+/***/ }),
+/* 348 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(18);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _api = __webpack_require__(35);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Input = function (_Component) {
+    _inherits(Input, _Component);
+
+    function Input(props) {
+        _classCallCheck(this, Input);
+
+        var _this = _possibleConstructorReturn(this, (Input.__proto__ || Object.getPrototypeOf(Input)).call(this, props));
+
+        _this.state = {
+            pool: {
+                date: '',
+                amount: '',
+                note: ''
+            },
+            result: {
+                status: '',
+                message: ''
+            }
+        };
+
+        _this.onChange = _this.onChange.bind(_this);
+        _this.onCancel = _this.onCancel.bind(_this);
+        _this.onPost = _this.onPost.bind(_this);
+        return _this;
+    }
+
+    _createClass(Input, [{
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.setState({
+                pool: Object.assign({}, this.props.pool)
+            });
+        }
+    }, {
+        key: 'onChange',
+        value: function onChange(field, e) {
+            var update = {
+                pool: this.state.pool
+            };
+            update.pool[field] = e.target.value;
+            this.setState(update);
+        }
+    }, {
+        key: 'onCancel',
+        value: function onCancel() {
+            this.setState({
+                pool: this.props.pool
+            });
+            this.props.handleCancel();
+        }
+    }, {
+        key: 'onPost',
+        value: function onPost() {
+            var _this2 = this;
+
+            (0, _api.CommitPool)(this.state.pool).then(function (response) {
+                _this2.setState({
+                    result: (0, _api.GetPostResult)(response)
+                });
+                setTimeout(_this2.props.handleRefresh, 1000);
+            }).catch(function (error) {
+                _this2.setState({
+                    result: (0, _api.GetPostError)(error)
+                });
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement('input', {
+                    id: 'pool-date',
+                    type: 'text',
+                    value: this.state.pool.date,
+                    disabled: this.props.pool.date,
+                    onChange: function onChange(e) {
+                        return _this3.onChange('date', e);
+                    }
+                }),
+                _react2.default.createElement('input', {
+                    id: 'pool-amount',
+                    type: 'text',
+                    value: this.state.pool.amount,
+                    onChange: function onChange(e) {
+                        return _this3.onChange('amount', e);
+                    }
+                }),
+                _react2.default.createElement('input', {
+                    id: 'pool-note',
+                    type: 'text',
+                    value: this.state.pool.note ? this.state.pool.note : '',
+                    onChange: function onChange(e) {
+                        return _this3.onChange('note', e);
+                    }
+                }),
+                _react2.default.createElement(
+                    'button',
+                    { type: 'submit', onClick: this.onPost },
+                    'submit'
+                ),
+                _react2.default.createElement(
+                    'button',
+                    { type: 'cancel', onClick: this.onCancel },
+                    'cancel'
+                ),
+                _react2.default.createElement(
+                    'h3',
+                    null,
+                    this.state.result.status
+                ),
+                _react2.default.createElement(
+                    'h3',
+                    null,
+                    this.state.result.message
+                )
+            );
+        }
+    }]);
+
+    return Input;
+}(_react.Component);
+
+exports.default = Input;
 
 /***/ })
 /******/ ]);

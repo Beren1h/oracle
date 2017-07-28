@@ -2,8 +2,7 @@
 import moment from 'moment';
 import './pool.scss';
 import { GetPools, CommitPool, GetPostResult, GetPostError } from '../api.js';
-import New from './new.jsx';
-import Edit from './edit.jsx';
+import Input from './input.jsx';
 
 class Pool extends Component {
     constructor(props) {
@@ -82,14 +81,14 @@ class Pool extends Component {
     renderMode() {
         switch (this.state.mode){
         case 'new':
-            return <Edit
+            return <Input
                 pool={{date: '', amount: '', note: ''}}
                 handleRefresh={this.refreshPoolList}
                 handleCancel={this.onReset}
             />;
             break;
         case 'edit':
-            return this.state.index && <Edit 
+            return this.state.index && <Input 
                 pool={this.state.pools[this.state.index]} 
                 handleRefresh={this.refreshPoolList}
                 handleCancel={this.onReset}
