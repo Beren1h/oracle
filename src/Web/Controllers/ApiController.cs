@@ -42,9 +42,19 @@ namespace Web.Controllers
                 return BadRequest($"Configured for {_settings.Year}");
             }
 
-            Expression<Func<Pool, bool>> q = a => a._id == pool._id;
+            var matchByDate = _pools.Get(a => a.Date == pool.Date);
 
-            if (_pools.Get(q).Count() != 0)
+            if(matchByDate.Count() != 0)
+            {
+                if(matchByDate.First()._id != pool._id)
+                {
+                    return BadRequest($"Multiple pools for {pool.Date}");
+                }
+            }
+
+            // Expression<Func<Pool, bool>> q = a => a._id == pool._id;
+
+            if (_pools.Get(a => a._id == pool._id).Count() != 0)
             {
                 _pools.Update(pool);
             }

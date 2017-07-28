@@ -1,31 +1,31 @@
 import React, { Component } from 'react';
+import { CommitPool, GetPostResult, GetPostError } from '../api.js';
 
 class Edit extends Component{
     constructor(props){
         super(props);
 
         this.state = {
-            pool: {},
-            status: '',
-            message: ''
+            pool: {
+                date: '',
+                amount: '',
+                note: ''
+            },
+            result: {
+                status: '',
+                message: ''
+            }
         };
 
         this.onChange = this.onChange.bind(this);
         this.onCancel = this.onCancel.bind(this);
+        this.onPost = this.onPost.bind(this);
     }
 
     componentWillMount() {
-        console.log('props = ', this.props);
         this.setState({
-            // pool: this.props.pool
-            // pool: { ...this.props.pool}
             pool: Object.assign({}, this.props.pool)
-            //{ ...state, visibilityFilter: action.filter }
         });
-    }
-
-    onChange() {
-
     }
 
     onChange(field, e) {
@@ -43,13 +43,35 @@ class Edit extends Component{
         this.props.handleCancel();
     }
 
+    onPost() {
+        CommitPool(this.state.pool)
+            .then((response) => {
+                this.setState({
+                    result: GetPostResult(response)
+                });
+                setTimeout(this.props.handleRefresh, 1500);
+            })
+            .catch((error) => {
+                this.setState({
+                    result: GetPostError(error)
+                });
+            });      
+    }
+
     render() {
         return (<div>
-            <h3>{this.state.status}</h3>
-            <h3>{this.state.message}</h3>
-            <span>
-                {this.props.pool.date}
-            </span>
+            { this.props.pool.date ?
+                <span>
+                    {this.state.pool.date}
+                </span>
+                :
+                <input
+                    id="pool-date"
+                    type="text"
+                    value={this.state.pool.date}
+                    onChange={(e) => this.onChange('date', e)}
+                />            
+            }
             <input
                 id="pool-amount"
                 type="text"
@@ -62,8 +84,10 @@ class Edit extends Component{
                 value={this.state.pool.note ? this.state.pool.note : ''}
                 onChange={(e) => this.onChange('note', e)}
             />
-            <button type="submit" onClick={() => this.props.handleEdit(this.state.pool)}>submit</button>
+            <button type="submit" onClick={this.onPost}>submit</button>
             <button type="cancel" onClick={this.onCancel}>cancel</button>
+            <h3>{this.state.result.status}</h3>
+            <h3>{this.state.result.message}</h3>
         </div>);
     }
 }

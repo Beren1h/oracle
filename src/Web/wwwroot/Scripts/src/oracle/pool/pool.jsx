@@ -17,7 +17,7 @@ class Pool extends Component {
         };
 
         this.refreshPoolList = this.refreshPoolList.bind(this);
-        this.onClick = this.onClick.bind(this);
+        this.onDateClick = this.onDateClick.bind(this);
         this.onReset = this.onReset.bind(this);
         this.updateMode = this.updateMode.bind(this);
         this.renderMode = this.renderMode.bind(this);
@@ -54,7 +54,7 @@ class Pool extends Component {
         });
     }
 
-    onClick(index) {
+    onDateClick(index) {
         if (this.state.mode != 'off'){
             return;
         }
@@ -63,7 +63,6 @@ class Pool extends Component {
         this.setState({
             date: selected.date,
             index: index
-            // mode: 'off'
         });
     }
 
@@ -83,14 +82,18 @@ class Pool extends Component {
     renderMode() {
         switch (this.state.mode){
         case 'new':
-            return <New />;
+            return <Edit
+                pool={{date: '', amount: '', note: ''}}
+                handleRefresh={this.refreshPoolList}
+                handleCancel={this.onReset}
+            />;
             break;
         case 'edit':
-            return this.state.index ? <Edit 
+            return this.state.index && <Edit 
                 pool={this.state.pools[this.state.index]} 
-                handleEdit={this.handleEdit}
+                handleRefresh={this.refreshPoolList}
                 handleCancel={this.onReset}
-            /> : '';
+            />;
             break;
         case 'dole':
             break;
@@ -108,25 +111,33 @@ class Pool extends Component {
                 this.refreshPoolList();
             })
             .catch((error) => {
-                this.handlePostResult(GetPostError(error));
+                this.setState({
+                    mode: 'off',
+                    result: GetPostError(error)
+                });
             });      
     }
 
     render() {
         return (<div>
-            <h3>{this.state.date}</h3>
-            <button onClick={() => this.updateMode('new')}>new</button>
-            <button onClick={() => this.updateMode('edit')}>edit</button>
-            <button onClick={() => this.updateMode('dole')}>dole</button>
-            {
-                this.renderMode()
+            <h3>{this.state.result}</h3>
+            { this.state.mode == 'off' &&
+                <div>
+                    <h3>{this.state.date}</h3>
+                    <button onClick={() => this.updateMode('new')}>new</button>
+                    <button onClick={() => this.updateMode('edit')}>edit</button>
+                    <button onClick={() => this.updateMode('dole')}>dole</button>
+                    { 
+                        this.state.pools.map((pool, index) => {
+                            return <div key={index} onClick={() => this.onDateClick(index)}>
+                                {pool.date}
+                            </div>;
+                        })
+                    }
+                </div>
             }
             {
-                this.state.pools.map((pool, index) => {
-                    return <div key={index} onClick={() => this.onClick(index)}>
-                        {pool.date}
-                    </div>;
-                })
+                this.renderMode()
             }
         </div>);
     }
