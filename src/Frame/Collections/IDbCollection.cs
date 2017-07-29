@@ -9,6 +9,8 @@ namespace Frame.Collections
     {
         void Insert(D document);
 
+        void Insert(IEnumerable<D> documents);
+
         void Delete(ObjectId _id);
 
         void Update(D document);

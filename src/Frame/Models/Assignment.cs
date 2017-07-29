@@ -7,10 +7,10 @@ namespace Frame.Models
     {
         public ObjectId _id { get; set; }
         public DateTime Date { get; set; }
-        public Decimal Amount { get; set; }
+        public decimal Amount { get; set; }
         public Envelope Envelope { get; set; }
         public string Note { get; set; }
-        public bool IsPoolDebit { get; set; }
+        public ObjectId PoolId { get; set; }
     }
 
     public enum Envelope
@@ -33,6 +33,7 @@ namespace Frame.Models
         credit_2809,
         mei_mei,
         car_payment,
-        sweep
+        sweep,
+        arlene
     };
 }

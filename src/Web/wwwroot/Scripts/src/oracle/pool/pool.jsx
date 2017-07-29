@@ -1,8 +1,10 @@
 ﻿import React, { Component } from 'react';
 import moment from 'moment';
 import './pool.scss';
-import { GetPools, CommitPool, GetPostResult, GetPostError } from '../api.js';
+import { GetEnvelopes, GetPools, CommitPool, GetPostResult, GetPostError } from '../api.js';
+import { SortByAlpha } from '../helper.js';
 import Input from './input.jsx';
+import Dole from './dole.jsx';
 
 class Pool extends Component {
     constructor(props) {
@@ -12,33 +14,47 @@ class Pool extends Component {
             date: '',
             mode: '',
             index: '',
-            pools: []
+            pools: [],
+            envelopes: [],
+            assignments: []
         };
 
         this.refreshPoolList = this.refreshPoolList.bind(this);
+        this.refreshEnvelopeList = this.refreshEnvelopeList.bind(this);
         this.onDateClick = this.onDateClick.bind(this);
         this.onReset = this.onReset.bind(this);
         this.updateMode = this.updateMode.bind(this);
         this.renderMode = this.renderMode.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
     }
 
     componentWillMount() {
         this.refreshPoolList();
+        this.refreshEnvelopeList();
+    }
+
+    refreshEnvelopeList(){
+        GetEnvelopes()
+            .then((response) => {
+                response.data.sort((a, b) => SortByAlpha(a, b));
+                this.setState({
+                    envelopes: response.data
+                });
+            });
     }
 
     refreshPoolList(){
         GetPools()
             .then((response) => {
-                response.data.sort((a, b) => {
-                    if(a.date < b.date){
-                        return -1;
-                    }
-                    if(a.date > b.date){
-                        return 1;
-                    }
-                    return 0;
-                });
+                response.data.sort((a, b) => SortByAlpha(a.date, b.date));
+                // response.data.sort((a, b) => {
+                //     if(a.date < b.date){
+                //         return -1;
+                //     }
+                //     if(a.date > b.date){
+                //         return 1;
+                //     }
+                //     return 0;
+                // });
                 this.setState({
                     pools: this.formatDates(response.data)
                 });
@@ -95,26 +111,16 @@ class Pool extends Component {
             />;
             break;
         case 'dole':
+            return this.state.index && <Dole 
+                pool={this.state.pools[this.state.index]}
+                envelopes={this.state.envelopes}
+                handleCancel={this.onReset}
+                handleRefresh={this.refreshPoolList}
+            />;
             break;
         }
 
         return '';
-    }
-
-    handleEdit(pool) {
-        CommitPool(pool)
-            .then((response) => {
-                this.setState({
-                    result: GetPostResult(response)
-                });
-                this.refreshPoolList();
-            })
-            .catch((error) => {
-                this.setState({
-                    mode: 'off',
-                    result: GetPostError(error)
-                });
-            });      
     }
 
     render() {

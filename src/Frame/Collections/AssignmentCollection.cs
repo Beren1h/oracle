@@ -10,13 +10,18 @@ namespace Frame.Collections
     {
         private LiteCollection<Assignment> _collection;
 
-        public AssignmentCollection(string database)
+        public AssignmentCollection(LiteDatabase db)
         {
-            using (var db = new LiteDatabase(database))
-            {
-                _collection = db.GetCollection<Assignment>("assignments");
-            }
+            _collection = db.GetCollection<Assignment>("assignments");
         }
+
+        //public AssignmentCollection(string database)
+        //{
+        //    using (var db = new LiteDatabase(database))
+        //    {
+        //        _collection = db.GetCollection<Assignment>("assignments");
+        //    }
+        //}
 
         public void Delete(ObjectId _id)
         {
@@ -31,6 +36,11 @@ namespace Frame.Collections
         public void Insert(Assignment document)
         {
             _collection.Insert(document);
+        }
+
+        public void Insert(IEnumerable<Assignment> documents)
+        {
+            _collection.Insert(documents);
         }
 
         public void Update(Assignment document)

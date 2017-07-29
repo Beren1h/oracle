@@ -9,9 +9,27 @@ export const GetEnvelopes = () => {
     });
 };
 
+export const GetAssignments = (poolId) => {
+    return axios({
+        method: 'get',
+        contentType: 'application/json',
+        url: '/api/assignment/pool/' + poolId
+    });
+};
+
+export const CommitAssignments = (assignments, result) => {
+    console.log(assignments);
+    return axios({
+        method: 'post',
+        contentType: 'application/json',
+        url: '/api/assignment/commit',
+        data: assignments
+    });
+};
 
 
 export const CommitPool = (pool, result) => {
+    console.log(pool);
     return axios({
         method: 'post',
         contentType: 'application/json',

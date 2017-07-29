@@ -20,7 +20,6 @@ namespace Frame.Resources
             "tax",
             "car repair",
             "pet",
-            "car insurance",
             "gas",
             "emergency",
             "credit 2809",
@@ -28,8 +27,8 @@ namespace Frame.Resources
             "car payment",
             "credit 1398",
             "arlene",
-            "fee"
-
+            "fee",
+            "sweep"
         };
     }
 }

@@ -10,14 +10,19 @@ namespace Frame.Collections
     {
         private LiteCollection<Pool> _collection;
 
-        public PoolCollection(string database)
+        public PoolCollection(LiteDatabase db)
         {
-            // using (var db = new LiteDatabase(Resources.Database.PATH))
-            using (var db = new LiteDatabase(database))
-            {
-                _collection = db.GetCollection<Pool>("pools");
-            }
+            _collection = db.GetCollection<Pool>("pools");
         }
+
+        //public PoolCollection(string database)
+        //{
+        //    // using (var db = new LiteDatabase(Resources.Database.PATH))
+        //    using (var db = new LiteDatabase(database))
+        //    {
+        //        _collection = db.GetCollection<Pool>("pools");
+        //    }
+        //}
 
         public void Delete(ObjectId _id)
         {
@@ -28,10 +33,14 @@ namespace Frame.Collections
         {
             return _collection.Find(query);
         }
-
         public void Insert(Pool document)
         {
             _collection.Insert(document);
+        }
+
+        public void Insert(IEnumerable<Pool> documents)
+        {
+            _collection.Insert(documents);
         }
 
         public void Update(Pool document)

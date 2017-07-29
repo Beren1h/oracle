@@ -6,6 +6,7 @@ using Frame.Models;
 using System.Linq.Expressions;
 using Microsoft.Extensions.Options;
 using LiteDB;
+using System.Collections.Generic;
 
 namespace Web.Controllers
 {
@@ -28,14 +29,50 @@ namespace Web.Controllers
         [HttpGet, Route("envelope/all")]
         public IActionResult GetEnvelopes()
         {
-            return Ok(Frame.Resources.Database.Envelopes);
+            return Ok(Enum.GetNames(typeof(Envelope)));
+        }
+
+        [HttpGet, Route("assignment/envelope/{envelope}")]
+        public IActionResult AssignmentGetByEnvelope(Envelope envelope)
+        {
+            // var result =_assignments.Get(a => a.Envelope == envelope).OrderBy(a => a.Date);
+            var result = _assignments.Get(a => a.Envelope == envelope);
+
+            return Ok(result);
+        }
+
+        [HttpGet, Route("assignment/pool/{poolId}")]
+        public IActionResult AssignmentGet(ObjectId poolId)
+        {
+            // var result = _assignments.Get(a => a.PoolId == poolId).OrderBy(a => Enum.GetName(typeof(Envelope), a.Envelope));
+            var result = _assignments.Get(a => a.PoolId == poolId);
+
+            return Ok(result);
+        }
+
+        [HttpPost, Route("assignment/commit")]
+        public IActionResult AssignmentCommit([FromBody] IEnumerable<Assignment> assignments)
+        {
+            var poolId = assignments.First().PoolId;
+
+            if (_assignments.Get(a => a.PoolId == poolId).Count() != 0)
+            {
+                foreach(var assignment in assignments)
+                {
+                    _assignments.Update(assignment);
+                }
+            }
+            else
+            {
+                _assignments.Insert(assignments);
+            }
+
+            return Ok();
         }
 
 
-
-
         [HttpPost, Route("pool/commit")]
-        public IActionResult PoolHandler([FromBody] Pool pool)
+        public IActionResult PoolCommit([FromBody] Pool pool)
         {
             if (pool.Date.Year != _settings.Year)
             {
@@ -88,23 +125,19 @@ namespace Web.Controllers
         //}
 
         [HttpGet, Route("pool/{id}")]
-        public IActionResult GetPools(string id)
+        public IActionResult PoolGet(ObjectId id)
         {
-            Expression<Func<Pool, bool>> q = a => a._id == new ObjectId(id);
-
-            var result = _pools.Get(q).First();
-
+            var result = _pools.Get(a => a._id == id).First();
             return Ok(result);
         }
 
         [HttpGet, Route("pool/all")]
-        public IActionResult GetPools()
+        public IActionResult PoolGetAll()
         {
-            Expression<Func<Pool, bool>> q = a => a._id != null;
+            // var result = _pools.Get(a => a._id != null).OrderBy(a => a.Date);
+            var result = _pools.Get(a => a._id != null);
 
-            var result = _pools.Get(q).ToList();
-
-            return Ok(result.ToList());
+            return Ok(result);
         }
     }
 }

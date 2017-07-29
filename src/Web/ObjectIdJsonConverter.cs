@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Frame
 {
-    public class ObjectIdConverter : JsonConverter
+    public class ObjectIdJsonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

@@ -11,6 +11,7 @@ using Frame.Collections;
 using Frame.Models;
 using Microsoft.Extensions.Configuration;
 using Frame;
+using LiteDB;
 
 namespace Web
 {
@@ -33,9 +34,11 @@ namespace Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().AddJsonOptions(options => {
-                options.SerializerSettings.Converters.Add(new ObjectIdConverter());
-            });
+            services.AddMvc(options => options.ModelBinderProviders.Insert(0, new ObjectIdModelBinderProvider()))
+                    .AddJsonOptions(options => {
+                        options.SerializerSettings.Converters.Add(new ObjectIdJsonConverter());
+                        options.SerializerSettings.Converters.Add(new EnvelopeJsonConverter());
+                    });
 
             services.AddOptions();
             services.Configure<AppSettings>(Configuration);
@@ -47,8 +50,10 @@ namespace Web
 
             var database = $"{Configuration.GetValue<string>("databasePath")}\\{Configuration.GetValue<string>("year")}.db";
 
-            services.AddSingleton<IDbCollection<Pool>, PoolCollection>(provider => new PoolCollection(database));
-            services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(database));
+            var db = new LiteDatabase(database);
+
+            services.AddSingleton<IDbCollection<Pool>, PoolCollection>(provider => new PoolCollection(db));
+            services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(db));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

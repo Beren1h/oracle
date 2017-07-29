@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { CommitPool, GetPostResult, GetPostError } from '../api.js';
+import { EnsureEmpty } from '../helper.js';
 
 class Input extends Component{
     constructor(props){
@@ -76,7 +77,7 @@ class Input extends Component{
             <input
                 id="pool-note"
                 type="text"
-                value={this.state.pool.note ? this.state.pool.note : ''}
+                value={ EnsureEmpty(this.state.pool.note) }
                 onChange={(e) => this.onChange('note', e)}
             />
             <button type="submit" onClick={this.onPost}>submit</button>
