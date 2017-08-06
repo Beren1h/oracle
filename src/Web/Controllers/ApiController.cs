@@ -41,8 +41,17 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        [HttpGet, Route("assignment/all")]
+        public IActionResult AssignmentGet()
+        {
+            // var result = _assignments.Get(a => a.PoolId == poolId).OrderBy(a => Enum.GetName(typeof(Envelope), a.Envelope));
+            var result = _assignments.Get(a => a._id != null);
+
+            return Ok(result);
+        }
+
         [HttpGet, Route("assignment/pool/{poolId}")]
-        public IActionResult AssignmentGet(ObjectId poolId)
+        public IActionResult AssignmentGetByPoolId(ObjectId poolId)
         {
             // var result = _assignments.Get(a => a.PoolId == poolId).OrderBy(a => Enum.GetName(typeof(Envelope), a.Envelope));
             var result = _assignments.Get(a => a.PoolId == poolId);

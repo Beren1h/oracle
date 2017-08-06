@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import './pool.scss';
-import { GetAssignments, CommitAssignments, GetEnvelopes, GetPostResult, GetPostError } from '../api.js';
+import { GetAssignmentsByPoolId, CommitAssignments, GetEnvelopes, GetPostResult, GetPostError } from '../api.js';
 import { EnsureEmpty, SortByAlpha } from '../helper.js';
 import Input from './input.jsx';
 
@@ -27,7 +27,7 @@ class Pool extends Component {
 
     componentWillMount() {
         let assignments = [];
-        GetAssignments(this.props.pool._id)
+        GetAssignmentsByPoolId(this.props.pool._id)
             .then((response) => {
                 if (response.data.length == 0) {
                     this.props.envelopes.map((envelope, index) => {
