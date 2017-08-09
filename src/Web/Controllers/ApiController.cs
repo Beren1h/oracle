@@ -62,21 +62,35 @@ namespace Web.Controllers
         [HttpPost, Route("assignment/commit")]
         public IActionResult AssignmentCommit([FromBody] IEnumerable<Assignment> assignments)
         {
-            var poolId = assignments.First().PoolId;
-
-            if (_assignments.Get(a => a.PoolId == poolId).Count() != 0)
+            foreach(var assignment in assignments)
             {
-                foreach(var assignment in assignments)
+                if(assignment._id != null)
                 {
                     _assignments.Update(assignment);
                 }
-            }
-            else
-            {
-                _assignments.Insert(assignments);
+                else
+                {
+                    _assignments.Insert(assignment);
+                }
             }
 
             return Ok();
+
+            //var poolId = assignments.First().PoolId;
+
+            //if (poolId != null && _assignments.Get(a => a.PoolId == poolId).Count() != 0)
+            //{
+            //    foreach(var assignment in assignments)
+            //    {
+            //        _assignments.Update(assignment);
+            //    }
+            //}
+            //else
+            //{
+            //    _assignments.Insert(assignments);
+            //}
+
+            //return Ok();
         }
 
 

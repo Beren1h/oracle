@@ -3,12 +3,16 @@ import { GetAssignments, GetEnvelopes, GetPostResult, GetPostError } from '../ap
 import { SortByAlpha } from '../helper.js';
 import './assignment.scss';
 import moment from 'moment';
+import Input from './input.jsx';
+import { EnsureEmpty } from '../helper.js';
 
 class Assignment extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            byDay: [],
+            envelope: '',
             yearStart: '2018-01-01',
             yearEnd: '2018-12-31',
             today: moment().add(1, 'years').format('YYYY-MM-DD'),
@@ -22,6 +26,7 @@ class Assignment extends Component {
         this.buildSummary = this.buildSummary.bind(this);
         this.onClick = this.onClick.bind(this);
         this.byDay = this.byDay.bind(this);
+        this.renderInput = this.renderInput.bind(this);
     }
 
     componentWillMount() {
@@ -82,6 +87,7 @@ class Assignment extends Component {
 
     byDay(envelope) {
 
+        let byDay = [];
         let assignments = this.state.summary.find((obj) => {
             return obj.envelope === envelope;
         }).assignments;
@@ -97,24 +103,54 @@ class Assignment extends Component {
             let filter = assignments.filter((assignment) => {
                 return moment(assignment.date).format() == day.format();
             });
-            let match = filter[0] ? filter[0] : { date: day.format(), amount: 0, note: '' };
+            let match = filter[0] ? filter[0] : { _id: null, date: day.format(), amount: 0, note: '' };
             total += match.amount;
-            if(total < 0){
+            // if(total < 0){
                 // console.log('below 0 on ', day.format('YYYY-MM-DD'));
-            }
-            console.log(day.format('YYYY-MM-DD'), match.amount);
+            // }
+            // console.log(day.format('YYYY-MM-DD'), match.amount);
+            byDay.push({
+                _id: match._id,
+                date: day.format(),
+                amount: match.amount,
+                note: EnsureEmpty(match.note),
+            })
         }
 
-        // console.log(total);
+        this.setState({
+            byDay: byDay
+        })
+        
     }
 
     onClick(envelope) {
+        this.setState({
+            envelope: envelope
+        });
 
         this.byDay(envelope);
     }
 
+    renderInput() {
+
+
+
+        if (this.state.envelope){
+
+            console.log(this.state.byDay);
+
+            // let assignments = this.state.summary.find((obj) => {
+            //     return obj.envelope === this.state.envelope;
+            // }).assignments;
+
+            return <Input envelope={this.state.envelope} byDay={this.state.byDay}/>;
+        }
+
+        return '';
+    }
+
     render() {
-        return (<div>
+        return <div>
             { 
                 this.state.summary.map((loop, index) => {
                     return <div key={index} onClick={() => this.onClick(loop.envelope)}>
@@ -123,7 +159,10 @@ class Assignment extends Component {
                     </div>;
                 })
             }
-        </div>);
+            {
+                this.renderInput()
+            }
+        </div>;
     }
 }
 

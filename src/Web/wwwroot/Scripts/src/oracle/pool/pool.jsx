@@ -46,15 +46,6 @@ class Pool extends Component {
         GetPools()
             .then((response) => {
                 response.data.sort((a, b) => SortByAlpha(a.date, b.date));
-                // response.data.sort((a, b) => {
-                //     if(a.date < b.date){
-                //         return -1;
-                //     }
-                //     if(a.date > b.date){
-                //         return 1;
-                //     }
-                //     return 0;
-                // });
                 this.setState({
                     pools: this.formatDates(response.data)
                 });
