@@ -13,7 +13,7 @@
     <div id="entry"></div>
     <script>
     ReactDOM.render(
-        React.createElement(Components.Pools),
+        React.createElement(Components.Pools, { year: "@ViewBag.Year" }),
         document.getElementById('entry')
     );
     </script>

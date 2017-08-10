@@ -2,9 +2,10 @@ import React from 'react';
 import Assignment from './assignment.jsx';
 
 const assignments = (props) => {
+    console.log('assignment year = ', props.year);
     return (
         <div>
-            <Assignment />
+            <Assignment year={props.year} />
         </div>
     );
 };

@@ -13,7 +13,7 @@
     <div id="entry"></div>
     <script>
     ReactDOM.render(
-        React.createElement(Components.Assignments),
+        React.createElement(Components.Assignments, { year: "@ViewBag.Year" }),
         document.getElementById('entry')
     );
     </script>

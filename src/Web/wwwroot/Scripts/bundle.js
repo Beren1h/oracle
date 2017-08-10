@@ -39456,10 +39456,11 @@ var _pool2 = _interopRequireDefault(_pool);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var pools = function pools(props) {
+    console.log('pool year = ', props.year);
     return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_pool2.default, null)
+        _react2.default.createElement(_pool2.default, { year: props.year })
     );
 };
 
@@ -39583,7 +39584,7 @@ var Pool = function (_Component) {
             if (this.state.mode != 'off') {
                 return;
             }
-
+            console.log('date click ', index);
             var selected = this.state.pools[index];
             this.setState({
                 date: selected.date,
@@ -39617,14 +39618,14 @@ var Pool = function (_Component) {
                     });
                     break;
                 case 'edit':
-                    return this.state.index && _react2.default.createElement(_input2.default, {
+                    return _react2.default.createElement(_input2.default, {
                         pool: this.state.pools[this.state.index],
                         handleRefresh: this.refreshPoolList,
                         handleCancel: this.onReset
                     });
                     break;
                 case 'dole':
-                    return this.state.index && _react2.default.createElement(_dole2.default, {
+                    return _react2.default.createElement(_dole2.default, {
                         pool: this.state.pools[this.state.index],
                         envelopes: this.state.envelopes,
                         handleCancel: this.onReset,
@@ -39665,14 +39666,14 @@ var Pool = function (_Component) {
                     ),
                     _react2.default.createElement(
                         'button',
-                        { onClick: function onClick() {
+                        { disabled: this.state.date == '', onClick: function onClick() {
                                 return _this4.updateMode('edit');
                             } },
                         'edit'
                     ),
                     _react2.default.createElement(
                         'button',
-                        { onClick: function onClick() {
+                        { disabled: this.state.date == '', onClick: function onClick() {
                                 return _this4.updateMode('dole');
                             } },
                         'dole'
@@ -40999,13 +41000,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Pool = function (_Component) {
-    _inherits(Pool, _Component);
+var Dole = function (_Component) {
+    _inherits(Dole, _Component);
 
-    function Pool(props) {
-        _classCallCheck(this, Pool);
+    function Dole(props) {
+        _classCallCheck(this, Dole);
 
-        var _this = _possibleConstructorReturn(this, (Pool.__proto__ || Object.getPrototypeOf(Pool)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (Dole.__proto__ || Object.getPrototypeOf(Dole)).call(this, props));
 
         _this.state = {
             total: 0.0,
@@ -41024,13 +41025,20 @@ var Pool = function (_Component) {
         return _this;
     }
 
-    _createClass(Pool, [{
+    _createClass(Dole, [{
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            console.log('wtf');
+        }
+    }, {
         key: 'componentWillMount',
         value: function componentWillMount() {
             var _this2 = this;
 
+            console.log('component will mount');
             var assignments = [];
             (0, _api.GetAssignmentsByPoolId)(this.props.pool._id).then(function (response) {
+                console.log('response.data = ', response.data);
                 if (response.data.length == 0) {
                     _this2.props.envelopes.map(function (envelope, index) {
                         assignments.push({
@@ -41048,6 +41056,8 @@ var Pool = function (_Component) {
                 _this2.setState({
                     total: _this2.onSum(assignments),
                     assignments: assignments
+                }, function () {
+                    console.log(_this2.state.assignments);
                 });
             }).catch(function (error) {
                 console.log('error = ', (0, _api.GetPostError)(error));
@@ -41198,10 +41208,10 @@ var Pool = function (_Component) {
         }
     }]);
 
-    return Pool;
+    return Dole;
 }(_react.Component);
 
-exports.default = Pool;
+exports.default = Dole;
 
 /***/ }),
 /* 344 */
@@ -41225,10 +41235,11 @@ var _assignment2 = _interopRequireDefault(_assignment);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var assignments = function assignments(props) {
+    console.log('assignment year = ', props.year);
     return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_assignment2.default, null)
+        _react2.default.createElement(_assignment2.default, { year: props.year })
     );
 };
 
@@ -41284,8 +41295,8 @@ var Assignment = function (_Component) {
         _this.state = {
             byDay: [],
             envelope: '',
-            yearStart: '2018-01-01',
-            yearEnd: '2018-12-31',
+            yearStart: '2017-01-01',
+            yearEnd: '2017-12-31',
             today: (0, _moment2.default)().add(1, 'years').format('YYYY-MM-DD'),
             assignments: [],
             envelopes: [],
@@ -41378,6 +41389,7 @@ var Assignment = function (_Component) {
                 return obj.envelope === envelope;
             }).assignments;
 
+            // console.log(assignments);
             var today = (0, _moment2.default)(this.state.today);
             var end = (0, _moment2.default)(this.state.yearEnd);
             var total = 0;
@@ -41574,44 +41586,80 @@ var Input = function (_Component) {
     }
 
     _createClass(Input, [{
-        key: 'onPost',
-        value: function onPost() {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
             var _this2 = this;
 
-            (0, _api.CommitAssignments)([this.state.assignment]).then(function (response) {
-                _this2.setState({
+            var assignments = [];
+            this.props.byDay.map(function (day) {
+                assignments.push({
+                    _id: day._id,
+                    date: day.date,
+                    envelope: _this2.props.envelope,
+                    amount: day.amount,
+                    note: day.note
+                });
+            });
+
+            this.setState({
+                assignments: assignments
+            });
+        }
+    }, {
+        key: 'onPost',
+        value: function onPost() {
+            var _this3 = this;
+
+            //console.log(this.state.assignments)
+
+            var nonZero = [];
+
+            this.state.assignments.map(function (assignment) {
+                if (assignment.amount != 0) {
+                    nonZero.push(assignment);
+                }
+            });
+
+            //console.log(nonZero);
+
+            (0, _api.CommitAssignments)(nonZero).then(function (response) {
+                _this3.setState({
                     result: (0, _api.GetPostResult)(response)
                 });
-                setTimeout(_this2.props.handleRefresh, 1000);
+                // setTimeout(this.props.handleRefresh, 1000);
             }).catch(function (error) {
-                _this2.setState({
+                _this3.setState({
                     result: (0, _api.GetPostError)(error)
                 });
             });
         }
     }, {
         key: 'onChange',
-        value: function onChange(field, e) {
-            var update = {
-                assignment: this.state.assignment
-            };
-            update.assignment[field] = e.target.value;
-            this.setState(update);
+        value: function onChange(field, index, e) {
+            var assignments = this.state.assignments;
+            var assignment = assignments[index];
+            // let update = { 
+            //     assignment: this.state.assignments[index]
+            // };
+            //update.assignment[field] = e.target.value;
+            assignment[field] = e.target.value;
+            //this.setState(update);
+            this.setState({
+                assignments: assignments
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
+            var _this4 = this;
 
             return _react2.default.createElement(
                 'div',
                 null,
-                this.props.byDay.map(function (loop, index) {
+                this.state.assignments.map(function (loop, index) {
                     return _react2.default.createElement(
                         'div',
-                        { key: index, onClick: function onClick() {
-                                return _this3.onClick(loop.envelope);
-                            } },
+                        { key: index },
                         _react2.default.createElement('input', {
                             id: 'assignment-date',
                             type: 'text',
@@ -41623,7 +41671,7 @@ var Input = function (_Component) {
                             type: 'text',
                             value: loop.amount,
                             onChange: function onChange(e) {
-                                return _this3.onChange('amount', e);
+                                return _this4.onChange('amount', index, e);
                             }
                         }),
                         _react2.default.createElement('input', {
@@ -41631,7 +41679,7 @@ var Input = function (_Component) {
                             type: 'text',
                             value: (0, _helper.EnsureEmpty)(loop.note),
                             onChange: function onChange(e) {
-                                return _this3.onChange('note', e);
+                                return _this4.onChange('note', index, e);
                             }
                         })
                     );

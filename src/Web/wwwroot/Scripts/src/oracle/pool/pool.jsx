@@ -64,7 +64,7 @@ class Pool extends Component {
         if (this.state.mode != 'off'){
             return;
         }
-
+        console.log('date click ', index);
         let selected = this.state.pools[index];
         this.setState({
             date: selected.date,
@@ -95,19 +95,19 @@ class Pool extends Component {
             />;
             break;
         case 'edit':
-            return this.state.index && <Input 
+            return <Input 
                 pool={this.state.pools[this.state.index]} 
                 handleRefresh={this.refreshPoolList}
                 handleCancel={this.onReset}
             />;
             break;
         case 'dole':
-            return this.state.index && <Dole 
+            return  <Dole 
                 pool={this.state.pools[this.state.index]}
                 envelopes={this.state.envelopes}
                 handleCancel={this.onReset}
                 handleRefresh={this.refreshPoolList}
-            />;
+             />;
             break;
         }
 
@@ -121,8 +121,8 @@ class Pool extends Component {
                 <div>
                     <h3>{this.state.date}</h3>
                     <button onClick={() => this.updateMode('new')}>new</button>
-                    <button onClick={() => this.updateMode('edit')}>edit</button>
-                    <button onClick={() => this.updateMode('dole')}>dole</button>
+                    <button disabled={this.state.date == ''} onClick={() => this.updateMode('edit')}>edit</button>
+                    <button disabled={this.state.date == ''} onClick={() => this.updateMode('dole')}>dole</button>
                     { 
                         this.state.pools.map((pool, index) => {
                             return <div key={index} onClick={() => this.onDateClick(index)}>

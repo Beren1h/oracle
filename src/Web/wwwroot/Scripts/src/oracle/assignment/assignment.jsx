@@ -13,8 +13,8 @@ class Assignment extends Component {
         this.state = {
             byDay: [],
             envelope: '',
-            yearStart: '2018-01-01',
-            yearEnd: '2018-12-31',
+            yearStart: '2017-01-01',
+            yearEnd: '2017-12-31',
             today: moment().add(1, 'years').format('YYYY-MM-DD'),
             assignments: [],
             envelopes: [],
@@ -92,6 +92,7 @@ class Assignment extends Component {
             return obj.envelope === envelope;
         }).assignments;
 
+        // console.log(assignments);
         let today = moment(this.state.today);
         let end = moment(this.state.yearEnd);
         let total = 0;
@@ -106,20 +107,20 @@ class Assignment extends Component {
             let match = filter[0] ? filter[0] : { _id: null, date: day.format(), amount: 0, note: '' };
             total += match.amount;
             // if(total < 0){
-                // console.log('below 0 on ', day.format('YYYY-MM-DD'));
+            // console.log('below 0 on ', day.format('YYYY-MM-DD'));
             // }
             // console.log(day.format('YYYY-MM-DD'), match.amount);
             byDay.push({
                 _id: match._id,
                 date: day.format(),
                 amount: match.amount,
-                note: EnsureEmpty(match.note),
-            })
+                note: EnsureEmpty(match.note)
+            });
         }
 
         this.setState({
             byDay: byDay
-        })
+        });
         
     }
 

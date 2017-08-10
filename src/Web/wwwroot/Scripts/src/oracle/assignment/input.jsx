@@ -24,13 +24,43 @@ class Input extends Component{
         this.onPost = this.onPost.bind(this);
     }
 
+    componentWillMount() {
+        let assignments = [];
+        this.props.byDay.map((day) => {
+            assignments.push({
+                _id: day._id,
+                date: day.date,
+                envelope: this.props.envelope,
+                amount: day.amount,
+                note: day.note
+            });
+        });
+
+        this.setState({
+            assignments: assignments
+        });
+    }
+
     onPost() {
-        CommitAssignments([this.state.assignment])
+
+        //console.log(this.state.assignments)
+
+        let nonZero = [];
+
+        this.state.assignments.map((assignment) => {
+            if(assignment.amount != 0){
+                nonZero.push(assignment);
+            }
+        });
+
+        //console.log(nonZero);
+
+        CommitAssignments(nonZero)
             .then((response) => {
                 this.setState({
                     result: GetPostResult(response)
                 });
-                setTimeout(this.props.handleRefresh, 1000);
+                // setTimeout(this.props.handleRefresh, 1000);
             })
             .catch((error) => {
                 this.setState({
@@ -39,19 +69,25 @@ class Input extends Component{
             });      
     }
 
-    onChange(field, e) {
-        let update = { 
-            assignment: this.state.assignment
-        };
-        update.assignment[field] = e.target.value;
-        this.setState(update);
+    onChange(field, index, e) {
+        let assignments = this.state.assignments;
+        let assignment = assignments[index];
+        // let update = { 
+        //     assignment: this.state.assignments[index]
+        // };
+        //update.assignment[field] = e.target.value;
+        assignment[field] = e.target.value;
+        //this.setState(update);
+        this.setState({
+            assignments: assignments
+        });
     }
 
     render() {
         return <div>
             { 
-                this.props.byDay.map((loop, index) => {
-                    return <div key={index} onClick={() => this.onClick(loop.envelope)}>
+                this.state.assignments.map((loop, index) => {
+                    return <div key={index}>
                         <input
                             id="assignment-date"
                             type="text"
@@ -62,13 +98,13 @@ class Input extends Component{
                             id="assignment-amount"
                             type="text"
                             value={loop.amount}
-                            onChange={(e) => this.onChange('amount', e)}
+                            onChange={(e) => this.onChange('amount', index, e)}
                         />
                         <input
                             id="assignment-note"
                             type="text"
                             value={ EnsureEmpty(loop.note) }
-                            onChange={(e) => this.onChange('note', e)}
+                            onChange={(e) => this.onChange('note', index, e)}
                         />
                     </div>;
                 })
