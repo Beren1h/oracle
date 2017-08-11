@@ -9,13 +9,23 @@ export const GetEnvelopes = () => {
     });
 };
 
-export const GetAssignments = (poolId) => {
+export const GetAssignments = () => {
+    return axios({
+        method: 'get',
+        contentType: 'application/json',
+        url: '/api/assignment/all'
+    });
+};
+
+export const GetAssignmentsByPoolId = (poolId) => {
     return axios({
         method: 'get',
         contentType: 'application/json',
         url: '/api/assignment/pool/' + poolId
     });
 };
+
+
 
 export const CommitAssignments = (assignments, result) => {
     console.log(assignments);

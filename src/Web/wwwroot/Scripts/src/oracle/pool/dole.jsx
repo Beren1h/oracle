@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import './pool.scss';
-import { GetAssignments, CommitAssignments, GetEnvelopes, GetPostResult, GetPostError } from '../api.js';
+import { GetAssignmentsByPoolId, CommitAssignments, GetEnvelopes, GetPostResult, GetPostError } from '../api.js';
 import { EnsureEmpty, SortByAlpha } from '../helper.js';
 import Input from './input.jsx';
 
-class Pool extends Component {
+class Dole extends Component {
     constructor(props) {
         super(props);
 
@@ -25,10 +25,16 @@ class Pool extends Component {
         this.onSum = this.onSum.bind(this);
     }
 
+    componentWillReceiveProps(nextProps){
+        console.log('wtf');
+    }
+
     componentWillMount() {
+        console.log('component will mount');
         let assignments = [];
-        GetAssignments(this.props.pool._id)
+        GetAssignmentsByPoolId(this.props.pool._id)
             .then((response) => {
+                console.log('response.data = ', response.data);
                 if (response.data.length == 0) {
                     this.props.envelopes.map((envelope, index) => {
                         assignments.push({
@@ -46,7 +52,7 @@ class Pool extends Component {
                 this.setState({
                     total: this.onSum(assignments),
                     assignments: assignments
-                });
+                }, () => {console.log(this.state.assignments);});
             })
             .catch((error) => {
                 console.log('error = ', GetPostError(error));
@@ -153,4 +159,4 @@ class Pool extends Component {
     }
 }
 
-export default Pool;
+export default Dole;
