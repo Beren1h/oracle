@@ -64,7 +64,7 @@ namespace Web.Controllers
         {
             foreach(var assignment in assignments)
             {
-                if(assignment._id != ObjectId.Empty)
+                if(assignment._id != ObjectId.Empty && assignment._id != null)
                 {
                     _assignments.Update(assignment);
                 }

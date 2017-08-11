@@ -15,7 +15,7 @@ class Assignment extends Component {
             envelope: '',
             yearStart: '2017-01-01',
             yearEnd: '2017-12-31',
-            today: moment().add(1, 'years').format('YYYY-MM-DD'),
+            today: moment().format('YYYY-MM-DD'),
             assignments: [],
             envelopes: [],
             summary:[]
@@ -92,7 +92,7 @@ class Assignment extends Component {
             return obj.envelope === envelope;
         }).assignments;
 
-        // console.log(assignments);
+        console.log(this.state.summary);
         let today = moment(this.state.today);
         let end = moment(this.state.yearEnd);
         let total = 0;
