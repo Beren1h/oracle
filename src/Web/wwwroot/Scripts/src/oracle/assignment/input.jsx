@@ -32,7 +32,8 @@ class Input extends Component{
                 date: day.date,
                 envelope: this.props.envelope,
                 amount: day.amount,
-                note: day.note
+                note: day.note,
+                poolId: day.poolId
             });
         });
 
@@ -87,6 +88,7 @@ class Input extends Component{
         return <div>
             { 
                 this.state.assignments.map((loop, index) => {
+                    console.log(loop);
                     return <div key={index}>
                         <input
                             id="assignment-date"
@@ -98,12 +100,14 @@ class Input extends Component{
                             id="assignment-amount"
                             type="text"
                             value={loop.amount}
+                            disabled={loop.poolId}
                             onChange={(e) => this.onChange('amount', index, e)}
                         />
                         <input
                             id="assignment-note"
                             type="text"
                             value={ EnsureEmpty(loop.note) }
+                            disabled={loop.poolId}
                             onChange={(e) => this.onChange('note', index, e)}
                         />
                     </div>;

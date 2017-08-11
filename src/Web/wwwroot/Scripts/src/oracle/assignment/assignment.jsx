@@ -13,8 +13,8 @@ class Assignment extends Component {
         this.state = {
             byDay: [],
             envelope: '',
-            yearStart: '2017-01-01',
-            yearEnd: '2017-12-31',
+            yearStart: this.props.year + '-01-01',
+            yearEnd: this.props.year + '-12-31',
             today: moment().format('YYYY-MM-DD'),
             assignments: [],
             envelopes: [],
@@ -92,7 +92,6 @@ class Assignment extends Component {
             return obj.envelope === envelope;
         }).assignments;
 
-        console.log(this.state.summary);
         let today = moment(this.state.today);
         let end = moment(this.state.yearEnd);
         let total = 0;
@@ -104,7 +103,7 @@ class Assignment extends Component {
             let filter = assignments.filter((assignment) => {
                 return moment(assignment.date).format() == day.format();
             });
-            let match = filter[0] ? filter[0] : { _id: null, date: day.format(), amount: 0, note: '' };
+            let match = filter[0] ? filter[0] : { _id: null, date: day.format(), amount: 0, note: '', poolId: null };
             total += match.amount;
             // if(total < 0){
             // console.log('below 0 on ', day.format('YYYY-MM-DD'));
@@ -114,9 +113,11 @@ class Assignment extends Component {
                 _id: match._id,
                 date: day.format(),
                 amount: match.amount,
-                note: EnsureEmpty(match.note)
+                note: EnsureEmpty(match.note),
+                poolId: match.poolId
             });
         }
+
 
         this.setState({
             byDay: byDay
@@ -138,7 +139,7 @@ class Assignment extends Component {
 
         if (this.state.envelope){
 
-            console.log(this.state.byDay);
+            // console.log(this.state.byDay);
 
             // let assignments = this.state.summary.find((obj) => {
             //     return obj.envelope === this.state.envelope;
