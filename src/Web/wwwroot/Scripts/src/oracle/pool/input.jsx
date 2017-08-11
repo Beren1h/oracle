@@ -60,7 +60,7 @@ class Input extends Component{
     }
 
     render() {
-        return (<div>
+        return <div>
             <input
                 id="pool-date"
                 type="text"
@@ -84,7 +84,7 @@ class Input extends Component{
             <button type="cancel" onClick={this.onCancel}>cancel</button>
             <h3>{this.state.result.status}</h3>
             <h3>{this.state.result.message}</h3>
-        </div>);
+        </div>;
     }
 }
 
