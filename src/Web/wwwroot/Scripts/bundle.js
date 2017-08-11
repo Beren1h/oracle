@@ -41297,7 +41297,8 @@ var Assignment = function (_Component) {
             envelope: '',
             yearStart: '2017-01-01',
             yearEnd: '2017-12-31',
-            today: (0, _moment2.default)().add(1, 'years').format('YYYY-MM-DD'),
+            // today: moment().add(1, 'years').format('YYYY-MM-DD'), xxxxxx
+            today: (0, _moment2.default)().format('YYYY-MM-DD'),
             assignments: [],
             envelopes: [],
             summary: []
@@ -41389,7 +41390,7 @@ var Assignment = function (_Component) {
                 return obj.envelope === envelope;
             }).assignments;
 
-            // console.log(assignments);
+            console.log(this.state.summary);
             var today = (0, _moment2.default)(this.state.today);
             var end = (0, _moment2.default)(this.state.yearEnd);
             var total = 0;
