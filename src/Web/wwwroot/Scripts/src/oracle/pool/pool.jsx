@@ -107,7 +107,7 @@ class Pool extends Component {
                 envelopes={this.state.envelopes}
                 handleCancel={this.onReset}
                 handleRefresh={this.refreshPoolList}
-             />;
+            />;
             break;
         }
 

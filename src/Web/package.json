@@ -26,11 +26,13 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
+    "classnames": "^2.2.5",
     "css-loader": "^0.28.4",
     "moment": "^2.18.1",
     "node-sass": "^4.5.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "react-number-format": "^2.0.3",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2"
   },

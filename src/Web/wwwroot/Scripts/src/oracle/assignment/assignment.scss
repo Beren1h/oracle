@@ -1,0 +1,161 @@
+@import '../variables';
+@import '../index';
+
+.assignment {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    .item {
+        &:first-child {
+            width: 20%;
+        }
+        &:last-child {
+            width: 80%;
+        }
+    }
+}
+
+.fixed {
+    position: fixed;
+}
+        
+.detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    background-color: #222222;
+    padding: 5px;
+    border-radius: 3px;    
+    margin: 0 0 0 20px;
+    .column {
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 0 10px;
+            color: #eabe20;
+        }
+        margin: 0 0 0 10px;
+        &:last-child {
+            width: 25%;
+        }
+    }
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #222222;
+    padding: 5px;
+    border-radius: 3px;
+    position: fixed;
+    width: 20%;
+    .row {
+        display: flex;
+        flex-direction: row;
+        border-radius: 3px;
+        padding: 3px;
+        span {
+            &:first-child {
+                width: 60%;
+            }
+            &:last-child {
+                width: 40%;
+                text-align: right
+            };
+        }
+    }
+}
+
+// .container {
+//     display: flex;
+//     flex-direction: rows;
+//     background-color:purple;
+//     .item {
+//         flex-grow: 2;
+//         &.money{
+//             flex-grow: 1;
+//         }
+//     }
+//     .warning {
+//     }
+// }
+
+
+
+
+// .x{
+//     background-color: purple;
+//     width: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     .b {
+//         background-color:yellow;
+//     }
+// }
+
+
+input {
+    border: none;
+    border-radius: 1px;
+    font-size: 14px;
+    margin: 1px;
+    padding: 5px;
+    &.poolId {
+        background-color: $disabled-green-background;    
+        color: $disabled-green-color;
+    }
+}
+
+.warning {
+    background-color: $warning-background;
+    color: $warning-color;
+}
+
+// .container2 {
+//     display: flex;
+//     justify-content: flex-start;
+//     background-color: blue;
+//     .item2 {
+//         width: 33%;
+//         display: block;
+//         background-color:yellow;
+//     }
+// }
+
+
+
+@-webkit-keyframes pulse {
+  0% { background-color: #B20000; -webkit-box-shadow: 0 0 3px #B20000; }
+  50% { background-color: #FF0000; -webkit-box-shadow: 0 0 40px #FF0000; }
+  100% { background-color: #B20000; -webkit-box-shadow: 0 0 3px #B20000; }
+}
+
+a{
+  display: inline-block;
+  padding: 2px 7px 2px 5px;
+  border-radius: 5px;
+  background-color: #333333;
+  cursor: pointer;
+  &:hover {
+      background: #444444;
+  }
+  &.dirty {
+    background: none;
+    border: none;
+    background-color: red;
+    color: $warning-background;
+    -webkit-animation-name: pulse;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;      
+  }
+}
+
+// {
+// /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cdeb8e+0,a5c956+100;Green+3D+%232 */
+// background: #cdeb8e; /* Old browsers */
+// background: -moz-linear-gradient(top, #cdeb8e 0%, #a5c956 100%); /* FF3.6-15 */
+// background: -webkit-linear-gradient(top, #cdeb8e 0%,#a5c956 100%); /* Chrome10-25,Safari5.1-6 */
+// background: linear-gradient(to bottom, #cdeb8e 0%,#a5c956 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+// filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
+// }
