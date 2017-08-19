@@ -28,7 +28,7 @@ export const GetAssignmentsByPoolId = (poolId) => {
 
 
 export const CommitAssignments = (assignments, result) => {
-    console.log(assignments);
+    // console.log(assignments);
     return axios({
         method: 'post',
         contentType: 'application/json',
@@ -39,7 +39,7 @@ export const CommitAssignments = (assignments, result) => {
 
 
 export const CommitPool = (pool, result) => {
-    console.log(pool);
+    // console.log(pool);
     return axios({
         method: 'post',
         contentType: 'application/json',

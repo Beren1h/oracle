@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Frame.Collections;
 using Frame.Models;
-using System.Linq.Expressions;
 using Microsoft.Extensions.Options;
 using LiteDB;
 using System.Collections.Generic;
@@ -35,7 +34,6 @@ namespace Web.Controllers
         [HttpGet, Route("assignment/envelope/{envelope}")]
         public IActionResult AssignmentGetByEnvelope(Envelope envelope)
         {
-            // var result =_assignments.Get(a => a.Envelope == envelope).OrderBy(a => a.Date);
             var result = _assignments.Get(a => a.Envelope == envelope);
 
             return Ok(result);
@@ -44,7 +42,6 @@ namespace Web.Controllers
         [HttpGet, Route("assignment/all")]
         public IActionResult AssignmentGet()
         {
-            // var result = _assignments.Get(a => a.PoolId == poolId).OrderBy(a => Enum.GetName(typeof(Envelope), a.Envelope));
             var result = _assignments.Get(a => a._id != null);
 
             return Ok(result);
@@ -53,7 +50,6 @@ namespace Web.Controllers
         [HttpGet, Route("assignment/pool/{poolId}")]
         public IActionResult AssignmentGetByPoolId(ObjectId poolId)
         {
-            // var result = _assignments.Get(a => a.PoolId == poolId).OrderBy(a => Enum.GetName(typeof(Envelope), a.Envelope));
             var result = _assignments.Get(a => a.PoolId == poolId);
 
             return Ok(result);
@@ -66,7 +62,14 @@ namespace Web.Controllers
             {
                 if(assignment._id != ObjectId.Empty && assignment._id != null)
                 {
-                    _assignments.Update(assignment);
+                    if (assignment.Amount == 0 && (assignment.PoolId == ObjectId.Empty || assignment.PoolId == null))
+                    {
+                        _assignments.Delete(assignment._id);
+                    }
+                    else
+                    {
+                        _assignments.Update(assignment);
+                    }
                 }
                 else
                 {
@@ -75,22 +78,6 @@ namespace Web.Controllers
             }
 
             return Ok();
-
-            //var poolId = assignments.First().PoolId;
-
-            //if (poolId != null && _assignments.Get(a => a.PoolId == poolId).Count() != 0)
-            //{
-            //    foreach(var assignment in assignments)
-            //    {
-            //        _assignments.Update(assignment);
-            //    }
-            //}
-            //else
-            //{
-            //    _assignments.Insert(assignments);
-            //}
-
-            //return Ok();
         }
 
 
@@ -112,8 +99,6 @@ namespace Web.Controllers
                 }
             }
 
-            // Expression<Func<Pool, bool>> q = a => a._id == pool._id;
-
             if (_pools.Get(a => a._id == pool._id).Count() != 0)
             {
                 _pools.Update(pool);
@@ -126,27 +111,6 @@ namespace Web.Controllers
             return Ok();
         }
 
-
-        //[HttpPost, Route("pool/insert")]
-        //public IActionResult InsertPool([FromBody] Pool pool)
-        //{
-        //    if(pool.Date.Year != _settings.Year)
-        //    {
-        //        return BadRequest($"Configured for {_settings.Year}");
-        //    }
-            
-        //    Expression<Func<Pool, bool>> q = a => a.Date == pool.Date;
-
-        //    if(_pools.Get(q).Count() != 0)
-        //    {
-        //        return BadRequest($"Pool already exists for {pool.Date.Display()}");
-        //    }
-
-        //    _pools.Insert(pool);
-
-        //    return Ok();
-        //}
-
         [HttpGet, Route("pool/{id}")]
         public IActionResult PoolGet(ObjectId id)
         {
@@ -157,7 +121,6 @@ namespace Web.Controllers
         [HttpGet, Route("pool/all")]
         public IActionResult PoolGetAll()
         {
-            // var result = _pools.Get(a => a._id != null).OrderBy(a => a.Date);
             var result = _pools.Get(a => a._id != null);
 
             return Ok(result);

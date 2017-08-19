@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { EnsureEmpty } from '../helper.js';
+import { EnsureEmpty, EnsureZero } from '../helper.js';
 import { CommitAssignments, GetPostResult, GetPostError } from '../api.js';
 import NumberFormat from 'react-number-format';
 import moment from 'moment';
@@ -32,20 +32,21 @@ class Input extends Component{
     }
 
     componentWillMount() {
-        this.buildAssignments(this.props.byDay);
+        this.buildAssignments(this.props.byDay, this.props.envelope);
     }
 
     componentWillReceiveProps(nextProps){
-        this.buildAssignments(nextProps.byDay);
+        this.buildAssignments(nextProps.byDay, nextProps.envelope);
     }
 
     recalculateTotals() {
         let assignments = this.state.assignments.slice(0);
+        
         let total = 0;
 
-        assignments.map((assigment) => {
-            total += parseFloat(assigment.amount);
-            assigment.total = total;
+        assignments.map((assignment) => {
+            total += parseFloat(EnsureZero(assignment.amount));
+            assignment.total = total;
         });
 
         this.setState({
@@ -62,29 +63,24 @@ class Input extends Component{
             this.setState({
                 isDirty: isDirty
             });
-
-            // console.log('is dirty', isDirty)
         });
 
     }
 
-    buildAssignments(byDay) {
-        //console.log(byDay);
+    buildAssignments(byDay, envelope) {
         let assignments = [];
         byDay.map((day) => {
-            // console.log(day.total, this.props);
             assignments.push({
                 _id: day._id,
                 date: day.date,
-                envelope: this.props.envelope,
-                amount: day.amount,
+                envelope: envelope,
+                amount: day.amount != 0 ? day.amount: '',
                 note: day.note,
                 poolId: day.poolId,
                 total: day.total
             });
         });
 
-        // console.log(assignments);
         this.setState({
             assignments: assignments
         });
@@ -94,8 +90,10 @@ class Input extends Component{
         let nonZero = [];
 
         this.state.assignments.map((assignment) => {
-            if(assignment.amount != 0 || assignment._id ){
-                nonZero.push(assignment);
+            let clone = Object.assign({}, assignment);
+            clone.amount = EnsureZero(clone.amount);   
+            if (clone.amount != 0 || clone._id){
+                nonZero.push(clone);
             }
         });
 
@@ -103,8 +101,9 @@ class Input extends Component{
             .then((response) => {
                 this.setState({
                     result: GetPostResult(response)
+                }, () => {
+                    setTimeout(this.props.handleRefresh, 1000);
                 });
-                setTimeout(this.props.handleRefresh, 1000);
             })
             .catch((error) => {
                 this.setState({
@@ -116,6 +115,10 @@ class Input extends Component{
     onChange(field, index, e) {
 
         let value = e.target.value.replace(',', '').replace('$', '');
+
+        if(value == '-'){
+            return;
+        }
 
         let assignments = this.state.assignments;
         let assignment = assignments[index];
@@ -131,63 +134,73 @@ class Input extends Component{
 
     render() {
         return <div className={'detail'}>
-            <div className={'column'}>
-            { 
-                this.state.assignments.map((loop, index) => {
-                    return <div className={'b'} key={index}>
-                        <input
-                            className={classNames({
-                                'poolId': loop.poolId
-                            })}
-                            id="assignment-date"
-                            type="text"
-                            value={moment(loop.date).format('YYYY-MM-DD')}
-                            disabled={true}
-                        />   
-                        <NumberFormat
-                            id="assignment-amount"
-                            className={classNames({
-                                'poolId': loop.poolId
-                            })}
-                            thousandSeparator={true} 
-                            prefix={'$'}                            
-                            decimalPrecision={2}
-                            allowNegative={true}
-                            type="text"
-                            value={loop.amount}
-                            disabled={loop.poolId}
-                            onChange={(e) => this.onChange('amount', index, e)}
-                        />
-                        <NumberFormat
-                            id="assignment-sum"
-                            className={classNames({
-                                'poolId': loop.poolId,
-                                'warning': loop.total + this.props.historicSum < 0
-                            })}
-                            thousandSeparator={true} 
-                            prefix={'$'}                            
-                            decimalPrecision={2}
-                            allowNegative={true}
-                            type="text"
-                            value={loop.total + this.props.historicSum}
-                            disabled={true}
-                        />
-                    </div>;
-                })
-            }
-            </div>
-            <div className={'column'}>
-                <div className={'fixed'}>
-                    <div className={'title'}>{this.props.envelope}</div>
-                    <div className={'item2'}>
-                        <a className={classNames({
-                            'dirty': this.state.isDirty
-                        })} onClick={this.onPost}>submit</a>
+            {
+                this.state.result.status ?
+                    <div className={'success'}>
+                        <h1>{this.state.result.status}</h1>
                     </div>
-                    <div>{this.state.result.status}</div>
-                    <div>{this.state.result.message}</div>
-                </div>
-            </div>            
+                    :
+                    <div className={'column'}>
+                        { 
+                            this.state.assignments.map((loop, index) => {
+                                return <div key={index}>
+                                    <input
+                                        className={classNames({
+                                            'poolId': loop.poolId
+                                        })}
+                                        id="assignment-date"
+                                        type="text"
+                                        value={moment(loop.date).format('YYYY-MM-DD')}
+                                        disabled={true}
+                                    />   
+                                    <NumberFormat
+                                        id="assignment-amount"
+                                        className={classNames({
+                                            'poolId': loop.poolId
+                                        })}
+                                        thousandSeparator={true} 
+                                        prefix={'$'}                            
+                                        decimalPrecision={2}
+                                        allowNegative={true}
+                                        type="text"
+                                        value={loop.amount}
+                                        disabled={loop.poolId}
+                                        onChange={(e) => this.onChange('amount', index, e)}
+                                    />
+                                    <NumberFormat
+                                        id="assignment-sum"
+                                        className={classNames({
+                                            'poolId': loop.poolId,
+                                            'warning': loop.total + this.props.historicSum < 0
+                                        })}
+                                        thousandSeparator={true} 
+                                        prefix={'$'}                            
+                                        decimalPrecision={2}
+                                        allowNegative={true}
+                                        type="text"
+                                        value={loop.total + this.props.historicSum}
+                                        disabled={true}
+                                    />
+                                </div>;
+                            })
+                        }
+                    </div>
+            }
+            {
+                !this.state.result.status ?
+                    <div className={'column'}>
+                        <div className={'fixed'}>
+                            <div className={'title'}>{this.props.envelope}</div>
+                            <div>
+                                <a className={classNames({
+                                    'dirty': this.state.isDirty
+                                })} onClick={this.onPost}>submit</a>
+                            </div>
+                            <div className={'error'}>{this.state.result.message}</div>                            
+                        </div>
+                    </div> :
+                    ''         
+            }
         </div>;
     }
 }

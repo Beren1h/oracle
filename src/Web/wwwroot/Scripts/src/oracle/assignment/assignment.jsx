@@ -80,7 +80,6 @@ class Assignment extends Component {
                 projectedSum: total,
                 assignments: matches
             });
-            // console.log(summary);
             this.setState({
                 summary: summary,
                 envelope: ''
@@ -94,14 +93,12 @@ class Assignment extends Component {
             return obj.envelope === envelope;
         }).assignments;
 
-        // let today = moment(this.state.today).subtract(14, 'days');
         let today = moment(this.state.today);
         let end = moment(this.state.yearEnd);
         let total = 0;
         let totalByDay = 0;
 
         for(let j=1; j<=end.diff(today, 'days'); j++){
-            // let today = moment(this.state.today).subtract(14, 'days');
             let today = moment(this.state.today);
             let day = today.add(j, 'days');
             let filter = assignments.filter((assignment) => {
@@ -118,7 +115,6 @@ class Assignment extends Component {
                 total: total
             });
         }
-        // console.log(byDay);
         this.setState({
             byDay: byDay
         });
@@ -137,14 +133,13 @@ class Assignment extends Component {
             let historic = this.state.summary.filter(item => {
                 return item.envelope == this.state.envelope;
             });
-            // console.log(historic[0].historicSum);
-            // console.log(this.state.envelope);
+                       
             return <Input 
                 envelope={this.state.envelope} 
                 byDay={this.state.byDay}
                 historicSum={historic[0].historicSum}
                 handleRefresh={this.refreshData}
-                />;
+            />;
         }
         return '';
     }

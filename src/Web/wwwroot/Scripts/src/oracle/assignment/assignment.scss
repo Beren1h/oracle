@@ -18,7 +18,7 @@
 .fixed {
     position: fixed;
 }
-        
+
 .detail {
     display: flex;
     flex-direction: row;
@@ -27,13 +27,34 @@
     padding: 5px;
     border-radius: 3px;    
     margin: 0 0 0 20px;
+    .success {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        &h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px;
+            color: #2ECC40
+        } 
+    }
     .column {
+        &.test {
+            justify-content: center;
+        }
         .title {
             font-size: 24px;
             font-weight: bold;
             margin: 0 0 10px;
             color: #eabe20;
         }
+        .error {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0 0 0;
+            color: #ea0000
+        }   
         margin: 0 0 0 10px;
         &:last-child {
             width: 25%;
