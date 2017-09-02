@@ -5,6 +5,7 @@ import { GetEnvelopes, GetPools, CommitPool, GetPostResult, GetPostError } from 
 import { SortByAlpha } from '../helper.js';
 import Input from './input.jsx';
 import Dole from './dole.jsx';
+import classNames from 'classnames';
 
 class Pool extends Component {
     constructor(props) {
@@ -92,6 +93,7 @@ class Pool extends Component {
                 pool={{date: '', amount: '', note: ''}}
                 handleRefresh={this.refreshPoolList}
                 handleCancel={this.onReset}
+                year={this.props.year}
             />;
             break;
         case 'edit':
@@ -115,26 +117,34 @@ class Pool extends Component {
     }
 
     render() {
-        return (<div>
-            <h3>{this.state.result}</h3>
-            { this.state.mode == 'off' &&
+        return (<div className={'wrapper'}>
+            <div className={'list'}>
+                { 
+                    this.state.pools.map((pool, index) => {
+                        return <div key={index} onClick={() => this.onDateClick(index)}>
+                            {pool.date}
+                        </div>;
+                    })
+                }    
+            </div>
+            <div className={'actions'}>
                 <div>
-                    <h3>{this.state.date}</h3>
-                    <button onClick={() => this.updateMode('new')}>new</button>
-                    <button disabled={this.state.date == ''} onClick={() => this.updateMode('edit')}>edit</button>
-                    <button disabled={this.state.date == ''} onClick={() => this.updateMode('dole')}>dole</button>
-                    { 
-                        this.state.pools.map((pool, index) => {
-                            return <div key={index} onClick={() => this.onDateClick(index)}>
-                                {pool.date}
-                            </div>;
-                        })
-                    }
+                    <a onClick={() => this.updateMode('new')}>new</a>
+                    <a className={classNames({
+                        'disabled' : this.state.date == ''
+                    })} onClick={() => this.updateMode('edit')}>edit</a>
+                    <a className={classNames({
+                        'disabled' : this.state.date == ''
+                    })} onClick={() => this.updateMode('dole')}>dole</a>
+                    <label className={classNames({
+                        'hidden' : this.state.date == '',
+                        'notice': true
+                    })}>{this.state.date}</label>
                 </div>
-            }
+            </div>
             {
                 this.renderMode()
-            }
+            }            
         </div>);
     }
 }

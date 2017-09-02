@@ -3,7 +3,7 @@ import moment from 'moment';
 import './pool.scss';
 import { GetAssignmentsByPoolId, CommitAssignments, GetEnvelopes, GetPostResult, GetPostError } from '../api.js';
 import { EnsureEmpty, SortByAlpha } from '../helper.js';
-import Input from './input.jsx';
+import numeral from 'numeral';
 
 class Dole extends Component {
     constructor(props) {
@@ -19,22 +19,16 @@ class Dole extends Component {
         };
 
         this.onChange = this.onChange.bind(this);
-        // this.onCancel = this.onCancel.bind(this);
+        this.onCancel = this.onCancel.bind(this);
         this.onPost = this.onPost.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onSum = this.onSum.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
-        console.log('wtf');
-    }
-
     componentWillMount() {
-        console.log('component will mount');
         let assignments = [];
         GetAssignmentsByPoolId(this.props.pool._id)
             .then((response) => {
-                console.log('response.data = ', response.data);
                 if (response.data.length == 0) {
                     this.props.envelopes.map((envelope, index) => {
                         assignments.push({
@@ -52,21 +46,11 @@ class Dole extends Component {
                 this.setState({
                     total: this.onSum(assignments),
                     assignments: assignments
-                }, () => {console.log(this.state.assignments);});
+                });
             })
             .catch((error) => {
                 console.log('error = ', GetPostError(error));
             });
-
-        // this.props.envelopes.map((envelope, index) => {
-        //     assignments.push({
-        //         date: this.props.pool.date,
-        //         envelope: this.props.envelopes[index],
-        //         amount: 0,
-        //         note: '',
-        //         poolId: this.props.pool._id
-        //     });
-        // });
     }
 
     onSum(assignments){
@@ -74,25 +58,16 @@ class Dole extends Component {
         assignments.map((assignment) => {
             sum += parseFloat(assignment.amount);
         });
-        // setState({
-        //     total: sum
-        // })
         return sum;
     }
     onPost() {
-        // let assignments = this.state.assignments.slice();
-        // assignments.map((assignment, index) => {
-        //     assignment.amount = assignment.amount ? assignment.amount : 0
-        // });
-        // this.setState({
-        //     assignments: assignments
-        // });
         CommitAssignments(this.state.assignments)
             .then((response) => {
                 this.setState({
                     result: GetPostResult(response)
+                }, () => { 
+                    setTimeout(this.props.handleCancel, 1000);
                 });
-                // setTimeout(this.props.handleRefresh, 1000);
             })
             .catch((error) => {
                 this.setState({
@@ -102,13 +77,9 @@ class Dole extends Component {
     }
 
     onBlur(e) {
-        // let pool = parseFloat(this.props.pool.amount);
-        // let total = parseFloat(this.state.total);
-        // console.log(pool, total);
         this.setState({
             total: this.onSum(this.state.assignments)
         });
-
     }
 
     onChange(field, index, e) {
@@ -117,15 +88,15 @@ class Dole extends Component {
         this.setState({
             assignments: assignments
         });
+    }
 
+    onCancel() {
+        this.props.handleCancel();
     }
 
     render() {
-        return (<div>
-            <h3>{this.props.pool.date}</h3>
-            <h3>{this.props.pool.amount}</h3>
-            <h3>{this.state.total}</h3>
-            <h3>{this.props.pool.amount - this.state.total}</h3>
+        return (<div className={'interactive'}>
+            <div className={'list'}>
             {
                 this.state.assignments.map((assignment, index) => {
                     return <div key={index}>
@@ -151,10 +122,21 @@ class Dole extends Component {
                     </div>;
                 }) 
             }
-            <button type="submit" onClick={this.onPost}>submit</button>
-            <button type="cancel" onClick={this.onCancel}>cancel</button>
-            <h3>{this.state.result.status}</h3>
-            <h3>{this.state.result.message}</h3>
+            </div>
+            <div className={'actions'}>
+                <div>
+                    {/* <NumberFormat value={this.props.pool.amount} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalPrecision={2} />
+                    <NumberFormat value={this.state.total} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalPrecision={2} />
+                    <NumberFormat value={this.props.pool.amount - this.state.total} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalPrecision={2} /> */}
+                    <label>{numeral(this.props.pool.amount).format('$0,0.00')}</label>
+                    <label>{numeral(this.state.total).format('$0,0.00')}</label>
+                    <label className={'notice'}>{numeral(this.props.pool.amount - this.state.total).format('$0,0.00')}</label>
+                    <a type="submit" onClick={this.onPost}>submit</a>
+                    <a type="cancel" onClick={this.onCancel}>cancel</a>
+                    <label>{this.state.result.status}</label>
+                    <label>{this.state.result.message}</label>
+                </div>
+            </div>
         </div>);
     }
 }

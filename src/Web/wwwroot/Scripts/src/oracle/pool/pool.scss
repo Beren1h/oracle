@@ -1,4 +1,65 @@
-﻿body {
-    background-color:black;
-    color: aqua;
+﻿@import '../variables';
+
+.wrapper {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 15% 150px auto;
+    & div {
+        background-color: $cell-color;
+        border-radius: 3px;
+        padding: 5px;
+    }
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: default;    
+}
+
+.hidden {
+    display: none;
+}
+
+.interactive {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 75% 25%;
+    .list {
+        div {
+            padding: 0;
+        }
+    }
+}
+
+.actions {
+    & div {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        position: sticky;
+        top: 0;
+        & a {
+            margin: 3px;
+            text-align: center;
+        }
+        & label {
+            text-align: right;
+            padding: 0 20px 0 0;
+            margin: 5px;
+            &.notice {
+                font-weight: bold;
+                border-radius: 3px;
+                padding: 5px 0 5px 0;
+                margin: 10px 0 10px 0;
+                text-align: center;
+                background: none;
+                border: none;
+                color: #222222;
+                -webkit-animation-name: pulse;
+                -webkit-animation-duration: 2s;
+                -webkit-animation-iteration-count: infinite;                
+            }
+        } 
+
+    }
 }
