@@ -1,89 +1,42 @@
 @import '../variables';
 @import '../index';
 
+
+
 .assignment {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    .item {
-        &:first-child {
-            width: 20%;
-        }
-        &:last-child {
-            width: 80%;
-        }
-    }
-}
-
-.fixed {
-    position: fixed;
-}
-
-.detail {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    background-color: #222222;
-    padding: 5px;
-    border-radius: 3px;    
-    margin: 0 0 0 20px;
-    .success {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        width: 100%;
-        &h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px;
-            color: #2ECC40
-        } 
-    }
-    .column {
-        &.test {
-            justify-content: center;
-        }
-        .title {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 0 10px;
-            color: #eabe20;
-        }
-        .error {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 10px 0 0 0;
-            color: #ea0000
-        }   
-        margin: 0 0 0 10px;
-        &:last-child {
-            width: 25%;
-        }
-    }
-}
-
-.summary {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background-color: $cell-color;
-    padding: 5px;
-    border-radius: 3px;
-    position: fixed;
-    width: 20%;
-    .row {
-        display: flex;
-        flex-direction: row;
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: 20% 80%;
+    & div {
+        background-color: $cell-color;
         border-radius: 3px;
-        padding: 3px;
-        span {
-            &:first-child {
-                width: 60%;
+        padding: 5px;
+    }
+    .summary {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        .row {
+            display: grid;
+            grid-gap: 5px;
+            grid-template-columns: 60% 40%;
+            & span {
+                &:last-child {
+                    text-align: right;
+                    padding: 0 5px 0 0;
+                }
             }
-            &:last-child {
-                width: 40%;
-                text-align: right
-            };
+            &.warning {
+                color: $warning-color;
+            }            
+        }
+    }
+    .detail {
+        display: inline-grid;
+        grid-gap: 5px;
+        grid-template-columns: 55% 15%;
+        & div {
+            padding: 0
         }
     }
 }
@@ -98,12 +51,16 @@ input {
         background-color: $disabled-green-background;    
         color: $disabled-green-color;
     }
+    &.warning {
+        background-color: $warning-background;
+        color: $warning-color;
+    }
 }
 
-.warning {
-    background-color: $warning-background;
-    color: $warning-color;
-}
+// .warning {
+//     background-color: $warning-background;
+//     color: $warning-color;
+// }
 
 a {
   display: inline-block;
@@ -117,8 +74,6 @@ a {
   &.dirty {
     background: none;
     border: none;
-    background-color: red;
-    color: $warning-background;
     -webkit-animation-name: pulse;
     -webkit-animation-duration: 2s;
     -webkit-animation-iteration-count: infinite;      

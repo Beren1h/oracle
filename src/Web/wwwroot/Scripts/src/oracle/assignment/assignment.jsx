@@ -36,7 +36,10 @@ class Assignment extends Component {
     }
 
     refreshData() {
-        GetEnvelopes()
+        this.setState({
+            envelope: ''
+        }, () => {
+            GetEnvelopes()
             .then((response) => {
                 response.data.sort((a, b) => SortByAlpha(a, b));
                 this.setState({
@@ -45,6 +48,7 @@ class Assignment extends Component {
                     this.refreshAssignments();
                 });
             });
+        });
     }
 
     refreshAssignments() {
@@ -146,26 +150,22 @@ class Assignment extends Component {
 
     render() {
         return <div className={'assignment'}>
-            <div className={'item'}>
-                <div className={'summary'}>
-                    { 
-                        this.state.summary.map((loop, index) => {
-                            return <div className={classNames({
-                                'row': true,
-                                'warning': parseFloat(loop.projectedSum) + parseFloat(loop.historicSum) < 0
-                            })} key={index} onClick={() => this.onClick(loop.envelope)}>
-                                <span>{loop.envelope}</span>
-                                <NumberFormat value={loop.projectedSum + loop.historicSum} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalPrecision={2} />
-                            </div>;
-                        })
-                    }
-                </div>
-            </div>
-            <div className={'item'}>
-                {
-                    this.renderInput()
+            <div className={'summary'}>
+                { 
+                    this.state.summary.map((loop, index) => {
+                        return <div className={classNames({
+                            'row': true,
+                            'warning': parseFloat(loop.projectedSum) + parseFloat(loop.historicSum) < 0
+                        })} key={index} onClick={() => this.onClick(loop.envelope)}>
+                            <span>{loop.envelope}</span>
+                            <NumberFormat value={loop.projectedSum + loop.historicSum} displayType={'text'} thousandSeparator={true} prefix={'$'} decimalPrecision={2} />
+                        </div>;
+                    })
                 }
             </div>
+            {
+                this.renderInput()
+            }
         </div>;
     }
 }
