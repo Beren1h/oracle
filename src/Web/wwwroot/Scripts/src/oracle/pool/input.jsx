@@ -69,15 +69,6 @@ class Input extends Component{
     render() {
         return <div className={'interactive'}>
             <div className={'list'}>
-                {/* <input
-                    className={classNames({
-                        'hidden': this.props.pool.date
-                    })}
-                    id="pool-date"
-                    type="text"
-                    value={this.state.pool.date}
-                    onChange={(e) => this.onChange('date', e)}
-                /> */}
                 <InputMask
                     id='pool-date'
                     value={this.state.pool.date}
@@ -85,12 +76,6 @@ class Input extends Component{
                     mask={this.state.mask}
                     maskChar=' '
                 />
-                {/* <input
-                    id="pool-amount"
-                    type="text"
-                    value={this.state.pool.amount}
-                    onChange={(e) => this.onChange('amount', e)}
-                /> */}
                 <NumberFormat
                     id="pool-amount"
                     thousandSeparator={true} 

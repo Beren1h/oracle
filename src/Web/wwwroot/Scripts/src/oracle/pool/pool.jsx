@@ -65,7 +65,6 @@ class Pool extends Component {
         if (this.state.mode != 'off'){
             return;
         }
-        console.log('date click ', index);
         let selected = this.state.pools[index];
         this.setState({
             date: selected.date,
