@@ -32,6 +32,7 @@ namespace Frame.Models
         credit_1398,
         credit_2809,
         mei_mei,
+        car,
         car_payment,
         sweep,
         arlene

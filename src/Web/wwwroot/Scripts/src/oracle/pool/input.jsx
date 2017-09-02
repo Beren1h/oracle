@@ -30,7 +30,7 @@ class Input extends Component{
     componentWillMount() {
         this.setState({
             pool: Object.assign({}, this.props.pool),
-            mask: '99-99' + this.props.year
+            mask: '99-99-' + this.props.year
         });
     }
 
