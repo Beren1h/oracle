@@ -48,12 +48,13 @@ namespace Web
             //   options.DatabasePath = $"{Frame.Resources.Database.PATH}\\{options.Year}.db";
             //});
 
-            var database = $"{Configuration.GetValue<string>("databasePath")}\\{Configuration.GetValue<string>("year")}.db";
+            var database = $"{Configuration.GetValue<string>("databasePath")}\\{Configuration.GetValue<string>("year")}-{Configuration.GetValue<string>("version")}.db";
 
             var db = new LiteDatabase(database);
 
             services.AddSingleton<IDbCollection<Pool>, PoolCollection>(provider => new PoolCollection(db));
             services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(db));
+            services.AddSingleton<IDbCollection<Transaction>, TransactionCollection>(provider => new TransactionCollection(db));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

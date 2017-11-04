@@ -15,16 +15,58 @@ namespace Web.Controllers
     {
         private readonly IDbCollection<Pool> _pools;
         private readonly IDbCollection<Assignment> _assignments;
+        private readonly IDbCollection<Transaction> _transactions;
 
         private readonly AppSettings _settings;
 
-        public ApiController(IDbCollection<Pool> pools, IDbCollection<Assignment> assignments, IOptions<AppSettings> settings)
+        public ApiController(IDbCollection<Transaction> transaction, IDbCollection<Pool> pools, IDbCollection<Assignment> assignments, IOptions<AppSettings> settings)
         {
+            _transactions = transaction;
             _pools = pools;
             _assignments = assignments;
             _settings = settings.Value;
         }
         
+
+        [HttpGet, Route("transaction/{id}")]
+        public IActionResult TransactionGet(ObjectId id)
+        {
+            var result = _transactions.Get(a => a._id == id);
+
+            //return Ok(result);
+            return Ok(result);
+        }
+
+        //000000000000000000000000
+        [HttpPost, Route("transaction")]
+        public IActionResult TransactionPost ([FromBody] IEnumerable<Transaction> transactions)
+        {
+            foreach (var transaction in transactions)
+            {
+                if (transaction._id != ObjectId.Empty && transaction._id != null)
+                {
+                    _transactions.Update(transaction);
+                    //if (transaction.Amount == 0 && (transaction.PoolId == ObjectId.Empty || transaction.PoolId == null))
+                    //{
+                    //    _transactions.Delete(transaction._id);
+                    //}
+                    //else
+                    //{
+                    //    _transactions.Update(transaction);
+                    //}
+                }
+                else
+                {
+                    _transactions.Insert(transaction);
+                }
+            }
+
+            return Ok();
+        }
+
+
+
+
         [HttpGet, Route("envelope/all")]
         public IActionResult GetEnvelopes()
         {

@@ -15,14 +15,6 @@ namespace Frame.Collections
             _collection = db.GetCollection<Assignment>("assignments");
         }
 
-        //public AssignmentCollection(string database)
-        //{
-        //    using (var db = new LiteDatabase(database))
-        //    {
-        //        _collection = db.GetCollection<Assignment>("assignments");
-        //    }
-        //}
-
         public void Delete(ObjectId _id)
         {
             _collection.Delete(_id);

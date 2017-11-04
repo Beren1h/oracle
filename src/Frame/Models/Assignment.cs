@@ -13,28 +13,28 @@ namespace Frame.Models
         public ObjectId PoolId { get; set; }
     }
 
-    public enum Envelope
-    {
-        mortgage,
-        power,
-        water,
-        cell,
-        cable,
-        car_insurance,
-        student_loan,
-        home_insurance,
-        medical,
-        tax,
-        car_repair,
-        pet,
-        emergency,
-        gas,
-        credit_1398,
-        credit_2809,
-        mei_mei,
-        car,
-        car_payment,
-        sweep,
-        arlene
-    };
+    //public enum Envelope
+    //{
+    //    mortgage,
+    //    power,
+    //    water,
+    //    cell,
+    //    cable,
+    //    car_insurance,
+    //    student_loan,
+    //    home_insurance,
+    //    medical,
+    //    tax,
+    //    car_repair,
+    //    pet,
+    //    emergency,
+    //    gas,
+    //    credit_1398,
+    //    credit_2809,
+    //    mei_mei,
+    //    car,
+    //    car_payment,
+    //    sweep,
+    //    arlene
+    //};
 }
