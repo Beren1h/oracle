@@ -18,26 +18,26 @@ namespace Web.Controllers
             _settings = settings.Value;
         }
 
-        [Route("test")]
-        public IActionResult Test()
-        {
-            var x = new Transaction
-            {
-                Date = DateTime.Now,
-                Account = Account.wellsfargo,
-                Amount = 100.40m,
-                //Envelope = null
-            };
+        //[Route("test")]
+        //public IActionResult Test()
+        //{
+        //    var x = new Transaction
+        //    {
+        //        Date = DateTime.Now,
+        //        Account = Account.wellsfargo,
+        //        Amount = 100.40m,
+        //        //Envelope = null
+        //    };
 
-            return Ok(x);
-        }
+        //    return Ok(x);
+        //}
 
-        [HttpPost]
-        [Route("in")]
-        public IActionResult In([FromBody] Transaction t)
-        {
-            return Ok(t);
-        }
+        //[HttpPost]
+        //[Route("in")]
+        //public IActionResult In([FromBody] Transaction t)
+        //{
+        //    return Ok(t);
+        //}
 
         [Route("pools")]
         public IActionResult Pools()

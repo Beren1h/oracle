@@ -7,13 +7,13 @@ namespace Frame.Collections
 {
     public interface IDbCollection<D> 
     {
-        void Insert(D document);
+        ObjectId Insert(D document);
 
-        void Insert(IEnumerable<D> documents);
+        // ObjectId Insert(IEnumerable<D> documents);
 
-        void Delete(ObjectId _id);
+        bool Delete(ObjectId _id);
 
-        void Update(D document);
+        bool Update(D document);
 
         IEnumerable<D> Get(Expression<Func<D, bool>> query);
     }

@@ -37,7 +37,7 @@ namespace Web
             services.AddMvc(options => options.ModelBinderProviders.Insert(0, new ObjectIdModelBinderProvider()))
                     .AddJsonOptions(options => {
                         options.SerializerSettings.Converters.Add(new ObjectIdJsonConverter());
-                        options.SerializerSettings.Converters.Add(new EnvelopeJsonConverter());
+                        //options.SerializerSettings.Converters.Add(new EnvelopeJsonConverter());
                     });
 
             services.AddOptions();
@@ -52,9 +52,10 @@ namespace Web
 
             var db = new LiteDatabase(database);
 
-            services.AddSingleton<IDbCollection<Pool>, PoolCollection>(provider => new PoolCollection(db));
-            services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(db));
+            //services.AddSingleton<IDbCollection<Pool>, PoolCollection>(provider => new PoolCollection(db));
+            //services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(db));
             services.AddSingleton<IDbCollection<Transaction>, TransactionCollection>(provider => new TransactionCollection(db));
+            services.AddSingleton<IDbCollection<Container>, ContainerCollection>(provider => new ContainerCollection(db));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,3 +73,4 @@ namespace Web
         }
     }
 }
+

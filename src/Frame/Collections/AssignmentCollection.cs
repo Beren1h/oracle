@@ -25,9 +25,9 @@ namespace Frame.Collections
             return _collection.Find(query);
         }
 
-        public void Insert(Assignment document)
+        public ObjectId Insert(Assignment document)
         {
-            _collection.Insert(document);
+            return _collection.Insert(document);
         }
 
         public void Insert(IEnumerable<Assignment> documents)

@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Collections\AssignmentCollection.cs" />
+    <Compile Remove="Collections\PoolCollection.cs" />
+    <Compile Remove="Models\Schedule.cs" />
     <Compile Remove="ObjectIdConverter.cs" />
   </ItemGroup>
 

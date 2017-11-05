@@ -9,7 +9,7 @@ namespace Frame.Models
     {
         public ObjectId _id { get; set; }
         public string Name { get; set; }
-        public Envelope? Envelope { get; set; }
+        public Container? Envelope { get; set; }
         public IEnumerable<Transaction> Transactions { get; set; }
 
     }

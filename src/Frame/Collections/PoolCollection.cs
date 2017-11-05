@@ -38,10 +38,10 @@ namespace Frame.Collections
             _collection.Insert(document);
         }
 
-        public void Insert(IEnumerable<Pool> documents)
-        {
-            _collection.Insert(documents);
-        }
+        //public ObjectId Insert(IEnumerable<Pool> documents)
+        //{
+        //    return _collection.Insert(documents);
+        //}
 
         public void Update(Pool document)
         {
