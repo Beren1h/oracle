@@ -12,9 +12,10 @@ namespace Frame.Models
         public ObjectId _id { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
-        public TransactionType Type { get; set; }
+        public AccountingType Accounting { get; set; }
+        //account or envelope
         public ObjectId ContainerId { get; set; }
-        //double entry accounting.  debits to account are paired with credtits to an envelope
+        //double entry accounting.  debit/credit in container 1 paired with credit/debit in container 2
         public ObjectId PairId { get; set; }
         //id of the account credit split between envelopes
         public ObjectId DoleId { get; set; }
@@ -149,7 +150,7 @@ namespace Frame.Models
     //}
 
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum TransactionType
+    public enum AccountingType
     {
         credit,
         debit,

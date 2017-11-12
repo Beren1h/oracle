@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Frame.Models;
+using LiteDB;
 
 namespace Web.Controllers
 {
@@ -39,20 +40,24 @@ namespace Web.Controllers
         //    return Ok(t);
         //}
 
-        [Route("pools")]
-        public IActionResult Pools()
+        [Route("accounts")]
+        public IActionResult Accounts()
         {
             ViewBag.Year = _settings.Year;
+            ViewBag.Version = _settings.Version;
 
             return View();
         }
 
-        [Route("assignments")]
-        public IActionResult Assignments()
+        [Route("dole/{id}")]
+        public IActionResult Dole(ObjectId id)
         {
             ViewBag.Year = _settings.Year;
+            ViewBag.Version = _settings.Version;
+            ViewBag.ParentId = id;
 
             return View();
         }
+
     }
 }

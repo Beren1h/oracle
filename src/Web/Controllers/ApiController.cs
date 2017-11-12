@@ -13,11 +13,8 @@ namespace Web.Controllers
     [Route("api")]
     public class ApiController : Controller
     {
-        //private readonly IDbCollection<Pool> _pools;
-        //private readonly IDbCollection<Assignment> _assignments;
         private readonly IDbCollection<Transaction> _transactions;
         private readonly IDbCollection<Container> _containers;
-
         private readonly AppSettings _settings;
 
         public ApiController(IDbCollection<Transaction> transactions,
@@ -26,8 +23,6 @@ namespace Web.Controllers
         {
             _transactions = transactions;
             _containers = containers;
-            //_pools = pools;
-            //_assignments = assignments;
             _settings = settings.Value;
         }
 
@@ -99,6 +94,20 @@ namespace Web.Controllers
         }
 
 
+        [HttpPost, Route("transaction/pair")]
+        public IActionResult UpdateTransactionPair([FromBody] Transaction[] transactions)
+        {
+            if (transactions.Length != 2)
+            {
+                return BadRequest("only 2 transactions");
+            }
+
+            var result0 = _transactions.Update(transactions[0]);
+            var result1 = _transactions.Update(transactions[1]);
+
+            return Ok(result0 && result1);
+        }
+
         [HttpPost, Route("transaction")]
         public IActionResult UpdateTransaction([FromBody] Transaction transaction)
         {
@@ -115,6 +124,14 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        [HttpGet, Route("transaction/{id}")]
+        public IActionResult GetTransactionById(ObjectId id)
+        {
+            var result = _transactions.Get(a => a._id == id);
+
+            return Ok(result);
+        }
+
         [HttpDelete, Route("transaction/{id}")]
         public IActionResult DeleteTransaction(ObjectId id)
         {
@@ -123,146 +140,14 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        [HttpDelete, Route("transaction/pair/{id0}/{id1}")]
+        public IActionResult DeleteTransactionPair(ObjectId id0, ObjectId id1)
+        {
+            var result0 = _transactions.Delete(id0);
+            var result1 = _transactions.Delete(id1);
 
-
-        //[HttpGet, Route("transaction/{id}")]
-        //public IActionResult TransactionGet(ObjectId id)
-        //{
-        //    var result = _transactions.Get(a => a._id == id);
-
-        //    //return Ok(result);
-        //    return Ok(result);
-        //}
-
-        //[HttpPost, Route("transaction")]
-        //public IActionResult TransactionPost ([FromBody] IEnumerable<Transaction> transactions)
-        //{
-        //    foreach (var transaction in transactions)
-        //    {
-        //        if (transaction._id != ObjectId.Empty && transaction._id != null)
-        //        {
-        //            _transactions.Update(transaction);
-        //            //if (transaction.Amount == 0 && (transaction.PoolId == ObjectId.Empty || transaction.PoolId == null))
-        //            //{
-        //            //    _transactions.Delete(transaction._id);
-        //            //}
-        //            //else
-        //            //{
-        //            //    _transactions.Update(transaction);
-        //            //}
-        //        }
-        //        else
-        //        {
-        //            _transactions.Insert(transaction);
-        //        }
-        //    }
-
-        //    return Ok();
-        //}
-
-
-
-
-        //[HttpGet, Route("envelope/all")]
-        //public IActionResult GetEnvelopes()
-        //{
-        //    return Ok(Enum.GetNames(typeof(Container)));
-        //}
-
-        //[HttpGet, Route("assignment/envelope/{envelope}")]
-        //public IActionResult AssignmentGetByEnvelope(Container envelope)
-        //{
-        //    var result = _assignments.Get(a => a.Envelope == envelope);
-
-        //    return Ok(result);
-        //}
-
-        //[HttpGet, Route("assignment/all")]
-        //public IActionResult AssignmentGet()
-        //{
-        //    var result = _assignments.Get(a => a._id != null);
-
-        //    return Ok(result);
-        //}
-
-        //[HttpGet, Route("assignment/pool/{poolId}")]
-        //public IActionResult AssignmentGetByPoolId(ObjectId poolId)
-        //{
-        //    var result = _assignments.Get(a => a.PoolId == poolId);
-
-        //    return Ok(result);
-        //}
-
-        //[HttpPost, Route("assignment/commit")]
-        //public IActionResult AssignmentCommit([FromBody] IEnumerable<Assignment> assignments)
-        //{
-        //    foreach(var assignment in assignments)
-        //    {
-        //        if(assignment._id != ObjectId.Empty && assignment._id != null)
-        //        {
-        //            if (assignment.Amount == 0 && (assignment.PoolId == ObjectId.Empty || assignment.PoolId == null))
-        //            {
-        //                _assignments.Delete(assignment._id);
-        //            }
-        //            else
-        //            {
-        //                _assignments.Update(assignment);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            _assignments.Insert(assignment);
-        //        }
-        //    }
-
-        //    return Ok();
-        //}
-
-
-        //[HttpPost, Route("pool/commit")]
-        //public IActionResult PoolCommit([FromBody] Pool pool)
-        //{
-        //    if (pool.Date.Year != _settings.Year)
-        //    {
-        //        return BadRequest($"Configured for {_settings.Year}");
-        //    }
-
-        //    var matchByDate = _pools.Get(a => a.Date == pool.Date);
-
-        //    if(matchByDate.Count() != 0)
-        //    {
-        //        if(matchByDate.First()._id != pool._id)
-        //        {
-        //            return BadRequest($"Multiple pools for {pool.Date}");
-        //        }
-        //    }
-
-        //    if (_pools.Get(a => a._id == pool._id).Count() != 0)
-        //    {
-        //        _pools.Update(pool);
-        //    }
-        //    else
-        //    {
-        //        _pools.Insert(pool);
-        //    }
-
-        //    return Ok();
-        //}
-
-        //[HttpGet, Route("pool/{id}")]
-        //public IActionResult PoolGet(ObjectId id)
-        //{
-        //    var result = _pools.Get(a => a._id == id).First();
-        //    return Ok(result);
-        //}
-
-        //[HttpGet, Route("pool/all")]
-        //public IActionResult PoolGetAll()
-        //{
-        //    var result = _pools.Get(a => a._id != null);
-
-        //    return Ok(result);
-        //}
+            return Ok(result0 && result1);
+        }
     }
 }
 
