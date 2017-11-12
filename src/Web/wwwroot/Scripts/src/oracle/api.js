@@ -24,6 +24,33 @@ export const GetTransaction = (id) => {
     });
 };
 
+export const GetTransactionDole = (id) => {
+    return axios({
+        method: 'get',
+        contentType: 'application/json',
+        url: '/api/transaction/dole/' + id
+    });
+};
+
+export const PutTransaction = (transaction0, transaction1) => {
+    console.log('put = ', transaction0, transaction1);
+    return axios({
+        method: 'put',
+        contentType: 'application/json',
+        url: '/api/transaction/pair',
+        data: [transaction0, transaction1]
+    });
+};
+
+export const PostTransaction = (transaction) => {
+    return axios({
+        method: 'post',
+        contentType: 'application/json',
+        url: '/api/transaction',
+        data: transaction
+    });
+};
+
 // export const GetEnvelopes = () => {
 //     return axios({
 //         method: 'get',

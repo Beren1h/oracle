@@ -132,6 +132,14 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        [HttpGet, Route("transaction/dole/{id}")]
+        public IActionResult GetTransactionByQuery(ObjectId id)
+        {
+            var result = _transactions.Get(a => a.DoleId == id);
+
+            return Ok(result);
+        }
+
         [HttpDelete, Route("transaction/{id}")]
         public IActionResult DeleteTransaction(ObjectId id)
         {
@@ -147,6 +155,21 @@ namespace Web.Controllers
             var result1 = _transactions.Delete(id1);
 
             return Ok(result0 && result1);
+        }
+
+        [HttpDelete, Route("transaction")]
+        public IActionResult DeleteAllTransactions()
+        {
+            var id = new ObjectId("59ff380c830ee103e8d05e45");
+
+            var transactions = _transactions.Get(a => a._id != id);
+            
+            foreach (var transaction in transactions)
+            {
+                _transactions.Delete(transaction._id);
+            }
+
+            return Ok(true);
         }
     }
 }

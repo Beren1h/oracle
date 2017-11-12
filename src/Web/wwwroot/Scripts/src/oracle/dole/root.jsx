@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { GetContainers, GetTransaction } from '../api.js';
+import { GetContainers, GetTransaction, GetObjectId, PutTransaction, PostTransaction, GetTransactionDole } from '../api.js';
 import Envelopes from './envelopes.jsx';
 import Pending from './pending.jsx';
 
@@ -7,29 +7,38 @@ class Dole extends Component {
     constructor(props) {
         super(props);
 
-        console.log('root props = ', this.props);
-
         this.state = {
             parent: {},
+            doles: [],            
             envelopes: [],
             pendings: []
         };
 
         this.createPending = this.createPending.bind(this);
         this.removePending = this.removePending.bind(this);
+        this.GenerateObjectId = this.GenerateObjectId.bind(this);
         this.save = this.save.bind(this);
     }
 
-    componentWillMount() {
+    async componentWillMount() {
 
         GetTransaction(this.props.parentId)
             .then((response) => {
-                if (response.data.doleId){
-
-                }
+                // console.log('parent = ', response.data[0]);
                 this.setState({
-                    parent: response.data
-                })
+                    parent: response.data[0]
+                }, () => {
+                    if (this.state.parent.doleId){
+                        GetTransactionDole(this.state.parent.doleId)
+                            .then((response) => {
+                                this.setState({
+                                    doles: response.data
+                                }, () => {
+                                    // console.log(this.state.doles);
+                                })
+                            });
+                    }
+                });
             });
 
         GetContainers()
@@ -86,9 +95,76 @@ class Dole extends Component {
         });
     }
 
-    save() {
-        console.log('parent = ', this.state.parent);
-        console.log('save = ', this.state.pendings);
+    async GenerateObjectId(){
+        const response = await GetObjectId();
+        return response.data;
+    }
+
+    async save() {
+        const parent = Object.assign({}, this.state.parent);
+
+        if (parent.doleId){
+            await put(parent);
+        } else {
+            await post(parent);
+        }
+    }
+
+    async post(parent) {
+
+        return true;
+    }
+
+    async put(parent) {
+        //console.log('parent = ', this.state.parent);
+        //console.log('save = ', this.state.pendings);
+
+        //const parent = Object.assign({}, this.state.parent);
+        //console.log('parent dole id = ', parent.doleId);
+        
+        // if(parent.doleId){
+        //     return;
+        // }
+
+        //const id0Response = await GetObjectId();
+        //const id1Response = await GetObjectId();
+
+        const id0 = await this.GenerateObjectId();
+        const id1 = await this.GenerateObjectId();
+        const doleId = parent.doleId ? parent.doleId : await this.GenerateObjectId();
+
+        this.state.pendings.map((pending) => {
+            const transaction0 = {
+                _id: id0,
+                date: parent.date,
+                amount: pending.amount,
+                pairId: id1,
+                containerId: parent.containerId,
+                accounting: 'debit',
+                doleId: doleId,
+                pending: true
+            };
+            const transaction1 = {
+                _id: id1,
+                date: parent.date,
+                amount: pending.amount,
+                pairId: id0,
+                containerId: pending.envelope._id,
+                accounting: 'credit',
+                doleId: doleId,
+                pending: false
+            }
+            PutTransaction(transaction0, transaction1);
+        });
+
+        parent.doleId = doleId;
+
+        this.setState({
+            parnet: parent
+        }, () => {
+            PostTransaction(parent);
+        });
+
     }
 
     render() {
