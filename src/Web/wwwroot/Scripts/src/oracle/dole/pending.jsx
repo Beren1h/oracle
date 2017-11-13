@@ -8,8 +8,9 @@ class Envelopes extends Component {
             pendings: []
         };
 
-        this.removePending = this.removePending.bind(this);
+        this.hidePending = this.hidePending.bind(this);
         this.onChange = this.onChange.bind(this);
+        this.handleFocus = this.handleFocus.bind(this);
     }
 
     componentWillReceiveProps(nextProps){
@@ -22,9 +23,10 @@ class Envelopes extends Component {
         }
     }
 
-    removePending(index){
+    hidePending(id){
 
-        this.props.removePending(index);
+        //console.log(index, pending);
+        this.props.hidePending(id);
     }
 
     onChange(e, index){
@@ -38,16 +40,22 @@ class Envelopes extends Component {
         });
     }
 
+    handleFocus(e) {
+        e.target.select();
+    }
+
     render() {
         // console.log('render pendings = ', this.state.pendings);
         return <div>
             <h3>pendings</h3>
             {
                 this.state.pendings.map((pending, index) => {
-                    return <div key={index}>
-                        <a onClick={() => this.removePending(index)}>{pending.envelope.name}</a>
-                        <input type="text" onChange={(e) => this.onChange(e, index)} value={pending.amount} />
-                    </div>;
+                    if (pending.display){
+                        return <div key={index}>
+                            <a onClick={() => this.hidePending(pending.envelope._id)}>{pending.envelope.name}</a>
+                            <input type="text" onChange={(e) => this.onChange(e, index)} value={pending.amount} autoFocus={pending.focus} onFocus={this.handleFocus} />
+                        </div>;
+                    }
                 })
             }
         </div>;

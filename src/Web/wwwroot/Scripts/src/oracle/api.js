@@ -32,13 +32,32 @@ export const GetTransactionDole = (id) => {
     });
 };
 
-export const PutTransaction = (transaction0, transaction1) => {
+export const PutTransactionPair = (transaction0, transaction1) => {
     console.log('put = ', transaction0, transaction1);
     return axios({
         method: 'put',
         contentType: 'application/json',
         url: '/api/transaction/pair',
         data: [transaction0, transaction1]
+    });
+};
+
+export const PostTransactionPair = (transaction0, transaction1) => {
+    console.log('post = ', transaction0, transaction1);
+    return axios({
+        method: 'post',
+        contentType: 'application/json',
+        url: '/api/transaction/pair',
+        data: [transaction0, transaction1]
+    });
+}; 
+
+export const DeleteTransactionPair = (transaction0, transaction1) => {
+    console.log('delete = ', transaction0, transaction1);
+    return axios({
+        method: 'delete',
+        contentType: 'application/json',
+        url: '/api/transaction/pair/' + transaction0._id + '/' + transaction1._id
     });
 };
 

@@ -12,12 +12,20 @@ class Envelopes extends Component {
         return <div>
             <h3>envelopes</h3>
             {
-                this.props.containers.map((envelope, index) => {
-                    //console.log('map envelopes = ', envelope, index);
-                    return <div key={index}>
-                        <a onClick={() => this.props.createPending(index)}>{envelope.name}</a>
-                    </div>;
+                this.props.pendings.map((pending, index) => {
+                    if (!pending.display){
+                        return <div key={index}>
+                            <a onClick={() => this.props.displayPending(pending.envelope._id)}>{pending.envelope.name}</a>
+                        </div>;
+                    }
                 })
+                // this.props.containers.map((pending, index) => {
+                //     if (!pending.display){
+                //         return <div key={index}>
+                //             <a onClick={() => this.props.createPending(pending.envelope._id)}>{pending.envelope.name}</a>
+                //         </div>;
+                //     }
+                // })
             }
         </div>;
     }
