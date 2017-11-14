@@ -160,7 +160,8 @@ namespace Web.Controllers
         [HttpDelete, Route("transaction")]
         public IActionResult DeleteAllTransactions()
         {
-            var id = new ObjectId("59ff380c830ee103e8d05e45");
+            //var id = new ObjectId("59ff380c830ee103e8d05e45");
+            var id = new ObjectId("5a0ad8263450d303e8b1b7bd");
 
             var transactions = _transactions.Get(a => a._id != id);
             

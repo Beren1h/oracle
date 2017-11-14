@@ -62,11 +62,31 @@ export const DeleteTransactionPair = (transaction0, transaction1) => {
 };
 
 export const PostTransaction = (transaction) => {
+    console.log('post = ', transaction);
     return axios({
         method: 'post',
         contentType: 'application/json',
         url: '/api/transaction',
         data: transaction
+    });
+};
+
+export const PutTransaction = (transaction) => {
+    console.log('put = ', transaction);
+    return axios({
+        method: 'put',
+        contentType: 'application/json',
+        url: '/api/transaction',
+        data: transaction
+    });
+};
+
+export const DeleteTransaction = (transaction) => {
+    console.log('delete = ', transaction);
+    return axios({
+        method: 'delete',
+        contentType: 'application/json',
+        url: '/api/transaction/' + transaction._id
     });
 };
 
