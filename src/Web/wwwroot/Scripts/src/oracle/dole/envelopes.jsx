@@ -13,11 +13,11 @@ class Envelopes extends Component {
             <h3>envelopes</h3>
             {
                 this.props.pendings.map((pending, index) => {
-                    if (!pending.display){
-                        return <div key={index}>
-                            <a onClick={() => this.props.displayPending(pending.envelope._id)}>{pending.envelope.name}</a>
-                        </div>;
-                    }
+                    //if (!pending.display){
+                    return <div key={index}>
+                        <a onClick={() => this.props.displayPending(pending.envelope._id)}>{pending.envelope.name}</a>
+                    </div>;
+                    //}
                 })
                 // this.props.containers.map((pending, index) => {
                 //     if (!pending.display){

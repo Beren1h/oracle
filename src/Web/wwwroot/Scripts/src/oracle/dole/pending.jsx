@@ -15,12 +15,29 @@ class Envelopes extends Component {
 
     componentWillReceiveProps(nextProps){
         if (nextProps){
+            // nextProps.pendings.forEach((pending) => {
+            //     if (pending.focus){
+            //         console.log('set focus on ', pending.envelope.name);
+            //         console.log(document.getElementById(pending.envelope._id));
+            //     }
+            // });
             this.setState({
                 pendings: nextProps.pendings
             }, () => {
                 //console.log('receive pendings = ', this.state.pendings);
             });
         }
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        this.props.pendings.forEach((pending) => {
+            if (pending.focus){
+                const dom = document.getElementById(pending.envelope._id);
+                if (dom){
+                    dom.focus();
+                }
+            }
+        });
     }
 
     hidePending(id){
@@ -41,21 +58,24 @@ class Envelopes extends Component {
     }
 
     handleFocus(e) {
+        //console.log('SET FOCUS!!!');
         e.target.select();
     }
 
     render() {
-        // console.log('render pendings = ', this.state.pendings);
+        //console.log('render pendings = ', this.state.pendings);
+        //console.log('rendering pendings');
         return <div>
             <h3>pendings</h3>
             {
                 this.state.pendings.map((pending, index) => {
-                    if (pending.display){
-                        return <div key={index}>
-                            <a onClick={() => this.hidePending(pending.envelope._id)}>{pending.envelope.name}</a>
-                            <input type="text" onChange={(e) => this.onChange(e, index)} value={pending.amount} autoFocus={pending.focus} onFocus={this.handleFocus} />
-                        </div>;
-                    }
+                    //if (pending.display){
+                    //console.log(pending.envelope.name, pending.focus);
+                    return <div key={index}>
+                        <a onClick={() => this.hidePending(pending.envelope._id)}>{pending.envelope.name}</a>
+                        <input id={pending.envelope._id} type="text" onChange={(e) => this.onChange(e, index)} value={pending.amount} onFocus={this.handleFocus} />
+                    </div>;
+                    //}
                 })
             }
         </div>;
