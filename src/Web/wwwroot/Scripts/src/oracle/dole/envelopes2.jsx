@@ -15,7 +15,7 @@ class Envelopes extends Component {
             {
                 this.props.transactions.map((transaction, index) => {
                     let display = '';
-                    if (transaction.containerId != this.props.parent.containerId){
+                    if (transaction.containerId != this.props.containerId){
                         display = <div key={index}>
                             <a onClick={() => this.props.onDisplay(transaction)}>{transaction.envelope.name}</a>
                         </div>;

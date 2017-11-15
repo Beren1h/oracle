@@ -49,12 +49,19 @@ namespace Web.Controllers
             return View();
         }
 
-        [Route("dole/{id}")]
-        public IActionResult Dole(ObjectId id)
+        [Route("dole/{containerId}")]
+        public IActionResult Dole(ObjectId doleId, ObjectId containerId)
         {
+            if (doleId == ObjectId.Empty)
+            {
+                doleId = ObjectId.NewObjectId();
+                ViewBag.IsNew = true;
+            }
+
             ViewBag.Year = _settings.Year;
             ViewBag.Version = _settings.Version;
-            ViewBag.ParentId = id;
+            ViewBag.ContainerId = containerId;
+            ViewBag.DoleId = doleId;
 
             return View();
         }

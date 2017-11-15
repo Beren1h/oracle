@@ -90,6 +90,13 @@ export const DeleteTransaction = (transaction) => {
     });
 };
 
+export const GetDole = (id) => {
+    return axios({
+        method: 'get',
+        contentType: 'application/json',
+        url: '/api/dole/' + id
+    });
+};
 // export const GetEnvelopes = () => {
 //     return axios({
 //         method: 'get',

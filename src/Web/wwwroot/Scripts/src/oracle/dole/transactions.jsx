@@ -16,7 +16,7 @@ class Transaction extends Component {
     componentWillMount(){
         this.setState({
             transactions: this.props.transactions,
-            summary: this.summary(this.props.transactions, this.props.parent)
+            summary: this.summary(this.props.transactions, this.props.containerId, this.props.amount)
         });
     }
 
@@ -24,7 +24,7 @@ class Transaction extends Component {
         if (nextProps){
             this.setState({
                 transactions: nextProps.transactions,
-                summary: this.summary(nextProps.transactions, nextProps.parent)
+                summary: this.summary(nextProps.transactions, nextProps.containerId, nextProps.amount)
             }, () => {
                 //console.log('receive pendings = ', this.state.pendings);
             });
@@ -53,24 +53,24 @@ class Transaction extends Component {
 
         this.setState({
             transactions: transactions,
-            summary: this.summary(transactions, this.props.parent)
+            summary: this.summary(transactions, this.props.containerId, this.props.amount)
         }, () => {
             // console.log(total);
         });
     }
 
-    summary(transactions, parent){
+    summary(transactions, containerId, amount){
         let total = 0;
         for (let transaction of transactions){
-            if (transaction.containerId != parent.containerId){
+            if (transaction.containerId != containerId){
                 const amount = parseFloat(transaction.amount);
                 total += amount;
             }
         }
         return {
-            credit: parseFloat(parent.amount),
+            credit: parseFloat(amount),
             debit: total,
-            balance: parseFloat(parent.amount) - total
+            balance: parseFloat(amount) - total
         };
     }
 
@@ -87,7 +87,7 @@ class Transaction extends Component {
             {
                 this.state.transactions.map((transaction, index) => {
                     let display = '';
-                    if (transaction.containerId != this.props.parent.containerId){
+                    if (transaction.containerId != this.props.containerId){
                         display = <div key={index}>
                             <a onClick={() => this.props.onHide(transaction)}>{transaction.envelope.name}</a>
                             <input id={transaction.envelope._id} type="text" onChange={(e) => this.onChange(e, transaction)} value={transaction.amount} onFocus={this.handleFocus} />

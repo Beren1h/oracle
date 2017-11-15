@@ -15,14 +15,17 @@ namespace Web.Controllers
     {
         private readonly IDbCollection<Transaction> _transactions;
         private readonly IDbCollection<Container> _containers;
+        private readonly IDbCollection<Dole> _doles;
         private readonly AppSettings _settings;
 
         public ApiController(IDbCollection<Transaction> transactions,
             IDbCollection<Container> containers,
+            IDbCollection<Dole> doles,
             IOptions<AppSettings> settings)
         {
             _transactions = transactions;
             _containers = containers;
+            _doles = doles;
             _settings = settings.Value;
         }
 
@@ -37,7 +40,7 @@ namespace Web.Controllers
         public IActionResult GetContainers()
         {
             var result = _containers.Get(a => a._id != null);
- 
+
             return Ok(result);
         }
 
@@ -139,6 +142,24 @@ namespace Web.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet, Route("dole/{id}")]
+        public IActionResult GetDolw(ObjectId id)
+        {
+            var result = _doles.Get(a => a._id == id);
+
+            return Ok(result);
+        }
+
+        [HttpPut, Route("dole")]
+        public IActionResult GetDole([FromBody] Dole dole)
+        {
+            var result = _doles.Insert(dole);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
 
         [HttpDelete, Route("transaction/{id}")]
         public IActionResult DeleteTransaction(ObjectId id)

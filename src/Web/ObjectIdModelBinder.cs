@@ -15,7 +15,7 @@ namespace Web
 
             var value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-            var id = new ObjectId(value.FirstValue);
+            var id = (value.Length > 0 && value.FirstValue != "undefined") ? new ObjectId(value.FirstValue) : ObjectId.Empty;
 
             bindingContext.Result = ModelBindingResult.Success(id);
 

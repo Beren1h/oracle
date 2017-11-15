@@ -56,6 +56,8 @@ namespace Web
             //services.AddSingleton<IDbCollection<Assignment>, AssignmentCollection>(provider => new AssignmentCollection(db));
             services.AddSingleton<IDbCollection<Transaction>, TransactionCollection>(provider => new TransactionCollection(db));
             services.AddSingleton<IDbCollection<Container>, ContainerCollection>(provider => new ContainerCollection(db));
+            services.AddSingleton<IDbCollection<Dole>, DoleCollection>(provider => new DoleCollection(db));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
