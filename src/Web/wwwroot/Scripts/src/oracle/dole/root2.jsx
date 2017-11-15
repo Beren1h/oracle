@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-//import { GetContainers, GetTransaction, GetObjectId, PutTransactionPair, PostTransactionPair, DeleteTransactionPair, PostTransaction, GetTransactionDole } from '../api.js';
-import { GetContainers, GetTransaction, GetTransactionDole, GetObjectId, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
+import { GetContainers, GetTransactionDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
 import Envelopes from './envelopes2.jsx';
 import Transactions from './transactions.jsx';
+import Summary from './summary.jsx';
+import './dole.scss';
+
 
 class Dole extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            show: true,
             parent: {},
             transactions: [],
-            pendings: [],            
             envelopes: []
         };
 
@@ -21,10 +23,14 @@ class Dole extends Component {
         this.onDisplay = this.onDisplay.bind(this);
         this.onHide = this.onHide.bind(this);
         this.save = this.save.bind(this);
+        this.load = this.load.bind(this);
     }
 
     async componentWillMount(){
+        this.load();
+    }
 
+    async load(){
         let parent = {};
         let envelopes = [];
         let transactions = [];
@@ -45,21 +51,11 @@ class Dole extends Component {
         for (let envelope of envelopes) {
             const credit = transactions.find(t => t.containerId == envelope._id);
             if (credit){
-                //const debit = transactions.find(t => t.containerId == parent.containerId);
                 const debit = transactions.find(t => t.pairId == credit._id);
                 debit.verb = 'post';
-
                 credit.verb = 'post';
                 credit.focus = false;
                 credit.envelope = envelope;
-                // credit.dole = {
-                //     envelope: envelope,
-                //     focus: false
-                // };
-                //debit.verb = 'post';
-                //credit.verb = 'post';
-                //credit.envelope = envelope.name;
-                //console.log('credit/debit', credit, debit);
             } else {
                 const pair = await this.createTransactionPair(parent, envelope);
                 transactions.push(pair[0]);
@@ -67,15 +63,13 @@ class Dole extends Component {
             }
         }
 
-        //console.log('parent = ', parent);
-        //console.log('transactions = ', transactions);
-
         this.setState ({
             parent: parent, 
             transactions: transactions,
-            envelopes: envelopes
+            envelopes: envelopes,
+            show: true
         }, () => {
-            console.log('state transaction = ', this.state.transactions);
+            //console.log('state ', this.state.transactions);
         });
     }
 
@@ -107,10 +101,6 @@ class Dole extends Component {
             verb: 'ignore',
             envelope: envelope,
             focus: false
-            // dole: {
-            //     envelope: envelope,
-            //     focus: false
-            // }
         };
 
         return [transaction0, transaction1];
@@ -128,9 +118,6 @@ class Dole extends Component {
         
         for (let transaction of transactions){
             transaction.focus = false;
-            // if (transaction.dole){
-            //     transaction.dole.focus = false;
-            // }
         }
 
         let verb = '';
@@ -180,17 +167,11 @@ class Dole extends Component {
 
     getTransactionSlice(type){
         let matches = [];
-        //console.log(this.state.transactions);
         switch(type){
         case 'envelope':
-            // return this.state.transactions.filter(t => t.containerId != this.state.parent.containerId && 
-            //    (t.dole.verb == 'ignore' || t.dole.verb == 'delete'));
-
             matches = this.state.transactions.filter(t => t.verb == 'ignore' || t.verb == 'delete');
             break;
         case 'pending':
-            // return this.state.transactions.filter(t => t.containerId != this.state.parent.containerId && 
-            //     (t.dole.verb == 'put' || t.dole.verb == 'post'));
             matches = this.state.transactions.filter(t => t.verb == 'put' || t.verb == 'post');
             break;
         }
@@ -200,16 +181,10 @@ class Dole extends Component {
 
     save(){
         const transactions = this.state.transactions.slice(0);
-        //const parent = Object.assign({}, this.state.parent);
-        //const parent = {...this.state.parent};
 
         const put = transactions.filter(t => t.verb == 'put');
         const post = transactions.filter(t => t.verb == 'post');
         const del = transactions.filter(t => t.verb == 'delete');
-
-        console.log('put = ', put);
-        console.log('post = ', post);
-        console.log('del = ', del);
 
         for (let transaction of put){
             PutTransaction(transaction);
@@ -224,19 +199,25 @@ class Dole extends Component {
         }
 
         PostTransaction(this.state.parent);
+
+        this.setState({
+            show: false 
+        }, () => {
+            this.load();
+        });
     }
 
     render() {
-        //console.log('t = ', this.state.transactions);
-        return <div>
-            <h3>dole - root</h3>
-            <Envelopes parent={this.state.parent} transactions={this.getTransactionSlice('envelope')} onDisplay={this.onDisplay} />
-            <Transactions parent={this.state.parent} transactions={this.getTransactionSlice('pending')} onHide={this.onHide} />
-            <a onClick={this.save}>save</a>
-        </div>;
+        if (this.state.show){
+            return <div>
+                <Envelopes parent={this.state.parent} transactions={this.getTransactionSlice('envelope')} onDisplay={this.onDisplay} />
+                <Transactions parent={this.state.parent} transactions={this.getTransactionSlice('pending')} onHide={this.onHide} />
+                <a onClick={this.save}>save</a> 
+            </div>;
+        }
+
+        return <h1>saving</h1>;
     }
 }
 
 export default Dole;
-
-

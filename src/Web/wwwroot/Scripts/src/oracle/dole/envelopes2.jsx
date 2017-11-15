@@ -9,7 +9,7 @@ class Envelopes extends Component {
     }
 
     render() {
-        //console.log('envelope transactions = ', this.props.transactions);
+
         return <div>
             <h3>envelopes</h3>
             {
@@ -21,19 +21,10 @@ class Envelopes extends Component {
                         </div>;
                     }
                     return display;
-                    //}
                 })
-                // this.props.containers.map((pending, index) => {
-                //     if (!pending.display){
-                //         return <div key={index}>
-                //             <a onClick={() => this.props.createPending(pending.envelope._id)}>{pending.envelope.name}</a>
-                //         </div>;
-                //     }
-                // })
             }
         </div>;
     }
 }
 
 export default Envelopes;
-//(e) => this.onChange('amount', index, e)
