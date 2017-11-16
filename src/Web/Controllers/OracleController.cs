@@ -55,7 +55,6 @@ namespace Web.Controllers
             if (doleId == ObjectId.Empty)
             {
                 doleId = ObjectId.NewObjectId();
-                ViewBag.IsNew = true;
             }
 
             ViewBag.Year = _settings.Year;

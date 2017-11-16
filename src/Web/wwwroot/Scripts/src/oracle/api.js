@@ -97,6 +97,26 @@ export const GetDole = (id) => {
         url: '/api/dole/' + id
     });
 };
+
+export const PostDole = (dole) => {
+    return axios({
+        method: 'post',
+        contentType: 'application/json',
+        url: '/api/dole',
+        data: dole
+    });
+};
+
+export const PutDole = (dole) => {
+    return axios({
+        method: 'put',
+        contentType: 'application/json',
+        url: '/api/dole',
+        data: dole
+    });
+};
+
+
 // export const GetEnvelopes = () => {
 //     return axios({
 //         method: 'get',

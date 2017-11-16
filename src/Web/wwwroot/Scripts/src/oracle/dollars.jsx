@@ -17,7 +17,7 @@ class Envelopes extends Component {
     componentWillMount(){
         //console.log('dollars props = ', this.props);
         this.setState({
-            amount: this.props.initial
+            amount: this.props.value
         }, () => {
             //console.log('dollars state = ', this.state);
         });
@@ -28,11 +28,14 @@ class Envelopes extends Component {
     }
 
     onChange(e){
-        console.log(e.target.value);
+        const amount = e.target.value.replace(',', '').replace('$', '');
         this.setState({
-            amount: e.target.value.replace(',', '').replace('$', '')
+            amount: amount
         }, () => {
             //console.log('state workinf = ', this.state.amount, parseFloat(this.state.amount));
+            if (this.props.onChange){
+                this.props.onChange(amount, this.props.transaction);
+            }
         });
     }
 
@@ -43,7 +46,10 @@ class Envelopes extends Component {
         //     return;
         // }
 
-        this.props.callback(this.state.amount);
+        if (this.props.onBlur){
+            this.props.onBlur(this.state.amount);
+        }
+        
     }
 
     render() {

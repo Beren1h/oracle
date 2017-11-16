@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import NumberFormat from 'react-number-format';
+import Dollars from '../dollars.jsx';
 
 class Transaction extends Component {
     constructor(props) {
@@ -8,8 +10,9 @@ class Transaction extends Component {
             transactions: []
         };
 
+        //this.onChange = this.onChange.bind(this);
         this.onChange = this.onChange.bind(this);
-        this.handleFocus = this.handleFocus.bind(this);
+        //this.handleFocus = this.handleFocus.bind(this);
         this.summary = this.summary.bind(this);
     }
 
@@ -42,9 +45,27 @@ class Transaction extends Component {
         }
     }
 
-    onChange(e, transaction){
+    // onChange(e, transaction){
+    //     const transactions = this.state.transactions.slice(0);
+    //     const amount = e.target.value;
+        
+    //     const pair = transactions.find(t => t.pairId == transaction._id);
+
+    //     transaction.amount = amount;
+    //     pair.amount = amount;
+
+    //     this.setState({
+    //         transactions: transactions,
+    //         summary: this.summary(transactions, this.props.containerId, this.props.amount)
+    //     }, () => {
+    //         // console.log(total);
+    //     });
+    // }
+
+    onChange(amount, transaction){
+        //console.log(amount, transaction);
         const transactions = this.state.transactions.slice(0);
-        const amount = e.target.value;
+        //const amount = e.target.value;
         
         const pair = transactions.find(t => t.pairId == transaction._id);
 
@@ -74,28 +95,41 @@ class Transaction extends Component {
         };
     }
 
-    handleFocus(e) {
-        e.target.select();
-    }
+    // handleFocus(e) {
+    //     e.target.select();
+    // }
 
     render() {
-        return <div>
-            <h3>transactions</h3>
-            <h3>{this.state.summary.credit}</h3>
-            <h3>{this.state.summary.debit}</h3>
-            <h3>{this.state.summary.balance}</h3>
+        return <div className={'transactions'}>
+            <div className={'inputs'}>
             {
                 this.state.transactions.map((transaction, index) => {
                     let display = '';
                     if (transaction.containerId != this.props.containerId){
-                        display = <div key={index}>
+                        display = <div key={index} className={'input'}>
+                            {/* <input id={transaction.envelope._id} type="text" onChange={(e) => this.onChange(e, transaction)} value={transaction.amount} onFocus={this.handleFocus} /> */}
+                            <Dollars id={transaction.envelope._id} value={transaction.amount} transaction={transaction} onChange={this.onChange} />
                             <a onClick={() => this.props.onHide(transaction)}>{transaction.envelope.name}</a>
-                            <input id={transaction.envelope._id} type="text" onChange={(e) => this.onChange(e, transaction)} value={transaction.amount} onFocus={this.handleFocus} />
                         </div>;
+                        // display = <div key={index}>
+                        //     <a onClick={() => this.props.onHide(transaction)}>{transaction.envelope.name}</a>
+                        //     <input id={transaction.envelope._id} type="text" onChange={(e) => this.onChange(e, transaction)} value={transaction.amount} onFocus={this.handleFocus} />
+                        // </div>;
                     }
                     return display;
                 })
             }
+            </div>
+            <div className={'summary'}>
+                <NumberFormat 
+                    value={this.state.summary.balance} 
+                    displayType={'text'} 
+                    thousandSeparator={true} 
+                    prefix={'$'}
+                    decimalPrecision={2}
+                />
+                {/* <label>remaining</label> */}
+            </div>
         </div>;
     }
 }

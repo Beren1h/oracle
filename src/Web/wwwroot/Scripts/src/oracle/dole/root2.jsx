@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { GetContainers, GetDole, GetTransactionDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
+import { GetContainers, GetDole, PostDole, PutDole, GetTransactionDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
 import Envelopes from './envelopes2.jsx';
 import Transactions from './transactions.jsx';
 import Summary from './summary.jsx';
@@ -8,23 +8,19 @@ import './dole.scss';
 import Date from '../date.jsx';
 import Dollars from '../dollars.jsx';
 
-//import InputMask from 'react-input-mask';
-
-import NumberFormat from 'react-number-format';
-
 class Dole extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
             async: false,
-            date: '',
-            //mmdd: '',
-            amount: 0,
+            //date: '',
+            //amount: 0,
             show: true,
             parent: {},
             transactions: [],
-            envelopes: []
+            envelopes: [],
+            dole: {}
         };
 
         this.generateObjectId = this.generateObjectId.bind(this);
@@ -34,9 +30,6 @@ class Dole extends Component {
         this.onHide = this.onHide.bind(this);
         this.dateUpdate = this.dateUpdate.bind(this);
         this.dollarsUpdate = this.dollarsUpdate.bind(this);
-        // this.onChange = this.onChange.bind(this);
-        // this.onBlur = this.onBlur.bind(this);
-        // this.onFocus = this.onFocus.bind(this);
         this.save = this.save.bind(this);
         this.load = this.load.bind(this);
 
@@ -47,18 +40,9 @@ class Dole extends Component {
     }
 
     async load(){
-        //let parent = {};
-        //let date = '';
-        //let amount = 0;
-        //let mmdd = '';
         let envelopes = [];
         let transactions = [];
-        let dole = {
-            //_id:
-            //date: '',
-            //amount: 0,
-            //verb: ''
-        };
+        let dole = {};
 
         const getContainers = await GetContainers();
         envelopes = getContainers.data.filter(c => c.type == 'envelope');
@@ -67,42 +51,20 @@ class Dole extends Component {
         dole = getDole.data[0];
 
         if (dole){
-            //date = dole.date;
-            //amount = dole.amount;
             dole = dole;
-            dole.verb = 'put';
+            dole.verb = 'post';
         } else {
             dole = {
-                _id:  await this.generateObjectId(),
+                _id:  this.props.doleId,
                 date: moment(this.props.year + '-' + moment().format('MM-DD')).format('YYYY-MM-DD'),
                 amount: 0,
-                containerId: this.props.doleId,
+                containerId: this.props.containerId,
                 verb: 'put'
             };
-            //date = moment(this.props.year + '-' + moment().format('MM-DD')).format('YYYY-MM-DD');
         }
-
-        //console.log(date, amount);
-        //const getTransaction = await GetTransaction(this.props.parentId);
-        //parent = getTransaction.data[0];
-        
-        //if (!parent.doleId){
-        //    parent.doleId = await this.generateObjectId();
-        //} 
 
         const getTransactions = await GetTransactionDole(this.props.doleId);
         transactions = getTransactions.data;
-
-        // if (!this.props.isNew){
-        //     date = moment(transactions[0].date).format('MM-DD');
-        // } else {
-
-        // }
-
-        //date = !this.props.isNew ? moment(transactions[0].date).format('YYYY-MM-DD') : moment().format('YYYY-MM-DD');
-        //mmdd = moment(date).format('MM-DD');
-        
-        //console.log('date = ', date);
 
         for (let envelope of envelopes) {
             const credit = transactions.find(t => t.containerId == envelope._id);
@@ -113,19 +75,14 @@ class Dole extends Component {
                 credit.focus = false;
                 credit.envelope = envelope;
             } else {
-                const pair = await this.createTransactionPair(date, envelope);
+                const pair = await this.createTransactionPair(dole.date, envelope);
                 transactions.push(pair[0]);
                 transactions.push(pair[1]);
             }
         }
 
         this.setState ({
-            //parent: parent,
-            //containerId: this.props.containerId, 
-            date: date,
-            amount: amount,
             dole: dole,
-            //mmdd: mmdd,
             transactions: transactions,
             envelopes: envelopes,
             show: true,
@@ -243,6 +200,7 @@ class Dole extends Component {
 
     save(){
         const transactions = this.state.transactions.slice(0);
+        const dole = Object.assign({}, this.state.dole);
 
         const put = transactions.filter(t => t.verb == 'put');
         const post = transactions.filter(t => t.verb == 'post');
@@ -260,34 +218,50 @@ class Dole extends Component {
             DeleteTransaction(transaction);
         }
 
-        //PostTransaction(this.state.parent);
+        if (dole.verb == 'post'){
+            PostDole(dole)
+                .then(() => {
+                    this.setState({
+                        show: false,
+                        async: false
+                    }, () => {
+                        this.load();
+                    });
+                });
+        } else {
+            PutDole(dole)
+                .then(() => {
+                    const current = window.location.href;
+                    window.location.href = current + '?doleId=' + dole._id;
+                });
+        }
 
-        this.setState({
-            show: false,
-            async: false
-        }, () => {
-            this.load();
-        });
+
     }
 
     dateUpdate(date){
         const transactions = this.state.transactions.slice(0);
+        const dole = Object.assign({}, this.state.dole);
         
         for (let transaction of transactions){
             transaction.date = date;
         }
 
+        dole.date = date;
+
         this.setState({
             transactions: transactions,
-            date: date
+            dole: dole
         }, () => {
             //console.log('blur state = ', this.state);
         });
     };
 
     dollarsUpdate(amount){
+        const dole = Object.assign({}, this.state.dole);
+        dole.amount = amount;
         this.setState({
-            amount: amount
+            dole: dole
         });
     }
 
@@ -297,46 +271,40 @@ class Dole extends Component {
                 {
                     this.state.async &&
                     <div>
-                        <Date
-                            callback={this.dateUpdate}
-                            initial={this.state.date}
-                        />
-                        <Dollars
-                            callback={this.dollarsUpdate}
-                            initial={this.state.amount}
-                        />
-                        <Envelopes 
-                            containerId={this.props.containerId} 
-                            transactions={this.getTransactionSlice('envelope')} 
-                            onDisplay={this.onDisplay} 
-                        />
-                        <Transactions 
-                            containerId={this.props.containerId} 
-                            transactions={this.getTransactionSlice('pending')} 
-                            onHide={this.onHide} 
-                            amount={this.state.amount} 
-                        />
+                        <div className={'container'}>
+                            <div className={'heading'}>
+                            <label>date</label>
+                            <Date
+                                onBlur={this.dateUpdate}
+                                value={this.state.dole.date}
+                            />
+                            </div>
+                            <div className={'heading'}>
+                            <label>amount</label>
+                            <Dollars
+                                onBlur={this.dollarsUpdate}
+                                value={this.state.dole.amount}
+                            />
+                            </div>
+                            <div className={'save'}>
+                                <a onClick={this.save}>save</a>
+                            </div>
+                        </div>
+                        <div className={'container'}>
+                            <Envelopes 
+                                containerId={this.props.containerId} 
+                                transactions={this.getTransactionSlice('envelope')} 
+                                onDisplay={this.onDisplay} 
+                            />
+                            <Transactions 
+                                containerId={this.props.containerId} 
+                                transactions={this.getTransactionSlice('pending')} 
+                                onHide={this.onHide} 
+                                amount={this.state.dole.amount} 
+                            />
+                        </div>
                     </div>
                 }
-                {/* <InputMask 
-                    mask="99-99" 
-                    maskChar=" " 
-                    placeholder="MM-DD" 
-                    value={this.state.mmdd} 
-                    onFocus={this.onFocus} 
-                    onChange={this.onChange} 
-                    onBlur={this.onBlur} 
-                /> */}
-                {/* <NumberFormat 
-                    value={this.state.amount} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={'$'} 
-                    decimalPrecision={2} 
-                /> */}
-                {/* <Envelopes parent={this.state.parent} transactions={this.getTransactionSlice('envelope')} onDisplay={this.onDisplay} />
-                <Transactions parent={this.state.parent} transactions={this.getTransactionSlice('pending')} onHide={this.onHide} /> */}
-                <a onClick={this.save}>save</a>
             </div>;
         }
 

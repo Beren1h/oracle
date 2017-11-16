@@ -143,18 +143,45 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        [HttpGet, Route("dole")]
+        public IActionResult GetDole()
+        {
+            var result = _doles.Get(a => a._id != null);
+
+            return Ok(result);
+        }
+
         [HttpGet, Route("dole/{id}")]
-        public IActionResult GetDolw(ObjectId id)
+        public IActionResult GetDoleById(ObjectId id)
         {
             var result = _doles.Get(a => a._id == id);
 
             return Ok(result);
         }
 
+        [HttpDelete, Route("dole")]
+        public IActionResult DeleteDole()
+        {
+            foreach(var dole in _doles.Get(a => a._id != null))
+            {
+                _doles.Delete(dole._id);
+            }
+                        
+            return Ok(true);
+        }
+
         [HttpPut, Route("dole")]
-        public IActionResult GetDole([FromBody] Dole dole)
+        public IActionResult PutDole([FromBody] Dole dole)
         {
             var result = _doles.Insert(dole);
+
+            return Ok(result);
+        }
+
+        [HttpPost, Route("dole")]
+        public IActionResult PostDole([FromBody] Dole dole)
+        {
+            var result = _doles.Update(dole);
 
             return Ok(result);
         }
@@ -182,9 +209,9 @@ namespace Web.Controllers
         public IActionResult DeleteAllTransactions()
         {
             //var id = new ObjectId("59ff380c830ee103e8d05e45");
-            var id = new ObjectId("5a0ad8263450d303e8b1b7bd");
+            //var id = new ObjectId("5a0ad8263450d303e8b1b7bd");
 
-            var transactions = _transactions.Get(a => a._id != id);
+            var transactions = _transactions.Get(a => a._id != null);
             
             foreach (var transaction in transactions)
             {
