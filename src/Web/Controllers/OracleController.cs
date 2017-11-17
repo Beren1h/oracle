@@ -75,12 +75,12 @@ namespace Web.Controllers
             return View();
         }
 
-        [Route("envelope/{id}")]
-        public IActionResult Envelope(ObjectId id)
+        [Route("envelope/{containerId}")]
+        public IActionResult Envelope(ObjectId containerId)
         {
             ViewBag.Year = _settings.Year;
             ViewBag.Version = _settings.Version;
-            ViewBag.ContainerId = id;
+            ViewBag.ContainerId = containerId;
 
             return View();
         }

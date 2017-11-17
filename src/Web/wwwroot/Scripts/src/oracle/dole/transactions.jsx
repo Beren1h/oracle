@@ -36,7 +36,7 @@ class Transaction extends Component {
         for (let transaction of this.props.transactions){
             if (transaction.focus){
                 const dom = document.getElementById(transaction.envelope._id);
-                console.log('dom = ', dom, transaction);
+                //console.log('dom = ', dom, transaction);
                 if (dom){
                     dom.focus();
                 }

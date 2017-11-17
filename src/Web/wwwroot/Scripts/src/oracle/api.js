@@ -27,7 +27,7 @@ const route = {
     transaction: {
         baseline: '/api/transaction',
         dole: '/api/transaction/dole',
-        envelope: 'api/transaction/envelope'
+        container: '/api/transaction/container'
     },
     container: {
         baseline: '/api/container'
@@ -41,7 +41,7 @@ const route = {
 };
 
 export const DELETE = {
-    props: props.delete(),
+    props: Object.assign({}, props.delete()),
     transaction: (document) => {
         DELETE.propd.url = route.transaction.baseline + '/' + document._id;
         return axios(DELETE.props);
@@ -49,42 +49,43 @@ export const DELETE = {
 };
 
 export const POST = {
-    props: props.post(),
+    props: Object.assign({}, props.post()),
     transaction: (document) => {
-        POST.propd.url = route.transaction.baseline;
+        POST.props.url = route.transaction.baseline;
         POST.props.data = document;
         return axios(POST.props);
     },
     dole: (document) => {
-        POST.propd.url = route.dole.baseline;
+        POST.props.url = route.dole.baseline;
         POST.props.data = document;
         return axios(POST.props);
     }    
 };
 
 export const PUT = {
-    props: props.put(),
+    props: Object.assign({}, props.put()),
     transaction: (document) => {
-        PUT.propd.url = route.transaction.baseline;
+        PUT.props.url = route.transaction.baseline;
         PUT.props.data = document;
+        console.log('PUT = ', PUT.props, document);
         return axios(PUT.props);
     },
     dole: (document) => {
-        PUT.propd.url = route.dole.baseline;
+        PUT.props.url = route.dole.baseline;
         PUT.props.data = document;
         return axios(PUT.props);
     }    
 };
 
 export const GET = {
-    props: props.get(),
+    props: Object.assign({}, props.get()),
     transaction: (id, by) => {
         switch(by){
         case ('dole'):
             GET.props.url = route.transaction.dole + '/' + id;
             break;
-        case 'envelope':
-            GET.props.url = route.transaction.envelope + '/' + id;
+        case 'container':
+            GET.props.url = route.transaction.container + '/' + id;
             break;            
         default:
             GET.props.url = route.transaction.baseline + '/' + id;

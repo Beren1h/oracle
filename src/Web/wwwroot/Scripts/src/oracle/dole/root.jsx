@@ -249,7 +249,7 @@ class Dole extends Component {
         }
         
         const now = moment();
-        console.log(now.isBefore(date));
+        //console.log(now.isBefore(date));
         dole.date = date;
 
         this.setState({
