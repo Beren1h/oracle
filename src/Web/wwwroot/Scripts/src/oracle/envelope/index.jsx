@@ -7,7 +7,7 @@ const envelopes = (props) => {
     //console.log('accounts version = ', props.version);
     return (
         <div>
-            <h1>envelope</h1>
+            <Envelope year={props.year} containerId={props.container} />
         </div>
     );
 };

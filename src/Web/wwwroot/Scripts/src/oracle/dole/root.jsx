@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { GetContainers, GetDole, PostDole, PutDole, GetTransactionDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
+// import { GET, PUT, POST, DELETE, GetContainers, GetDole, PostDole, PutDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
+import { GET, PUT, POST, DELETE } from '../api.js';
 import Envelopes from './envelopes.jsx';
 import Transactions from './transactions.jsx';
 import moment from 'moment';
@@ -37,14 +38,25 @@ class Dole extends Component {
     }
 
     async load(){
+
+        //console.log(Get.transaction.dole(9));
+        //console.log();
+        //GetTransaction(9, 'dole');
+        //const x = get.transaction();
+        //console.log(x);
+        //console.log(await GET.container());
+
+
         let envelopes = [];
         let transactions = [];
         let dole = {};
 
-        const getContainers = await GetContainers();
+        //const getContainers = await GetContainers();
+        const getContainers = await GET.container();
         envelopes = getContainers.data.filter(c => c.type == 'envelope');
 
-        const getDole = await GetDole(this.props.doleId);
+        //const getDole = await GetDole(this.props.doleId);
+        const getDole = await GET.dole(this.props.doleId);
         dole = getDole.data[0];
 
         if (dole){
@@ -60,7 +72,8 @@ class Dole extends Component {
             };
         }
 
-        const getTransactions = await GetTransactionDole(this.props.doleId);
+        //const getTransactions = await GetTransaction(this.props.doleId, 'dole');
+        const getTransactions = await GET.transaction(this.props.doleId, 'dole');
         transactions = getTransactions.data;
 
         for (let envelope of envelopes) {
@@ -108,7 +121,8 @@ class Dole extends Component {
     }
 
     async generateObjectId(){
-        const response = await GetObjectId();
+        // const response = await GetObjectId();
+        const response = await GET.objectId();
         return response.data;
     }
 
@@ -189,19 +203,23 @@ class Dole extends Component {
         }
 
         for (let transaction of put){
-            PutTransaction(transaction);
+            //PutTransaction(transaction);
+            PUT.transaction(transaction);
         }
 
         for (let transaction of post){
-            PostTransaction(transaction);
+            //PostTransaction(transaction);
+            POST.transaction(transaction);
         }
 
         for (let transaction of del){
-            DeleteTransaction(transaction);
+            //DeleteTransaction(transaction);
+            DELETE.transaction(transaction);
         }
 
         if (dole.verb == 'post'){
-            PostDole(dole)
+            //PostDole(dole)
+            POST.dole(dole)
                 .then(() => {
                     this.setState({
                         show: false,
@@ -211,7 +229,8 @@ class Dole extends Component {
                     });
                 });
         } else {
-            PutDole(dole)
+            PUT.dole(dole)
+            //PutDole(dole)
                 .then(() => {
                     const current = window.location.href;
                     window.location.href = current + '?doleId=' + dole._id;
