@@ -47,7 +47,7 @@ class Envelopes extends Component {
             return;
         }
 
-        this.props.callback(date);
+        this.props.onBlur(date);
     }
 
     render() {

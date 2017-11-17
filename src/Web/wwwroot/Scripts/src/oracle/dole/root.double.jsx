@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { GetContainers, GetDole, PostDole, PutDole, GetTransactionDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
-import Envelopes from './envelopes2.jsx';
+import Envelopes from './envelopes.jsx';
 import Transactions from './transactions.jsx';
-import Summary from './summary.jsx';
 import moment from 'moment';
 import './dole.scss';
 import Date from '../date.jsx';
@@ -14,8 +13,6 @@ class Dole extends Component {
 
         this.state = {
             async: false,
-            //date: '',
-            //amount: 0,
             show: true,
             parent: {},
             transactions: [],
@@ -273,18 +270,18 @@ class Dole extends Component {
                     <div>
                         <div className={'container'}>
                             <div className={'heading'}>
-                            <label>date</label>
-                            <Date
-                                onBlur={this.dateUpdate}
-                                value={this.state.dole.date}
-                            />
+                                <label>date</label>
+                                <Date
+                                    onBlur={this.dateUpdate}
+                                    value={this.state.dole.date}
+                                />
                             </div>
                             <div className={'heading'}>
-                            <label>amount</label>
-                            <Dollars
-                                onBlur={this.dollarsUpdate}
-                                value={this.state.dole.amount}
-                            />
+                                <label>amount</label>
+                                <Dollars
+                                    onBlur={this.dollarsUpdate}
+                                    value={this.state.dole.amount}
+                                />
                             </div>
                             <div className={'save'}>
                                 <a onClick={this.save}>save</a>

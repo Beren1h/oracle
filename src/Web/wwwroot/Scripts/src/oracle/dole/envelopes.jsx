@@ -9,27 +9,23 @@ class Envelopes extends Component {
     }
 
     render() {
-        return <div>
-            <h3>envelopes</h3>
-            {
-                this.props.pendings.map((pending, index) => {
-                    //if (!pending.display){
-                    return <div key={index}>
-                        <a onClick={() => this.props.displayPending(pending.envelope._id)}>{pending.envelope.name}</a>
-                    </div>;
-                    //}
-                })
-                // this.props.containers.map((pending, index) => {
-                //     if (!pending.display){
-                //         return <div key={index}>
-                //             <a onClick={() => this.props.createPending(pending.envelope._id)}>{pending.envelope.name}</a>
-                //         </div>;
-                //     }
-                // })
-            }
+
+        return <div className={'envelopes'}>
+            <div className={'inputs'}>
+                {
+                    this.props.transactions.map((transaction, index) => {
+                        let display = '';
+                        if (transaction.containerId != this.props.containerId){
+                            display = <div key={index} className={'input'}>
+                                <a onClick={() => this.props.onDisplay(transaction)}>{transaction.envelope.name}</a>
+                            </div>;
+                        }
+                        return display;
+                    })
+                }
+            </div>
         </div>;
     }
 }
 
 export default Envelopes;
-//(e) => this.onChange('amount', index, e)

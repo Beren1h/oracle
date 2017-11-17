@@ -1,5 +1,5 @@
 import React from 'react';
-import Dole from './root2.jsx';
+import Dole from './root.jsx';
 
 const dole = (props) => {
     //console.log(props);
@@ -11,7 +11,6 @@ const dole = (props) => {
             <Dole 
                 containerId = {props.containerId} 
                 doleId = {props.doleId} 
-                isNew = {props.isNew} 
                 year = {props.year} 
             />
         </div>

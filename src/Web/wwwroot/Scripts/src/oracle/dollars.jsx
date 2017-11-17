@@ -15,7 +15,6 @@ class Envelopes extends Component {
     }
 
     componentWillMount(){
-        //console.log('dollars props = ', this.props);
         this.setState({
             amount: this.props.value
         }, () => {
@@ -32,7 +31,6 @@ class Envelopes extends Component {
         this.setState({
             amount: amount
         }, () => {
-            //console.log('state workinf = ', this.state.amount, parseFloat(this.state.amount));
             if (this.props.onChange){
                 this.props.onChange(amount, this.props.transaction);
             }
@@ -40,20 +38,14 @@ class Envelopes extends Component {
     }
 
     onBlur(e){
-        // const date = moment(this.state.year + '-' + e.target.value).format('YYYY-MM-DD');
-
-        // if (date == 'Invalid date'){
-        //     return;
-        // }
-
         if (this.props.onBlur){
             this.props.onBlur(this.state.amount);
         }
-        
     }
 
     render() {
-        return <NumberFormat 
+        return <NumberFormat
+            id={this.props.id}
             value={this.state.amount} 
             displayType={'input'} 
             thousandSeparator={true} 

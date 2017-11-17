@@ -36,7 +36,6 @@ class Transaction extends Component {
         for (let transaction of this.props.transactions){
             if (transaction.focus){
                 const dom = document.getElementById(transaction.envelope._id);
-                console.log('dom = ', dom, transaction);
                 if (dom){
                     dom.focus();
                 }
@@ -46,8 +45,10 @@ class Transaction extends Component {
 
     onChange(amount, transaction){
         const transactions = this.state.transactions.slice(0);
+        const pair = transactions.find(t => t.pairId == transaction._id);
 
         transaction.amount = amount;
+        pair.amount = amount;
 
         this.setState({
             transactions: transactions,

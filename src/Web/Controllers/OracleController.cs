@@ -65,5 +65,25 @@ namespace Web.Controllers
             return View();
         }
 
+        [Route("account/{id}")]
+        public IActionResult Account(ObjectId id)
+        {
+            ViewBag.Year = _settings.Year;
+            ViewBag.Version = _settings.Version;
+            ViewBag.ContainerId = id;
+
+            return View();
+        }
+
+        [Route("envelope/{id}")]
+        public IActionResult Envelope(ObjectId id)
+        {
+            ViewBag.Year = _settings.Year;
+            ViewBag.Version = _settings.Version;
+            ViewBag.ContainerId = id;
+
+            return View();
+        }
+
     }
 }

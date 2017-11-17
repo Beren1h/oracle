@@ -13,7 +13,11 @@
     <div id="entry"></div>
     <script>
     ReactDOM.render(
-        React.createElement(Components.Accounts, { year: "@ViewBag.Year", version: "@ViewBag.Version" }),
+        React.createElement(Components.Account, {
+            year: "@ViewBag.Year",
+            version: "@ViewBag.Version",
+            containerId: "@ViewBag.ContainerId"
+        }),
         document.getElementById('entry')
     );
     </script>

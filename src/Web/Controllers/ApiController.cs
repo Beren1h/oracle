@@ -61,6 +61,17 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        [HttpDelete, Route("container")]
+        public IActionResult DeleteContainer()
+        {
+            foreach (var container in _containers.Get(a => a._id != null))
+            {
+                _containers.Delete(container._id);
+            }
+
+            return Ok(true);
+        }
+
         [HttpPut, Route("transaction/pair")]
         public IActionResult CreateTransaction([FromBody] Transaction[] transactions)
         {
@@ -136,9 +147,17 @@ namespace Web.Controllers
         }
 
         [HttpGet, Route("transaction/dole/{id}")]
-        public IActionResult GetTransactionByQuery(ObjectId id)
+        public IActionResult GetTransactionByDole(ObjectId id)
         {
             var result = _transactions.Get(a => a.DoleId == id);
+
+            return Ok(result);
+        }
+
+        [HttpGet, Route("transaction/container/{id}")]
+        public IActionResult GetTransactionByContainer(ObjectId id)
+        {
+            var result = _transactions.Get(a => a.ContainerId == id);
 
             return Ok(result);
         }

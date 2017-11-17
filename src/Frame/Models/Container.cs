@@ -11,6 +11,7 @@ namespace Frame.Models
     {
         public ObjectId _id { get; set; }
         public ContainerType Type { get; set; }
+        public ObjectId ParentId { get; set; }
         public string Name { get; set; }
     }
 

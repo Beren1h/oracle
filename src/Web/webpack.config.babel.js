@@ -1,4 +1,5 @@
 ﻿const path = require('path');
+const WebpackNotifierPlugin = require('webpack-notifier');
 
 module.exports = {
     entry: './wwwroot/Scripts/src/entry.js',
@@ -6,6 +7,11 @@ module.exports = {
         path: path.join(__dirname, '/wwwroot/Scripts'),
         filename: 'bundle.js'
     },
+    plugins: [
+        new WebpackNotifierPlugin({
+            title: 'Webpack'
+        }),
+    ],
     module: {
         rules: [
             {
