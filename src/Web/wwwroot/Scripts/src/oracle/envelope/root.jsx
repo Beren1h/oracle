@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { GET } from '../api.js';
 import Date from '../date.jsx';
 import Dollars from '../dollars.jsx';
+import { SortByAlpha } from '../helper.js';
+import moment from 'moment';
+import './envelope.scss';
 
 class Envelope extends Component {
     constructor(props) {
@@ -9,7 +12,8 @@ class Envelope extends Component {
 
         this.state = {
             async: false,
-            transactions: []
+            transactions: [],
+            rows: [],
         };
 
         this.load = this.load.bind(this);
@@ -22,6 +26,23 @@ class Envelope extends Component {
     async load(){
         const getTransactions = await GET.transaction(this.props.containerId, 'container');
         const transactions = getTransactions.data;
+
+        transactions.sort((a, b) => SortByAlpha(a.date, b.date));
+
+        let balance = 0;
+
+
+         for (let transaction of transactions){
+             if (transaction.accounting == 'debit'){
+                 balance = balance - transaction.amount;
+             } else {
+                 balance = balance + transaction.amount;
+        
+             }
+             console.log(transaction.amount, transaction.accounting, balance);
+             transaction.balance = balance;
+         }
+
         
         this.setState({
             transactions: transactions
@@ -31,27 +52,37 @@ class Envelope extends Component {
 
 
     render() {
-        return <div>
-            {
-                this.state.transactions.map((transaction, index) => {
-                    return <div key={index}>
-                        <div>{transaction.date}</div>
-                        {
-                            transaction.accounting == 'debit' ?
-                                <div>
-                                    <div>debit</div>
-                                    <div>x</div>
-                                </div> :
-                                <div>
-                                    <div>x</div>
-                                    <div>credit</div>
-                                </div>
-                                
-                        }
-                        <div>balance</div>
-                    </div>;
-                })
-            }
+        return <div className="containerx">
+            <div className="head">
+                range
+            </div>
+            <div className="body">
+                <div className="ledger">
+                {
+                    this.state.transactions.map((transaction, index) => {
+                        return <div key={index} className="row">
+                            <Date value={transaction.date} display="text" />
+                            {
+                                transaction.accounting == 'debit' ?
+                                    <div>
+                                        <Dollars value={transaction.amount} display="text" />
+                                        <span>x</span>
+                                    </div> :
+                                    <div>
+                                        <span>x</span>
+                                        <Dollars value={transaction.amount} display="text" />
+                                    </div>
+                                    
+                            }
+                            <Dollars value={transaction.balance} display="text" />
+                        </div>;
+                    })
+                }
+                </div>
+                <div className="input">
+                    form
+                </div>
+            </div>
         </div>;
     }
 }

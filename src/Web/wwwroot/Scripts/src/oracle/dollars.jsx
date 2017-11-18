@@ -16,7 +16,8 @@ class Envelopes extends Component {
 
     componentWillMount(){
         this.setState({
-            amount: this.props.value
+            amount: this.props.value,
+            display: this.props.display ? this.props.display : 'input'
         }, () => {
             //console.log('dollars state = ', this.state);
         });
@@ -47,7 +48,7 @@ class Envelopes extends Component {
         return <NumberFormat
             id={this.props.id}
             value={this.state.amount} 
-            displayType={'input'} 
+            displayType={this.state.display} 
             thousandSeparator={true} 
             prefix={'$'} 
             decimalPrecision={2}

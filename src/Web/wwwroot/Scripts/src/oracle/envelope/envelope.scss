@@ -1,0 +1,22 @@
+@import '../variables';
+@import '../index';
+
+.containerx {
+    display: flex;
+    flex-direction: column;
+    & .head {
+        width: 100%;
+    }
+    & .body {
+        display: flex;
+        flex-direction: row;
+        & .ledger {
+            display: grid;
+            grid-template-rows: 20% 20% 20% 40%;
+            width: 80%;
+            & .row {
+                background-color: blue;
+            }
+        }
+    }
+}

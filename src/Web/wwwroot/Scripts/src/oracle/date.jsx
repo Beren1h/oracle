@@ -9,7 +9,8 @@ class Envelopes extends Component {
         this.state = {
             year: '',
             date: '',
-            mmdd: ''
+            mmdd: '',
+            display: 'input'
         };
 
         this.onChange = this.onChange.bind(this);
@@ -19,12 +20,13 @@ class Envelopes extends Component {
 
     componentWillMount(){
         //console.log('date props = ', this.props);
-        const m = moment(this.props.initial);
+        const m = moment(this.props.value);
 
         this.setState({
             year: m.format('YYYY'),
             date: m.format('YYYY-MM-DD'),
-            mmdd: m.format('MM-DD')
+            mmdd: m.format('MM-DD'),
+            display: this.props.display ? this.props.display : 'input'
         }, () => {
             //console.log('date state = ', this.state);
         });
@@ -51,15 +53,21 @@ class Envelopes extends Component {
     }
 
     render() {
-        return <InputMask 
-            mask="99-99" 
-            maskChar=" " 
-            placeholder="MM-DD"
-            value={this.state.mmdd} 
-            onFocus={this.onFocus} 
-            onChange={this.onChange} 
-            onBlur={this.onBlur} 
-        />;
+        if (this.state.display == 'input'){
+            return <InputMask 
+                mask="99-99" 
+                maskChar=" " 
+                placeholder="MM-DD"
+                value={this.state.mmdd} 
+                onFocus={this.onFocus} 
+                onChange={this.onChange} 
+                onBlur={this.onBlur} 
+            />;
+        } else {
+            return <div>
+                {this.state.mmdd}
+            </div>;
+        }
     }
 }
 
