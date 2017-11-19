@@ -17,6 +17,7 @@ class Envelope extends Component {
         };
 
         this.load = this.load.bind(this);
+        this.makeGrid = this.makeGrid.bind(this);
     }
 
     async componentWillMount(){
@@ -50,40 +51,94 @@ class Envelope extends Component {
 
     }
 
+    makeGrid(){
+        const grid = [];
+
+        for (let transaction of this.state.transactions){
+            const item = {
+                date: transaction.date,
+                balance: transaction.balance
+            };
+
+            if (transaction.accounting == 'debit'){
+                item.credit = 'x',
+                item.debit = transaction.amount;
+            } else {
+                item.debit = 'x',
+                item.credit = transaction.amount;
+            }
+        }
+
+        return <div className="box ledger">
+            {
+                this.makeA()
+            }
+        </div>;
+    }
 
     render() {
-        return <div className="containerx">
-            <div className="head">
-                range
-            </div>
-            <div className="body">
-                <div className="ledger">
-                {
-                    this.state.transactions.map((transaction, index) => {
-                        return <div key={index} className="row">
-                            <Date value={transaction.date} display="text" />
-                            {
-                                transaction.accounting == 'debit' ?
-                                    <div>
-                                        <Dollars value={transaction.amount} display="text" />
-                                        <span>x</span>
-                                    </div> :
-                                    <div>
-                                        <span>x</span>
-                                        <Dollars value={transaction.amount} display="text" />
-                                    </div>
-                                    
-                            }
-                            <Dollars value={transaction.balance} display="text" />
-                        </div>;
-                    })
-                }
-                </div>
-                <div className="input">
-                    form
-                </div>
-            </div>
-        </div>;
+        return <div className="envelope">
+                <div className="box range">range</div>
+                    {/* <div className="box ledger">
+                        <div className="row">
+                            <div>date</div>
+                            <div className="accounting">
+                                <div>c</div>
+                                <div>d</div>
+                            </div>
+                            <div>balance</div>
+                        </div>
+                        <div className="row">
+                        </div>
+                    </div> */}
+                    <div className="box ledger">
+                        <div className="heading">date</div>
+                        <div className="heading">debit</div>
+                        <div className="heading">credit</div>
+                        <div className="heading">balance</div>
+                        {
+                            this.state.transactions.map((transaction) => {
+                                const grid = [];
+                                grid.push (<Date className="date" value={transaction.date} display="text" />);
+                                if (transaction.accounting == 'debit'){
+                                    grid.push (<Dollars value={transaction.amount} display="text" />);
+                                    grid.push (<div></div>);
+                                } else {
+                                    grid.push (<div></div>);
+                                    grid.push (<Dollars value={transaction.amount} display="text" />);
+                                }
+                                grid.push(<Dollars className="balance" value={transaction.balance} display="text" />);
+                                return grid;
+                            })
+                        }
+                    </div>                    
+                <div className="box form">form</div>
+            </div>;
+    //     return <div className="containerx">
+    //         <div className="header">
+    //             range
+    //         </div>
+    //         <div className="ledger">
+    //         {
+    //             this.state.transactions.map((transaction, index) => {
+    //                 return <div key={index} className="row">
+    //                     <Date className="date" value={transaction.date} display="text" />
+    //                     {
+    //                         transaction.accounting == 'debit' ?
+    //                                 <Dollars className="debit" value={transaction.amount} display="text" />
+    //                                 :
+    //                                 <Dollars className="credit" value={transaction.amount} display="text" />
+                                
+    //                     }
+    //                     <Dollars className="balance" value={transaction.balance} display="text" />
+    //                 </div>;
+    //             })
+    //         }
+    //         </div>
+    //         <div className="input">
+    //             form
+    //         </div>
+    //     </div>;
     }
 }
 

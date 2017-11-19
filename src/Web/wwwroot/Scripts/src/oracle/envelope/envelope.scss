@@ -1,22 +1,153 @@
 @import '../variables';
 @import '../index';
 
-.containerx {
+
+.envelope {
+    display: grid;
+    width: 50%;
+    grid-template-columns: 100%;
+    grid-template-areas: "range range"
+                         "ledger form";
+
+}
+
+.range {
+    grid-area: range;
+}
+
+.ledger {
+    grid-area: ledger;
     display: flex;
     flex-direction: column;
-    & .head {
+    display: grid;
+    grid-template-columns: 15% 30% 30% 25%;
+    justify-items: end;
+    & div, span {
+        padding: 0 10px 0 0 ;
+    }
+    & .heading {
+        font-size: 18px;
+        justify-self: end;
         width: 100%;
+        background-color: purple;
+        margin: 0 0 10px 0;
+        text-align: right;
+        border-bottom: 1px solid darkorchid;
     }
-    & .body {
-        display: flex;
-        flex-direction: row;
-        & .ledger {
-            display: grid;
-            grid-template-rows: 20% 20% 20% 40%;
-            width: 80%;
-            & .row {
-                background-color: blue;
-            }
-        }
-    }
+    // & .row {
+    //     display: grid;
+    //     grid-template-columns: 20% 60% 20%;
+    //     & .accounting {
+    //         //display: grid;
+    //         //grid-template-columns: 50% 50%;
+    //         display: flex;
+    //         flex-direction: row;
+
+    //     }
+    // }
 }
+
+.form {
+    grid-area: form;
+}
+
+
+.box {
+    background-color: #444;
+    color: #fff;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 1px;
+    font-size: 150%;
+  }
+
+// .header {
+//     background-color: purple;
+//     grid-area: header;
+// }
+
+// .ledger {
+//     grid-area: ledger;
+// }
+
+// .input {
+//     grid-area: input;
+// }
+
+// .date {
+//     grid-area: date;
+// }
+
+// .debit {
+//     grid-area: debit;
+// }
+
+// .credit {
+//     grid-area: credit;
+// }
+
+// .balance {
+//     grid-area: balance;
+// }
+
+// .containerx {
+//     display: grid;
+//     grid-gap: 10px;
+//     grid-template-columns: 25% 25% 25%;
+//     grid-template-areas: "header header header"
+//                          "ledger ...... input"; 
+//     & .ledger {
+//         & .row {
+//             display: grid;
+//             grid-template-areas: "date debit ...... balance"
+//                                  "date ..... credit balance"
+//         }
+//     }
+// }
+
+
+// .containerx {
+//     display: flex;
+//     flex-direction: column;
+//     & .head {
+//         width: 100%;
+//     }
+//     & .body {
+//         display: flex;
+//         flex-direction: row;
+//         & .ledger {
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: flex-end;
+//             width: 80%;
+//             & .row {
+//                 // display: flex;
+//                 // flex-direction: row;
+//                 // justify-content: flex-end;
+//                 display: grid;
+//                 grid-template-columns: 10% 60% 30%;
+//                 background-color: blue;
+//                 margin: 5px;
+//                 // & div, span {
+//                 //     justify-self: end;
+//                 // }
+//                 & .dollars {
+//                     display: flex;
+//                     flex-direction: row;
+//                     align-content: center;
+//                     // display: grid;
+//                     // grid-template-columns: 50% 50%;
+//                     & span {
+//                         background-color:green;
+//                         display: block;
+//                         padding: 10px;
+//                         //justify-self: end;
+//                     }
+//                     & span:first-child {
+//                         background-color:yellow;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
