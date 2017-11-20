@@ -39,9 +39,6 @@ class Envelope extends Component {
         this.addTransaction = this.addTransaction.bind(this);
         this.addAmount = this.addAmount.bind(this);
         this.addDate = this.addDate.bind(this);
-        this.editAmountClick = this.editAmountClick.bind(this);
-        //this.editDateFocus = this.editDate.bind(this);
-        //this.onClick = this.onClick.bind(this);
     }
 
     async componentWillMount(){
@@ -68,7 +65,6 @@ class Envelope extends Component {
         if (!this.state.range.begin){
             range = {
                 begin: moment().subtract(14, 'days').format('YYYY-MM-DD'),
-                //begin: this.props.year + '-01-01',
                 end: this.props.year + '-12-31'
             };
         } else {
@@ -83,13 +79,11 @@ class Envelope extends Component {
                 balance = balance + transactions[i].amount;
             }
             transactions[i].balance = balance;
-            //transactions[i].theme = 'light';
             theme = 'light';
 
             let current = moment(transactions[i].date);
             
             if (i % 2 != 0){
-                //transactions[i].theme = 'dark';
                 theme = 'dark';
             }
 
@@ -98,15 +92,10 @@ class Envelope extends Component {
             }
 
             transactions[i].theme = theme;
-            //transactions[i].include = false;
 
             if (current.isBetween(range.begin, range.end, null, '[]')){
                 transactions[i].include = true;
             }
-            // if (current.isSameOrAfter(now) && once == 0){
-            //     once = 1;
-            //     index = i;
-            // }
         }
        
         this.setState({
@@ -138,8 +127,6 @@ class Envelope extends Component {
             range.end = date;
         }
 
-        //console.log('range = ', range);
-
         this.setState({
             range: range
         }, () => {
@@ -149,8 +136,12 @@ class Envelope extends Component {
 
     rowClick(target){
 
+        if (target.accounting == 'credit'){
+            return;
+        }
+        
         let editing = Object.assign({}, this.state.editing);
-
+        
         if (editing.id == target._id){
             editing.on = !editing.on;
         } else {
@@ -162,73 +153,19 @@ class Envelope extends Component {
             };
         }
 
-        // if (!editing.id){
-        //     editing = {
-        //         id: target._id,
-        //         date: target.date,
-        //         amount: target.amount,
-        //         on: true
-        //     };
-        // }
-
-        console.log('editing = ', editing);
-
         this.setState({
             editing: editing
         }, ()  => {
             console.log('editing state =  ', this.state.editing);
         });
-
-        // let editing = Object.assign({}, this.state.editing);
-
-        // if (target._id == editing.id){
-        //     editing.on = !editing.on;
-        // } else {
-        //     editing = {
-        //         id: target._id,
-        //         date: target.date,
-        //         amount: target.amont,
-        //         on: true
-        //     };
-        // }
-
-        // if(target._id == this.state.editing.id){
-        //     return;
-        // }
-
-        // let editing = {
-        //     id: ''
-        // };
-
-        // if (!this.state.editing.id){
-        //     editing = {
-        //         id: target._id,
-        //         date: target.date,
-        //         amount: target.amont
-        //     }
-
-        // }
-
-        // this.setState({
-        //     editing: editing         
-        // }, () => {
-        //     console.log('editing state = ', this.state.editing);
-        // });
-
     }
 
     renderRow(transaction, index){
         const grid = [];
-        //console.log(this.state.editing, transaction._id);
         let mode = '';
-        //console.log('render row', this.state.editing);
         if(transaction.include){
 
             const isEdit = this.state.editing.id == transaction._id && this.state.editing.on;
-            //const readOnly = this.state.editing.id != transaction._id && !this.state.editing.on;
-            //const readOnly = this.state.editing.id != transaction._id || !this.state.editing.on;
-            //console.log(readOnly, this.state.editing, transaction._id);
-            //const display = 'input';
 
             let dateTarget = !isEdit ? transaction.date : this.state.editing.date;
             let amountTarget = !isEdit ? transaction.amount : this.state.editing.amount;
@@ -238,25 +175,17 @@ class Envelope extends Component {
                 key={index + 'date'} 
                 className="date" 
                 value={dateTarget} 
-                readOnly={!isEdit} 
+                isEdit={isEdit} 
                 onBlur={this.editDate} 
             />);
-
-            // if (transaction.theme != 'now'){
-            //     grid.push (<Date key={index + 'date'} className="date" value={transaction.date} readOnly={readOnly} display={display} />);
-            // } else {
-            //     grid.push(<div key={index + 'date'}></div>);
-            // }
             
             if (transaction.accounting == 'debit'){
                 grid.push (<Dollars 
                     id={transaction._id}
                     key={index + 'dollars'} 
                     value={amountTarget} 
-                    readOnly={!isEdit} 
+                    isEdit={isEdit} 
                     onBlur={(amount) => this.editAmount(amount)} 
-                    onClick={() => this.editAmountClick()}
-                    editing={this.state.editing}
                 />);
                 grid.push (<div key={index + 'empty'}></div>);
             } else {
@@ -265,10 +194,8 @@ class Envelope extends Component {
                     id={transaction._id}
                     key={index + 'dollars'} 
                     value={amountTarget} 
-                    readOnly={!isEdit} 
+                    isEdit={isEdit} 
                     onBlur={this.editAmount} 
-                    onClick={() => this.editAmountClick()}
-                    editing={this.state.editing}
                 />);
             }
 
@@ -278,7 +205,11 @@ class Envelope extends Component {
             } 
 
             if(!isEdit){
-                grid.push(<Dollars key={index + 'balance'} className={balance} value={transaction.balance} readOnly="true" />);
+                grid.push(<Dollars 
+                    key={index + 'balance'} 
+                    className={balance} 
+                    value={transaction.balance} 
+                    isEdit={false} />);
             } else {
                 grid.push(<div className={'actions'} key={index + 'balance'}>
                     <a className={'update'} onClick={(e, mode) =>this.update(e, 'update')}>&#10004;</a>
@@ -301,10 +232,7 @@ class Envelope extends Component {
     }
 
     async update(e, mode){
-        //const value = e.target.value;
-        //console.log(e, this.state.editing);
-        //e.stopPropagation();
-        
+       
         const transactions = this.state.transactions.slice(0);
         const transaction = transactions.find(t => t._id == this.state.editing.id);
 
@@ -343,15 +271,6 @@ class Envelope extends Component {
         }, () => {
             this.load();
         });
-        // this.setState({
-        //     // transactions : transactions,
-        //     // editing: {
-        //     //     id: ''
-        //     // },
-        //     async: true
-        // }, () => {
-        // });
-
     }
 
     editAmount(amount) {
@@ -392,19 +311,6 @@ class Envelope extends Component {
         }, () => {
             //console.log('date add; state addining = ', this.state.adding, identifier);
         });
-    }
-
-    editAmountClick(){
-
-        // const editing = Object.assign({}, this.state.editing);
-
-        // editing.on = true;
-
-        // this.setState({
-        //     editing: editing
-        // }, () => {
-        //     console.log('editing dollar focus state = ', this.state.editing);
-        // });
     }
 
     async addTransaction() {
@@ -450,12 +356,9 @@ class Envelope extends Component {
         }, () => {
             this.load();
         });
-
-        //console.log('transactions = ', transaction, pair);
     }
 
     render() {
-        //console.log(this.state.target);
         return <div className="envelope">
             {
                 this.state.async &&                    
@@ -489,19 +392,19 @@ class Envelope extends Component {
             </div>
             {
                 this.state.async &&
-                        <div className="box form">
-                            <Date 
-                                value={this.state.adding.date} 
-                                identifier="addDate"
-                                onBlur={this.addDate}
-                            />
-                            <Dollars
-                                value={this.state.adding.amount}
-                                identifier="addDollars"
-                                onBlur={this.addAmount}
-                            />
-                            <a onClick={this.addTransaction}>&#10010;</a>
-                        </div>
+                    <div className="box form">
+                        <Date 
+                            value={this.state.adding.date} 
+                            identifier="addDate"
+                            onBlur={this.addDate}
+                        />
+                        <Dollars
+                            value={this.state.adding.amount}
+                            identifier="addDollars"
+                            onBlur={this.addAmount}
+                        />
+                        <a onClick={this.addTransaction}>&#10010;</a>
+                    </div>
             }
         </div>;
     }

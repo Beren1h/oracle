@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import NumberFormat from 'react-number-format';
+import PropTypes from 'prop-types';
 
-class Envelopes extends Component {
+class Dollars extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            amount: 0,
-            readOnly: false
+            amount: 0
         };
 
         this.onChange = this.onChange.bind(this);
@@ -19,7 +19,7 @@ class Envelopes extends Component {
     componentWillMount(){
         this.setState({
             amount: this.props.value,
-            display: this.props.readOnly ? 'text' : 'input'
+            display: this.props.isEdit ? 'input' : 'text'
         }, () => {
             //console.log('dollars state = ', this.state, this.props);
         });
@@ -29,7 +29,7 @@ class Envelopes extends Component {
         if (nextProps){
             this.setState({
                 amount: nextProps.value,
-                display: nextProps.readOnly ? 'text' : 'input'
+                display: nextProps.isEdit ? 'input' : 'text'
             }, () => {
                 //console.log('nextProps dollars state = ', this.state);
             });
@@ -37,12 +37,13 @@ class Envelopes extends Component {
     }
 
     componentDidUpdate(prevProps, prevState){
-        if (!this.props.readOnly && this.state.isme){
+        // i am in edit more and the intended target.  find the input control and focus.
+        if (this.props.isEdit && this.state.amTarget){
             const dom = document.getElementById(this.props.id);
             if (dom){
                 dom.focus();
                 this.setState({
-                    isme: false
+                    amTarget: false
                 });
             }
         }
@@ -50,43 +51,20 @@ class Envelopes extends Component {
 
     onClick(e){
 
-        console.log('click');
-
+        // i was clicked.  i am intended target
         this.setState({
-            isme: true  
+            amTarget: true  
         });
 
-        if(!this.props.readOnly){
+        // i was clicked while in edit mode.  stop click from
+        // propagating to edit mode toggle
+        if(this.props.isEdit){
             e.stopPropagation();
         }
-        // if (!this.props.readOnly){
-        //     const dom = document.getElementById(this.props.id);
-        //     if (dom){
-        //         dom.focus();
-        //     }
-        // }
-
-        //console.log('a click', this.props.onClick, this.props.onBlur);
-        //console.log('click', this.props.readOnly);
-        //this.onFocus(e);
-        //e.target.focus();
-        //
-
-        // if(this.props.onClick){
-        //     if (this.props.editing.on) {
-        //         e.stopPropagation();
-        //     }
-        //     this.props.onClick();
-        // }
     }
 
     onFocus(e){
-        console.log('on focus');
         e.target.select();
-
-        // if(this.props.onFocus){
-        //     this.props.onFocus(e);
-        // }
     }
 
     onChange(e){
@@ -101,12 +79,12 @@ class Envelopes extends Component {
     }
 
     onBlur(e){
-        if (this.props.onBlur){
-            this.props.onBlur(this.state.amount);
-        }
+        // if (this.props.onBlur){
+        //     this.props.onBlur(this.state.amount);
+        // }
 
         this.setState({
-            isme: false
+            amTarget: false
         });
 
         if (this.props.onBlur){
@@ -135,4 +113,23 @@ class Envelopes extends Component {
     }
 }
 
-export default Envelopes;
+Dollars.defaultProps = {
+    isEdit: true
+};
+
+Dollars.propTypes = {
+    isEdit: PropTypes.bool
+//   taxState: PropTypes.string.isRequired,
+//   customerName: PropTypes.string,
+//   customerMonthly: PropTypes.number.isRequired,
+//   customerDown: PropTypes.number.isRequired,
+//   decisions: PropTypes.arrayOf(PropTypes.shape({
+//     Amount: PropTypes.number,
+//     Rate: PropTypes.number,
+//     Down: PropTypes.number,
+//     Monthly: PropTypes.number,
+//     Term: PropTypes.number,
+//   })).isRequired,
+};
+
+export default Dollars;

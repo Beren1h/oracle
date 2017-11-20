@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
+import PropTypes from 'prop-types';
 
 class Date extends Component {
     constructor(props) {
@@ -10,8 +11,7 @@ class Date extends Component {
             year: '',
             date: '',
             mmdd: '',
-            display: 'input',
-            readOnly: false
+            display: 'input'
         };
 
         this.onChange = this.onChange.bind(this);
@@ -29,7 +29,7 @@ class Date extends Component {
             date: m.format('YYYY-MM-DD'),
             mmdd: m.format('MM-DD'),
             display: this.props.display ? this.props.display : 'input',
-            readOnly: this.props.readOnly
+            isEdit: this.props.isEdit
         }, () => {
             //console.log('date state = ', this.state);
         });
@@ -44,7 +44,7 @@ class Date extends Component {
                 date: m.format('YYYY-MM-DD'),
                 mmdd: m.format('MM-DD'),
                 display: nextProps.display ? nextProps.display : 'input',
-                readOnly: nextProps.readOnly
+                isEdit: nextProps.isEdit
             }, () => {
                 //console.log('date state = ', this.state);
             });
@@ -52,12 +52,12 @@ class Date extends Component {
     }
 
     componentDidUpdate(prevProps, prevState){
-        if (!this.props.readOnly && this.state.isme){
+        if (this.props.isEdit && this.state.amTarget){
             const dom = document.getElementById(this.props.id);
             if (dom){
                 dom.focus();
                 this.setState({
-                    isme: false
+                    amTarget: false
                 });
             }
         }
@@ -65,26 +65,17 @@ class Date extends Component {
 
     onFocus(e){
         e.target.select();
-        //e.stopPropagation();
-        // if(this.props.onFocus){
-        //     this.props.onFocus(e);50
-        // }
     }
 
     onClick(e){
         
-        console.log('date click');
-        
         this.setState({
-            isme: true  
+            amTarget: true  
         });
 
-        if(!this.props.readOnly){
+        if(this.props.isEdit){
             e.stopPropagation();
         }
-        //console.log(e.target);
-        //e.target.focus();
-        //e.stopPropagation();
     }
 
     onChange(e){
@@ -101,7 +92,7 @@ class Date extends Component {
         }
 
         this.setState({
-            isme: false
+            amTarget: false
         });
 
         if (this.props.onBlur){
@@ -116,7 +107,7 @@ class Date extends Component {
 
     render() {
         //console.log('date readonly = ', this.state.readOnly);
-        if(!this.state.readOnly) {
+        if(this.state.isEdit) {
         //if (this.state.display == 'input'){
             return <InputMask 
                 id={this.props.id}
@@ -137,5 +128,24 @@ class Date extends Component {
         }
     }
 }
+
+Date.defaultProps = {
+    isEdit: true
+};
+
+Date.propTypes = {
+    isEdit: PropTypes.bool
+//   taxState: PropTypes.string.isRequired,
+//   customerName: PropTypes.string,
+//   customerMonthly: PropTypes.number.isRequired,
+//   customerDown: PropTypes.number.isRequired,
+//   decisions: PropTypes.arrayOf(PropTypes.shape({
+//     Amount: PropTypes.number,
+//     Rate: PropTypes.number,
+//     Down: PropTypes.number,
+//     Monthly: PropTypes.number,
+//     Term: PropTypes.number,
+//   })).isRequired,
+};
 
 export default Date;
