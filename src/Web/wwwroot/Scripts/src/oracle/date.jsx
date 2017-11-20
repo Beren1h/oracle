@@ -78,6 +78,10 @@ class Date extends Component {
         this.setState({
             isme: true  
         });
+
+        if(!this.props.readOnly){
+            e.stopPropagation();
+        }
         //console.log(e.target);
         //e.target.focus();
         //e.stopPropagation();

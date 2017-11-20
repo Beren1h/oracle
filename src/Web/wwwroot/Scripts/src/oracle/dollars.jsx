@@ -55,6 +55,10 @@ class Envelopes extends Component {
         this.setState({
             isme: true  
         });
+
+        if(!this.props.readOnly){
+            e.stopPropagation();
+        }
         // if (!this.props.readOnly){
         //     const dom = document.getElementById(this.props.id);
         //     if (dom){
@@ -104,7 +108,7 @@ class Envelopes extends Component {
         this.setState({
             isme: false
         });
-        
+
         if (this.props.onBlur){
             if (this.props.identifier){
                 this.props.onBlur(this.state.amount, this.props.identifier);
