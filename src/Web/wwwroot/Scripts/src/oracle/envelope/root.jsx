@@ -21,7 +21,7 @@ class Envelope extends Component {
             },
             adding: {
                 date: '',
-                amount: 0,
+                amount: 0
             },
             editing: {
                 id: '',
@@ -39,6 +39,7 @@ class Envelope extends Component {
         this.addTransaction = this.addTransaction.bind(this);
         this.addAmount = this.addAmount.bind(this);
         this.addDate = this.addDate.bind(this);
+        this.editAmountClick = this.editAmountClick.bind(this);
         //this.editDateFocus = this.editDate.bind(this);
         //this.onClick = this.onClick.bind(this);
     }
@@ -70,11 +71,11 @@ class Envelope extends Component {
                 //begin: this.props.year + '-01-01',
                 end: this.props.year + '-12-31'
             };
-         } else {
+        } else {
             range = Object.assign({}, this.state.range);
-         }
+        }
 
-         for (let i = 0; i<transactions.length; i++){
+        for (let i = 0; i<transactions.length; i++){
             let theme = '';
             if (transactions[i].accounting == 'debit'){
                 balance = balance - transactions[i].amount;
@@ -106,7 +107,7 @@ class Envelope extends Component {
             //     once = 1;
             //     index = i;
             // }
-         }
+        }
        
         this.setState({
             transactions: transactions,
@@ -119,10 +120,10 @@ class Envelope extends Component {
             },
             editing: {
                 id: '',
-                on: false,
+                on: false
             }
-        ,}, () => {
-            console.log('state = ', this.state);
+        }, () => {
+            //console.log('state = ', this.state);
         });
 
     }
@@ -147,22 +148,49 @@ class Envelope extends Component {
     }
 
     rowClick(target){
-        
+
         let editing = Object.assign({}, this.state.editing);
 
-        if (target._id == editing.id){
+        if (editing.id == target._id){
             editing.on = !editing.on;
         } else {
             editing = {
                 id: target._id,
                 date: target.date,
-                amount: target.amont,
+                amount: target.amount,
                 on: true
             };
         }
 
+        // if (!editing.id){
+        //     editing = {
+        //         id: target._id,
+        //         date: target.date,
+        //         amount: target.amount,
+        //         on: true
+        //     };
+        // }
 
+        console.log('editing = ', editing);
 
+        this.setState({
+            editing: editing
+        }, ()  => {
+            console.log('editing state =  ', this.state.editing);
+        });
+
+        // let editing = Object.assign({}, this.state.editing);
+
+        // if (target._id == editing.id){
+        //     editing.on = !editing.on;
+        // } else {
+        //     editing = {
+        //         id: target._id,
+        //         date: target.date,
+        //         amount: target.amont,
+        //         on: true
+        //     };
+        // }
 
         // if(target._id == this.state.editing.id){
         //     return;
@@ -181,11 +209,11 @@ class Envelope extends Component {
 
         // }
 
-        this.setState({
-            editing: editing         
-        }, () => {
-            console.log('editing state = ', this.state.editing);
-        });
+        // this.setState({
+        //     editing: editing         
+        // }, () => {
+        //     console.log('editing state = ', this.state.editing);
+        // });
 
     }
 
@@ -193,20 +221,26 @@ class Envelope extends Component {
         const grid = [];
         //console.log(this.state.editing, transaction._id);
         let mode = '';
-        console.log('render row', this.state.editing);
+        //console.log('render row', this.state.editing);
         if(transaction.include){
 
-            const readOnly = this.state.editing.id != transaction._id || !this.state.editing.on;
+            const isEdit = this.state.editing.id == transaction._id && this.state.editing.on;
+            //const readOnly = this.state.editing.id != transaction._id && !this.state.editing.on;
+            //const readOnly = this.state.editing.id != transaction._id || !this.state.editing.on;
             //console.log(readOnly, this.state.editing, transaction._id);
             //const display = 'input';
 
-            let dateTarget = readOnly ? transaction.date : this.state.editing.date;
-            let amountTarget = readOnly ? transaction.amount : this.state.editing.amount;
+            let dateTarget = !isEdit ? transaction.date : this.state.editing.date;
+            let amountTarget = !isEdit ? transaction.amount : this.state.editing.amount;
 
-
-            grid.push (<Date key={index + 'date'} className="date" value={dateTarget} readOnly={readOnly} onBlur={this.editDate} />);
-            
-
+            grid.push (<Date 
+                id={transaction._id + 'date'}
+                key={index + 'date'} 
+                className="date" 
+                value={dateTarget} 
+                readOnly={!isEdit} 
+                onBlur={this.editDate} 
+            />);
 
             // if (transaction.theme != 'now'){
             //     grid.push (<Date key={index + 'date'} className="date" value={transaction.date} readOnly={readOnly} display={display} />);
@@ -215,11 +249,27 @@ class Envelope extends Component {
             // }
             
             if (transaction.accounting == 'debit'){
-                grid.push (<Dollars key={index + 'dollars'} value={amountTarget} readOnly={readOnly} onBlur={(amount) => this.editAmount(amount)} />);
+                grid.push (<Dollars 
+                    id={transaction._id}
+                    key={index + 'dollars'} 
+                    value={amountTarget} 
+                    readOnly={!isEdit} 
+                    onBlur={(amount) => this.editAmount(amount)} 
+                    onClick={() => this.editAmountClick()}
+                    editing={this.state.editing}
+                />);
                 grid.push (<div key={index + 'empty'}></div>);
             } else {
                 grid.push (<div key={index + 'empty'}></div>);
-                grid.push (<Dollars key={index + 'dollars'} value={amountTarget} readOnly={readOnly} onBlur={this.editAmount} />);
+                grid.push (<Dollars 
+                    id={transaction._id}
+                    key={index + 'dollars'} 
+                    value={amountTarget} 
+                    readOnly={!isEdit} 
+                    onBlur={this.editAmount} 
+                    onClick={() => this.editAmountClick()}
+                    editing={this.state.editing}
+                />);
             }
 
             let balance = 'black';
@@ -227,7 +277,7 @@ class Envelope extends Component {
                 balance = 'red';
             } 
 
-            if(readOnly){
+            if(!isEdit){
                 grid.push(<Dollars key={index + 'balance'} className={balance} value={transaction.balance} readOnly="true" />);
             } else {
                 grid.push(<div className={'actions'} key={index + 'balance'}>
@@ -240,10 +290,10 @@ class Envelope extends Component {
 
 
             return <div key={index} 
-                        className={'row' + ' ' + transaction.theme + ' ' + mode}
-                        onClick={() => this.rowClick(transaction)} >
-                            {grid}
-                </div>;
+                className={'row ' + transaction.theme + ' ' + mode}
+                onClick={() => this.rowClick(transaction)} >
+                {grid}
+            </div>;
         } else {
             //console.log('editing id = ', transaction._id);
             return '';
@@ -259,30 +309,30 @@ class Envelope extends Component {
         const transaction = transactions.find(t => t._id == this.state.editing.id);
 
         switch (mode){
-            case 'update':
-                transaction.date = this.state.editing.date;
-                transaction.amount = this.state.editing.amount;
+        case 'update':
+            transaction.date = this.state.editing.date;
+            transaction.amount = this.state.editing.amount;
 
-                //POST.transaction(transaction);
+            //POST.transaction(transaction);
 
-                const getPair = await GET.transaction(transaction.pairId);
-                const pair = getPair.data[0];
-                
-                if (pair){
-                    console.log('in = ', pair, this.state.editing);
-                    pair.date = this.state.editing.date;
-                    pair.amount = this.state.editing.amount;
-                    console.log('out = ', pair);
-                    //POST.transaction(pair);
-                }
+            const getPair = await GET.transaction(transaction.pairId);
+            const pair = getPair.data[0];
+            
+            if (pair){
+                console.log('in = ', pair, this.state.editing);
+                pair.date = this.state.editing.date;
+                pair.amount = this.state.editing.amount;
+                console.log('out = ', pair);
+                //POST.transaction(pair);
+            }
 
-                console.log('post transaction = ', transaction);
-                console.log('post pair = ', pair);
-                
+            console.log('post transaction = ', transaction);
+            console.log('post pair = ', pair);
+            
             break;
-            case 'delete':
-                DELETE.transaction(transaction);
-                //transactions.splice(transactions.indexOf(transaction), 1);
+        case 'delete':
+            DELETE.transaction(transaction);
+            //transactions.splice(transactions.indexOf(transaction), 1);
             break;
         }
 
@@ -344,6 +394,19 @@ class Envelope extends Component {
         });
     }
 
+    editAmountClick(){
+
+        // const editing = Object.assign({}, this.state.editing);
+
+        // editing.on = true;
+
+        // this.setState({
+        //     editing: editing
+        // }, () => {
+        //     console.log('editing dollar focus state = ', this.state.editing);
+        // });
+    }
+
     async addTransaction() {
 
         if (this.state.adding.amount <= 0){
@@ -394,8 +457,8 @@ class Envelope extends Component {
     render() {
         //console.log(this.state.target);
         return <div className="envelope">
-                {
-                    this.state.async &&                    
+            {
+                this.state.async &&                    
                     <div className="box range">
                         <label>start</label>
                         <label>end</label>
@@ -410,54 +473,22 @@ class Envelope extends Component {
                             onBlur={this.dateUpdate}
                         />
                     </div>
+            }
+            <div className="box ledger">
+                <div key={'x'} className="row heading">
+                    <div>date</div>
+                    <div>debit</div>
+                    <div>credit</div>
+                    <div>balance</div>
+                </div>
+                {
+                    this.state.transactions.map((transaction, index) => {
+                        return this.renderRow(transaction, index);
+                    })
                 }
-                    <div className="box ledger">
-                        <div key={'x'} className="row heading">
-                            <div>date</div>
-                            <div>debit</div>
-                            <div>credit</div>
-                            <div>balance</div>
-                        </div>
-                        {
-                            this.state.transactions.map((transaction, index) => {
-                                return this.renderRow(transaction, index);
-                                // const grid = [];
-
-                                // if(transaction.include){
-                                //     if (transaction.theme != 'now'){
-                                //         grid.push (<Date key={index + 'date'} className="date" value={transaction.date} display="text" />);
-                                //     } else {
-                                //         grid.push(<div key={index + 'date'}></div>);
-                                //     }
-                                    
-                                //     if (transaction.accounting == 'debit'){
-                                //         grid.push (<Dollars key={index + 'dollars'} value={transaction.amount} display="text" />);
-                                //         grid.push (<div key={index + 'empty'}></div>);
-                                //     } else {
-                                //         grid.push (<div key={index + 'empty'}></div>);
-                                //         grid.push (<Dollars key={index + 'dollars'} value={transaction.amount} display="text" />);
-                                //     }
-    
-                                //     let balance = 'black';
-                                //     if (transaction.balance < 0){
-                                //         balance = 'red';
-                                //     } 
-    
-                                //     grid.push(<Dollars key={index + 'balance'} className={balance} value={transaction.balance} display="text" />);
-                                //     return <div key={index} 
-                                //                 className={'row' + ' ' + transaction.theme}
-                                //                 onClick={() => this.rowClick(transaction)}
-                                //             >
-                                //                     {grid}
-                                //         </div>;
-    
-                                // }
-
-                            })
-                        }
-                    </div>
-                    {
-                        this.state.async &&
+            </div>
+            {
+                this.state.async &&
                         <div className="box form">
                             <Date 
                                 value={this.state.adding.date} 
@@ -471,8 +502,8 @@ class Envelope extends Component {
                             />
                             <a onClick={this.addTransaction}>&#10010;</a>
                         </div>
-                    }
-            </div>;
+            }
+        </div>;
     }
 }
 

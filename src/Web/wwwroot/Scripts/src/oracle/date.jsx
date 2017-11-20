@@ -11,12 +11,13 @@ class Date extends Component {
             date: '',
             mmdd: '',
             display: 'input',
-            readOnly: false,
+            readOnly: false
         };
 
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onFocus = this.onFocus.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     componentWillMount(){
@@ -50,6 +51,18 @@ class Date extends Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState){
+        if (!this.props.readOnly && this.state.isme){
+            const dom = document.getElementById(this.props.id);
+            if (dom){
+                dom.focus();
+                this.setState({
+                    isme: false
+                });
+            }
+        }
+    }
+
     onFocus(e){
         e.target.select();
         //e.stopPropagation();
@@ -59,7 +72,13 @@ class Date extends Component {
     }
 
     onClick(e){
-        console.log(e.target);
+        
+        console.log('date click');
+        
+        this.setState({
+            isme: true  
+        });
+        //console.log(e.target);
         //e.target.focus();
         //e.stopPropagation();
     }
@@ -77,6 +96,10 @@ class Date extends Component {
             return;
         }
 
+        this.setState({
+            isme: false
+        });
+
         if (this.props.onBlur){
             if (this.props.identifier){
                 this.props.onBlur(date, this.props.identifier);
@@ -92,6 +115,7 @@ class Date extends Component {
         if(!this.state.readOnly) {
         //if (this.state.display == 'input'){
             return <InputMask 
+                id={this.props.id}
                 mask="99-99" 
                 maskChar=" " 
                 placeholder="MM-DD"
@@ -103,7 +127,7 @@ class Date extends Component {
                 onClick={this.onClick}
             />;
         } else {
-            return <div>
+            return <div onClick={this.onClick}>
                 {this.state.mmdd}
             </div>;
         }

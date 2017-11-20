@@ -13,6 +13,7 @@ class Envelopes extends Component {
         this.onChange = this.onChange.bind(this);
         this.onBlur = this.onBlur.bind(this);
         this.onFocus = this.onFocus.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
     componentWillMount(){
@@ -20,7 +21,7 @@ class Envelopes extends Component {
             amount: this.props.value,
             display: this.props.readOnly ? 'text' : 'input'
         }, () => {
-            //console.log('dollars state = ', this.state);
+            //console.log('dollars state = ', this.state, this.props);
         });
     }
 
@@ -35,15 +36,53 @@ class Envelopes extends Component {
         }
     }
 
+    componentDidUpdate(prevProps, prevState){
+        if (!this.props.readOnly && this.state.isme){
+            const dom = document.getElementById(this.props.id);
+            if (dom){
+                dom.focus();
+                this.setState({
+                    isme: false
+                });
+            }
+        }
+    }
+
     onClick(e){
-        console.log('a click');
-        e.target.focus();
-        //e.stopPropagation();
+
+        console.log('click');
+
+        this.setState({
+            isme: true  
+        });
+        // if (!this.props.readOnly){
+        //     const dom = document.getElementById(this.props.id);
+        //     if (dom){
+        //         dom.focus();
+        //     }
+        // }
+
+        //console.log('a click', this.props.onClick, this.props.onBlur);
+        //console.log('click', this.props.readOnly);
+        //this.onFocus(e);
+        //e.target.focus();
+        //
+
+        // if(this.props.onClick){
+        //     if (this.props.editing.on) {
+        //         e.stopPropagation();
+        //     }
+        //     this.props.onClick();
+        // }
     }
 
     onFocus(e){
         console.log('on focus');
         e.target.select();
+
+        // if(this.props.onFocus){
+        //     this.props.onFocus(e);
+        // }
     }
 
     onChange(e){
@@ -61,6 +100,11 @@ class Envelopes extends Component {
         if (this.props.onBlur){
             this.props.onBlur(this.state.amount);
         }
+
+        this.setState({
+            isme: false
+        });
+        
         if (this.props.onBlur){
             if (this.props.identifier){
                 this.props.onBlur(this.state.amount, this.props.identifier);
@@ -71,7 +115,6 @@ class Envelopes extends Component {
     }
 
     render() {
-        console.log('a render');
         return <NumberFormat
             id={this.props.id}
             className={this.props.className}
