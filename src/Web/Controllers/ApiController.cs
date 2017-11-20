@@ -72,31 +72,46 @@ namespace Web.Controllers
             return Ok(true);
         }
 
-        [HttpPut, Route("transaction/pair")]
-        public IActionResult CreateTransaction([FromBody] Transaction[] transactions)
-        {
-            if(transactions.Length != 2)
-            {
-                return BadRequest("only 2 transactions");
-            }
+        //[HttpPut, Route("transaction/pair")]
+        //public IActionResult CreateTransaction([FromBody] Transaction[] transactions)
+        //{
+        //    if(transactions.Length != 2)
+        //    {
+        //        return BadRequest("only 2 transactions");
+        //    }
 
-            var id0 = ObjectId.NewObjectId();
+        //    var id0 = ObjectId.NewObjectId();
 
-            transactions[0]._id = id0;
-            transactions[1].PairId = id0;
+        //    transactions[0]._id = id0;
+        //    transactions[1].PairId = id0;
 
-            var id1 = ObjectId.NewObjectId();
+        //    var id1 = ObjectId.NewObjectId();
 
-            transactions[1]._id = id1;
-            transactions[0].PairId = id1;
+        //    transactions[1]._id = id1;
+        //    transactions[0].PairId = id1;
 
-            var result0 = _transactions.Insert(transactions[0]);
-            var result1 = _transactions.Insert(transactions[1]);
+        //    var result0 = _transactions.Insert(transactions[0]);
+        //    var result1 = _transactions.Insert(transactions[1]);
 
-            var results = new ObjectId[2] { result0, result1 };
+        //    var results = new ObjectId[2] { result0, result1 };
 
-            return Ok(results);
-        }
+        //    return Ok(results);
+        //}
+
+
+        //[HttpPost, Route("transaction/pair")]
+        //public IActionResult UpdateTransactionPair([FromBody] Transaction[] transactions)
+        //{
+        //    if (transactions.Length != 2)
+        //    {
+        //        return BadRequest("only 2 transactions");
+        //    }
+
+        //    var result0 = _transactions.Update(transactions[0]);
+        //    var result1 = _transactions.Update(transactions[1]);
+
+        //    return Ok(result0 && result1);
+        //}
 
 
         [HttpPut, Route("transaction")]
@@ -107,25 +122,18 @@ namespace Web.Controllers
             return Ok(result);
         }
 
-
-        [HttpPost, Route("transaction/pair")]
-        public IActionResult UpdateTransactionPair([FromBody] Transaction[] transactions)
-        {
-            if (transactions.Length != 2)
-            {
-                return BadRequest("only 2 transactions");
-            }
-
-            var result0 = _transactions.Update(transactions[0]);
-            var result1 = _transactions.Update(transactions[1]);
-
-            return Ok(result0 && result1);
-        }
-
         [HttpPost, Route("transaction")]
         public IActionResult UpdateTransaction([FromBody] Transaction transaction)
         {
             var result = _transactions.Update(transaction);
+
+            return Ok(result);
+        }
+
+        [HttpDelete, Route("transaction/{id}")]
+        public IActionResult DeleteTransaction(ObjectId id)
+        {
+            var result = _transactions.Delete(id);
 
             return Ok(result);
         }
@@ -145,6 +153,14 @@ namespace Web.Controllers
 
             return Ok(result);
         }
+
+        //[HttpGet, Route("transaction/{id}")]
+        //public IActionResult GetTransactionById(ObjectId id)
+        //{
+        //    var result = _transactions.Get(a => a._id == id);
+
+        //    return Ok(result);
+        //}
 
         [HttpGet, Route("transaction/dole/{id}")]
         public IActionResult GetTransactionByDole(ObjectId id)
@@ -205,24 +221,16 @@ namespace Web.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
 
-        [HttpDelete, Route("transaction/{id}")]
-        public IActionResult DeleteTransaction(ObjectId id)
-        {
-            var result = _transactions.Delete(id);
 
-            return Ok(result);
-        }
+        //[HttpDelete, Route("transaction/pair/{id0}/{id1}")]
+        //public IActionResult DeleteTransactionPair(ObjectId id0, ObjectId id1)
+        //{
+        //    var result0 = _transactions.Delete(id0);
+        //    var result1 = _transactions.Delete(id1);
 
-        [HttpDelete, Route("transaction/pair/{id0}/{id1}")]
-        public IActionResult DeleteTransactionPair(ObjectId id0, ObjectId id1)
-        {
-            var result0 = _transactions.Delete(id0);
-            var result1 = _transactions.Delete(id1);
-
-            return Ok(result0 && result1);
-        }
+        //    return Ok(result0 && result1);
+        //}
 
         [HttpDelete, Route("transaction")]
         public IActionResult DeleteAllTransactions()

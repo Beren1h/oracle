@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import InputMask from 'react-input-mask';
 
-class Envelopes extends Component {
+class Date extends Component {
     constructor(props) {
         super(props);
 
@@ -10,7 +10,8 @@ class Envelopes extends Component {
             year: '',
             date: '',
             mmdd: '',
-            display: 'input'
+            display: 'input',
+            readOnly: false,
         };
 
         this.onChange = this.onChange.bind(this);
@@ -26,14 +27,41 @@ class Envelopes extends Component {
             year: m.format('YYYY'),
             date: m.format('YYYY-MM-DD'),
             mmdd: m.format('MM-DD'),
-            display: this.props.display ? this.props.display : 'input'
+            display: this.props.display ? this.props.display : 'input',
+            readOnly: this.props.readOnly
         }, () => {
             //console.log('date state = ', this.state);
         });
     }
 
+    componentWillReceiveProps(nextProps){
+        if (nextProps){
+            const m = moment(nextProps.value);
+            
+            this.setState({
+                year: m.format('YYYY'),
+                date: m.format('YYYY-MM-DD'),
+                mmdd: m.format('MM-DD'),
+                display: nextProps.display ? nextProps.display : 'input',
+                readOnly: nextProps.readOnly
+            }, () => {
+                //console.log('date state = ', this.state);
+            });
+        }
+    }
+
     onFocus(e){
         e.target.select();
+        //e.stopPropagation();
+        // if(this.props.onFocus){
+        //     this.props.onFocus(e);50
+        // }
+    }
+
+    onClick(e){
+        console.log(e.target);
+        //e.target.focus();
+        //e.stopPropagation();
     }
 
     onChange(e){
@@ -49,19 +77,30 @@ class Envelopes extends Component {
             return;
         }
 
-        this.props.onBlur(date);
+        if (this.props.onBlur){
+            if (this.props.identifier){
+                this.props.onBlur(date, this.props.identifier);
+            } else {
+                this.props.onBlur(date);
+            }
+        }
+        
     }
 
     render() {
-        if (this.state.display == 'input'){
+        //console.log('date readonly = ', this.state.readOnly);
+        if(!this.state.readOnly) {
+        //if (this.state.display == 'input'){
             return <InputMask 
                 mask="99-99" 
                 maskChar=" " 
                 placeholder="MM-DD"
+                className={this.props.className}
                 value={this.state.mmdd} 
                 onFocus={this.onFocus} 
                 onChange={this.onChange} 
                 onBlur={this.onBlur} 
+                onClick={this.onClick}
             />;
         } else {
             return <div>
@@ -71,4 +110,4 @@ class Envelopes extends Component {
     }
 }
 
-export default Envelopes;
+export default Date;

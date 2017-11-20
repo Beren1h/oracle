@@ -43,7 +43,7 @@ const route = {
 export const DELETE = {
     props: Object.assign({}, props.delete()),
     transaction: (document) => {
-        DELETE.propd.url = route.transaction.baseline + '/' + document._id;
+        DELETE.props.url = route.transaction.baseline + '/' + document._id;
         return axios(DELETE.props);
     }
 };

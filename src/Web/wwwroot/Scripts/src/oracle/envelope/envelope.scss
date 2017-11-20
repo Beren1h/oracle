@@ -13,6 +13,20 @@
 
 .range {
     grid-area: range;
+    display: grid;
+    grid-template-columns: 20% 20%;
+    & label {
+        color: #202020;
+        font-size: 70%;
+    }
+    & input{
+        border: none;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 5px;
+        width: 75px;
+        font-size: 20px;
+    }
 }
 
 .ledger {
@@ -20,37 +34,132 @@
     display: flex;
     flex-direction: column;
     display: grid;
-    grid-template-columns: 15% 30% 30% 25%;
-    justify-items: end;
+    //grid-template-columns: 15% 30% 30% 25%;
+    grid-template-columns: 100%;
+    //justify-items: end;
     & div, span {
-        padding: 0 10px 0 0 ;
+        padding: 0 10px 0 10px;
     }
-    & .heading {
-        font-size: 18px;
-        justify-self: end;
+    & .row {
+        display: grid;
         width: 100%;
-        background-color: purple;
-        margin: 0 0 10px 0;
-        text-align: right;
-        border-bottom: 1px solid darkorchid;
-    }
-    // & .row {
-    //     display: grid;
-    //     grid-template-columns: 20% 60% 20%;
-    //     & .accounting {
-    //         //display: grid;
-    //         //grid-template-columns: 50% 50%;
-    //         display: flex;
-    //         flex-direction: row;
+        grid-template-columns: 15% 30% 30% 25%;
+        //background-color: orange;
+        padding: 3px;
+        border-radius: 3px;
+        justify-items: end;
+        & .actions {
+            width: 100%;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            & a {
+               display: block;
+               padding: 0 15px 0 15px;
+               margin: 0;
+               border-radius: 3px; 
+               cursor: pointer;
+                &:first-child {
+                    margin: 0 3px 0 0;
+                }               
+                &.update {
+                    color: yellowgreen;
+                    background-color: green;                 
+                }
+                &.delete {
+                   color: red;
+                   background-color: darkred;
+                }
+            }
+        }
+        & input{
+            border: none;
+            border-radius: 3px;
+            //margin: 2px;
+            //padding: 0 3px 0 0;
+            padding: 0 10px 0 10px;
+            width: 65%;
+            font-size: 20px;
+            text-align: right;
+            &:first-child {
+                width: 65%;
+            }
+        }
+        // & input:first-child {
+        //     width: 75%;
+        // }
+        & .red {
+            color: darkred;
+            background-color: palevioletred;
+            border: 1px solid darkred;
+            border-radius: 3px;
+            display: block;
 
-    //     }
-    // }
+        }
+        &.light {
+            background-color: #444444;
+            &.future {
+                //background-color: darkorchid;
+                //border: 1px solid;
+                //opacity: .6;
+                color: grey;
+            }
+        }
+        &.dark {
+            background-color: #373737;
+            &.future {
+                //background-color: purple;
+                //border: 1px solid;
+                //opacity: .6;
+                color: grey;
+            }
+        }
+        &.edit{
+            background-color:aliceblue;
+        }
+        // &.now {
+        //     background-color: purple;
+        //     border: 1px solid darkorchid;
+        // }
+        &.heading {
+            margin: 0 0 3px 0;
+            //background-color: purple;
+            text-align: right;
+            color: #202020;
+            font-size: 75%;
+            border-bottom: 1px solid #373737;
+            //color: darkorchid;
+        }
+    }
 }
 
 .form {
     grid-area: form;
+    display: flex;
+    flex-direction: column;
+    //justify-content: flex-end;
+    align-items: flex-end;
+    & input{
+        border: none;
+        border-radius: 3px;
+        margin: 2px;
+        padding: 5px;
+        width: 100px;
+        font-size: 20px;
+        text-align: right;
+    }
+    & a {
+        display: block;
+        padding: 0 15px 0 15px;
+        margin: 2px;
+        border-radius: 3px; 
+        cursor: pointer;
+        color: yellowgreen;
+        background-color: green;
+    }
 }
-
 
 .box {
     background-color: #444;
@@ -58,96 +167,6 @@
     border-radius: 5px;
     padding: 20px;
     margin: 1px;
-    font-size: 150%;
+    font-size: 120%;
   }
 
-// .header {
-//     background-color: purple;
-//     grid-area: header;
-// }
-
-// .ledger {
-//     grid-area: ledger;
-// }
-
-// .input {
-//     grid-area: input;
-// }
-
-// .date {
-//     grid-area: date;
-// }
-
-// .debit {
-//     grid-area: debit;
-// }
-
-// .credit {
-//     grid-area: credit;
-// }
-
-// .balance {
-//     grid-area: balance;
-// }
-
-// .containerx {
-//     display: grid;
-//     grid-gap: 10px;
-//     grid-template-columns: 25% 25% 25%;
-//     grid-template-areas: "header header header"
-//                          "ledger ...... input"; 
-//     & .ledger {
-//         & .row {
-//             display: grid;
-//             grid-template-areas: "date debit ...... balance"
-//                                  "date ..... credit balance"
-//         }
-//     }
-// }
-
-
-// .containerx {
-//     display: flex;
-//     flex-direction: column;
-//     & .head {
-//         width: 100%;
-//     }
-//     & .body {
-//         display: flex;
-//         flex-direction: row;
-//         & .ledger {
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: flex-end;
-//             width: 80%;
-//             & .row {
-//                 // display: flex;
-//                 // flex-direction: row;
-//                 // justify-content: flex-end;
-//                 display: grid;
-//                 grid-template-columns: 10% 60% 30%;
-//                 background-color: blue;
-//                 margin: 5px;
-//                 // & div, span {
-//                 //     justify-self: end;
-//                 // }
-//                 & .dollars {
-//                     display: flex;
-//                     flex-direction: row;
-//                     align-content: center;
-//                     // display: grid;
-//                     // grid-template-columns: 50% 50%;
-//                     & span {
-//                         background-color:green;
-//                         display: block;
-//                         padding: 10px;
-//                         //justify-self: end;
-//                     }
-//                     & span:first-child {
-//                         background-color:yellow;
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }

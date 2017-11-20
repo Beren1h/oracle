@@ -6,7 +6,8 @@ class Envelopes extends Component {
         super(props);
 
         this.state = {
-            amount: 0
+            amount: 0,
+            readOnly: false
         };
 
         this.onChange = this.onChange.bind(this);
@@ -17,10 +18,26 @@ class Envelopes extends Component {
     componentWillMount(){
         this.setState({
             amount: this.props.value,
-            display: this.props.display ? this.props.display : 'input'
+            display: this.props.readOnly ? 'text' : 'input'
         }, () => {
             //console.log('dollars state = ', this.state);
         });
+    }
+
+    componentWillReceiveProps(nextProps){
+        if (nextProps){
+            this.setState({
+                amount: nextProps.value,
+                display: nextProps.readOnly ? 'text' : 'input'
+            }, () => {
+                //console.log('nextProps dollars state = ', this.state);
+            });
+        }
+    }
+
+    onClick(e){
+        e.target.focus();
+        //e.stopPropagation();
     }
 
     onFocus(e){
@@ -42,11 +59,19 @@ class Envelopes extends Component {
         if (this.props.onBlur){
             this.props.onBlur(this.state.amount);
         }
+        if (this.props.onBlur){
+            if (this.props.identifier){
+                this.props.onBlur(this.state.amount, this.props.identifier);
+            } else {
+                this.props.onBlur(this.state.amount);
+            }
+        }        
     }
 
     render() {
         return <NumberFormat
             id={this.props.id}
+            className={this.props.className}
             value={this.state.amount} 
             displayType={this.state.display} 
             thousandSeparator={true} 
@@ -55,6 +80,7 @@ class Envelopes extends Component {
             onFocus={this.onFocus} 
             onChange={this.onChange} 
             onBlur={this.onBlur} 
+            onClick={this.onClick}
         />;
     }
 }
