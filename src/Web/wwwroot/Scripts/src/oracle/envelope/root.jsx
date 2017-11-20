@@ -151,15 +151,16 @@ class Envelope extends Component {
         let editing = Object.assign({}, this.state.editing);
 
         if (target._id == editing.id){
-            return;
+            editing.on = !editing.on;
+        } else {
+            editing = {
+                id: target._id,
+                date: target.date,
+                amount: target.amont,
+                on: true
+            };
         }
 
-        editing = {
-            id: target._id,
-            date: target.date,
-            amount: target.amont,
-            on: true
-        };
 
 
 
@@ -192,10 +193,10 @@ class Envelope extends Component {
         const grid = [];
         //console.log(this.state.editing, transaction._id);
         let mode = '';
-
+        console.log('render row', this.state.editing);
         if(transaction.include){
 
-            const readOnly = this.state.editing.id != transaction._id;
+            const readOnly = this.state.editing.id != transaction._id || !this.state.editing.on;
             //console.log(readOnly, this.state.editing, transaction._id);
             //const display = 'input';
 

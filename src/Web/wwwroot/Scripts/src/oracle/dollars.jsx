@@ -36,11 +36,13 @@ class Envelopes extends Component {
     }
 
     onClick(e){
+        console.log('a click');
         e.target.focus();
         //e.stopPropagation();
     }
 
     onFocus(e){
+        console.log('on focus');
         e.target.select();
     }
 
@@ -69,6 +71,7 @@ class Envelopes extends Component {
     }
 
     render() {
+        console.log('a render');
         return <NumberFormat
             id={this.props.id}
             className={this.props.className}
