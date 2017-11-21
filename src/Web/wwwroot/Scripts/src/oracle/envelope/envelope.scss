@@ -6,26 +6,37 @@
     display: grid;
     width: 75%;
     grid-template-columns: 100%;
-    grid-template-areas: "range range"
-                         "ledger form";
+    grid-template-areas: "range"
+                         "ledger"
+                         "form";
 
 }
 
 .range {
     grid-area: range;
     display: grid;
-    grid-template-columns: 20% 20%;
+    grid-template-columns: 60% 40%;
+    justify-items: end;
+    & .tag {
+        justify-self: start;
+        align-self: center;
+    }
+    & span {
+        margin: 0 6px 0 0;
+    }
     & label {
         color: #202020;
         font-size: 70%;
     }
     & input{
         border: none;
-        border-radius: 3px;
+        background-color: aliceblue;
+        border-radius: 5px;
         margin: 2px;
         padding: 5px;
         width: 75px;
         font-size: 20px;
+        text-align: center;
     }
 }
 
@@ -34,20 +45,16 @@
     display: flex;
     flex-direction: column;
     display: grid;
-    //grid-template-columns: 15% 30% 30% 25%;
     grid-template-columns: 100%;
-    //justify-items: end;
     & div, span {
         padding: 0 10px 0 10px;
     }
     & .row {
         display: grid;
-        width: 100%;
         grid-template-columns: 15% 30% 30% 25%;
-        //background-color: orange;
         padding: 3px;
-        border-radius: 3px;
         justify-items: end;
+        cursor: pointer;
         & .actions {
             width: 100%;
             padding: 0;
@@ -76,9 +83,8 @@
         }
         & input{
             border: none;
-            border-radius: 3px;
-            //margin: 2px;
-            //padding: 0 3px 0 0;
+            background-color: aliceblue;
+            border-radius: 5px;
             padding: 0 10px 0 10px;
             width: 65%;
             font-size: 20px;
@@ -87,86 +93,85 @@
                 width: 65%;
             }
         }
-        // & input:first-child {
-        //     width: 75%;
-        // }
         & .red {
             color: darkred;
             background-color: palevioletred;
             border: 1px solid darkred;
             border-radius: 3px;
             display: block;
-
         }
         &.light {
             background-color: #444444;
-            &.future {
-                //background-color: darkorchid;
-                //border: 1px solid;
-                //opacity: .6;
-                color: grey;
-            }
         }
         &.dark {
             background-color: #373737;
-            &.future {
-                //background-color: purple;
-                //border: 1px solid;
-                //opacity: .6;
-                color: grey;
-            }
+        }
+        &.future {
+            color: grey;
+        }
+        &.divider {
+            border-top: 2px solid purple;
         }
         &.edit{
             background-color:aliceblue;
         }
-        // &.now {
-        //     background-color: purple;
-        //     border: 1px solid darkorchid;
-        // }
         &.heading {
             margin: 0 0 3px 0;
-            //background-color: purple;
             text-align: right;
             color: #202020;
             font-size: 75%;
             border-bottom: 1px solid #373737;
-            //color: darkorchid;
         }
     }
 }
 
 .form {
     grid-area: form;
-    display: flex;
-    flex-direction: column;
-    //justify-content: flex-end;
-    align-items: flex-end;
+    display: grid;
+    grid-template-columns: 15% 30% 55%;
+    justify-items: end;
+    padding: 10px 20px 0 20px;
+    margin: 5px 0 0 0;
+    border-radius: 3px;
+    border-top: 1px solid #262525;
     & input{
-        border: none;
-        border-radius: 3px;
-        margin: 2px;
+        border: 1px solid #262525;
+        background-color: aliceblue;
+        border-radius: 5px;
         padding: 5px;
-        width: 100px;
+        width: 65%;
         font-size: 20px;
         text-align: right;
     }
     & a {
         display: block;
-        padding: 0 15px 0 15px;
-        margin: 2px;
+        width: 25%;
+        padding: 3px 15px 0 15px;
+        margin: 2px 0 2px 0;
         border-radius: 3px; 
         cursor: pointer;
         color: yellowgreen;
         background-color: green;
+        text-align: center;
+        align-self: stretch;
     }
 }
 
 .box {
-    background-color: #444;
+    background-color: #000000;
     color: #fff;
     border-radius: 5px;
-    padding: 20px;
-    margin: 1px;
+    padding: 20px 20px 10px 20px;
+    margin: 0 0 5px 0;
     font-size: 120%;
+    &.narrow {
+        background: none;
+        padding: 10px 0  10px 2px;
+    }
   }
 
+//   .box2 {
+//     color: #fff;
+//     margin: 0 0 5px 0;
+//     font-size: 120%;
+//   }

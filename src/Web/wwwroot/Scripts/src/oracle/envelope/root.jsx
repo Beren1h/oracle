@@ -89,6 +89,10 @@ class Envelope extends Component {
 
             if (current.isAfter(now)){
                 theme = theme + ' future';
+                if (once == 0){
+                    theme = theme + ' divider';
+                    once = 1;
+                }
             }
 
             transactions[i].theme = theme;
@@ -101,6 +105,7 @@ class Envelope extends Component {
         this.setState({
             transactions: transactions,
             parentId: container.parentId,
+            container: container,
             async: true,
             range: range,
             adding: {
@@ -362,19 +367,20 @@ class Envelope extends Component {
         return <div className="envelope">
             {
                 this.state.async &&                    
-                    <div className="box range">
-                        <label>start</label>
-                        <label>end</label>
-                        <Date 
-                            identifier="begin"
-                            value={this.state.range.begin} 
-                            onBlur={this.dateUpdate}
-                        />
-                        <Date 
-                            identifier="end"
-                            value={this.state.range.end} 
-                            onBlur={this.dateUpdate}
-                        />
+                    <div className="box narrow range">
+                        <div className="tag">{this.state.container.name}</div>
+                        <div>
+                            <Date 
+                                identifier="begin"
+                                value={this.state.range.begin} 
+                                onBlur={this.dateUpdate}
+                            /> <span>to</span>
+                            <Date 
+                                identifier="end"
+                                value={this.state.range.end} 
+                                onBlur={this.dateUpdate}
+                            />
+                        </div>
                     </div>
             }
             <div className="box ledger">
@@ -392,7 +398,7 @@ class Envelope extends Component {
             </div>
             {
                 this.state.async &&
-                    <div className="box form">
+                    <div className="form">
                         <Date 
                             value={this.state.adding.date} 
                             identifier="addDate"
