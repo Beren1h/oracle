@@ -111,7 +111,7 @@ class Dole extends Component {
             containerId: envelope._id,
             accounting: 'credit',
             doleId: this.props.doleId,
-            pending: false,
+            pending: true,
             verb: 'ignore',
             envelope: envelope,
             focus: false

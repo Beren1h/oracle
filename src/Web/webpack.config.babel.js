@@ -5,7 +5,7 @@ module.exports = {
     entry: './wwwroot/Scripts/src/entry.js',
     output: {
         path: path.join(__dirname, '/wwwroot/Scripts'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
     },
     plugins: [
         new WebpackNotifierPlugin({
@@ -39,7 +39,20 @@ module.exports = {
                     'style-loader',
                     'css-loader'
                 ]
-            },            
+            }  
+            //{
+            //    //want to load font-awesome here but can't fiure out the
+            //    //path to the damn fonts
+            //    test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+            //    use: [{
+            //        loader: 'file-loader',
+            //        options: {
+            //            name: '[name].[ext]',
+            //            outputPath: './wwwroot/fonts/',    // where the fonts will go
+            //            //publicPath: ''       // override the default path
+            //        }
+            //    }]
+            //}            
         ]
     }
 };

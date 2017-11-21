@@ -85,5 +85,10 @@ namespace Web.Controllers
             return View();
         }
 
+        [Route("test")]
+        public IActionResult Test()
+        {
+            return View();
+        }
     }
 }

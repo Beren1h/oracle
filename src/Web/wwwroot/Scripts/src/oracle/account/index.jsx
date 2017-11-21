@@ -7,7 +7,7 @@ const accounts = (props) => {
     //console.log('accounts version = ', props.version);
     return (
         <div>
-            <h1>accounts</h1>
+            <Account year={props.year} containerId={props.containerId} />
         </div>
     );
 };
