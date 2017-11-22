@@ -97,7 +97,11 @@ export const GET = {
         return axios(GET.props);
     },
     dole: (id) => {
-        GET.props.url = route.dole.baseline + '/' + id;
+        if (id){
+            GET.props.url = route.dole.baseline + '/' + id;
+        } else {
+            GET.props.url = route.dole.baseline;
+        }
         return axios(GET.props);
     },
     objectId: () => {

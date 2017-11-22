@@ -261,7 +261,14 @@ class Ledger extends Component {
         const transactions = this.state.transactions.slice(0);
         const transaction = transactions.find(t => t._id == this.state.editing.id);
         //console.log('raw transaction = ', transaction);
+
+        let pair;
         
+        if (transaction.pairId){
+            const getPair = await GET.transaction(transaction.pairId);
+            pair = getPair.data[0];
+        }
+                    
         switch (mode){
         case 'update':
             transaction.date = this.state.editing.date;
@@ -270,12 +277,6 @@ class Ledger extends Component {
 
             POST.transaction(transaction);
 
-            let pair;
-
-            if (transaction.pairId){
-                const getPair = await GET.transaction(transaction.pairId);
-                pair = getPair.data[0];
-            }
             //console.log('wtf = ', transaction.pairId);
             //console.log('raw pair = ', transaction);
             

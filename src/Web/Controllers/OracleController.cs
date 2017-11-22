@@ -85,6 +85,15 @@ namespace Web.Controllers
             return View();
         }
 
+        [Route("dash")]
+        public IActionResult Dash()
+        {
+            ViewBag.Year = _settings.Year;
+            ViewBag.Version = _settings.Version;
+
+            return View();
+        }
+
         [Route("test")]
         public IActionResult Test()
         {
