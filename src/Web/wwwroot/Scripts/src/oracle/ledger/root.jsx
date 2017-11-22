@@ -5,9 +5,9 @@ import Dollars from '../dollars.jsx';
 import Checkbox from '../checkbox.jsx';
 import { SortByAlpha } from '../helper.js';
 import moment from 'moment';
-import './account.scss';
+import './ledger.scss';
 
-class Account extends Component {
+class Ledger extends Component {
     constructor(props) {
         super(props);
 
@@ -148,8 +148,9 @@ class Account extends Component {
     rowClick(target){
 
         //return;
+        console.log('transaction _id = ', target._id);
 
-        if (target.accounting == 'credit'){
+        if (target.accounting != this.props.editable){
             return;
         }
         
@@ -170,7 +171,7 @@ class Account extends Component {
         this.setState({
             editing: editing
         }, ()  => {
-            console.log('editing state =  ', this.state.editing);
+            //console.log('editing state =  ', this.state.editing);
         });
     }
 
@@ -259,33 +260,45 @@ class Account extends Component {
        
         const transactions = this.state.transactions.slice(0);
         const transaction = transactions.find(t => t._id == this.state.editing.id);
-
+        //console.log('raw transaction = ', transaction);
+        
         switch (mode){
         case 'update':
             transaction.date = this.state.editing.date;
             transaction.amount = this.state.editing.amount;
             transaction.pending = this.state.editing.pending;
 
-            //POST.transaction(transaction);
+            POST.transaction(transaction);
 
-            const getPair = await GET.transaction(transaction.pairId);
-            const pair = getPair.data[0];
+            let pair;
+
+            if (transaction.pairId){
+                const getPair = await GET.transaction(transaction.pairId);
+                pair = getPair.data[0];
+            }
+            //console.log('wtf = ', transaction.pairId);
+            //console.log('raw pair = ', transaction);
             
             if (pair){
-                console.log('in = ', pair, this.state.editing);
+                //console.log('in = ', pair, this.state.editing);
                 pair.date = this.state.editing.date;
                 pair.amount = this.state.editing.amount;
                 pair.pending = this.state.editing.pending;
-                console.log('out = ', pair);
-                //POST.transaction(pair);
+                //console.log('out = ', pair);
+                POST.transaction(pair);
             }
 
-            console.log('post transaction = ', transaction);
-            console.log('post pair = ', pair);
+            //console.log('post transaction = ', transaction);
+            //console.log('post pair = ', pair);
             
             break;
         case 'delete':
             DELETE.transaction(transaction);
+
+            if (pair){
+                DELETE.transaction(pair);
+            }
+
             //transactions.splice(transactions.indexOf(transaction), 1);
             break;
         }
@@ -300,7 +313,7 @@ class Account extends Component {
     }
 
     editPending(pending){
-        console.log('parent pending = ', pending);
+        //console.log('parent pending = ', pending);
         const editing = Object.assign({}, this.state.editing);
         editing.pending = pending;
         this.setState({
@@ -357,11 +370,27 @@ class Account extends Component {
         }
 
         const getId = await GET.objectId();
-        const getPairId = await GET.objectId();
-
         const id = getId.data;
-        const pairId = getPairId.data;
 
+        let pairId = '';
+
+        if (this.state.container.type == 'envelope'){
+            const getPairId = await GET.objectId();
+            pairId = getPairId.data;
+
+            const pair = {
+                _id: pairId,
+                date: this.state.adding.date,
+                amount: this.state.adding.amount,
+                pairId: id,
+                containerId: this.state.parentId,
+                accounting: this.props.editable,
+                doleId: '',
+                pending: true
+            };
+
+            PUT.transaction(pair);
+        }
         
         const transaction = {
             _id: id,
@@ -369,24 +398,12 @@ class Account extends Component {
             amount: this.state.adding.amount,
             pairId: pairId,
             containerId: this.props.containerId,
-            accounting: 'debit',
-            doleId: '',
-            pending: true
-        };
-
-        const pair = {
-            _id: pairId,
-            date: this.state.adding.date,
-            amount: this.state.adding.amount,
-            pairId: id,
-            containerId: this.state.parentId,
-            accounting: 'debit',
+            accounting: this.props.editable,
             doleId: '',
             pending: true
         };
 
         PUT.transaction(transaction);
-        PUT.transaction(pair);
 
         this.setState({
             async: true
@@ -397,12 +414,10 @@ class Account extends Component {
 
     render() {
         return <div className="account">
-            <i className="fa fa-rocket" />
             {
                 this.state.async &&                    
                     <div className="box narrow range-a">
-                        <Checkbox className="pending" checked={true} />
-                        <div className="tag">{this.state.container.name}</div>
+                        <div className="tag">{this.state.container.name} {this.state.container.type}</div>
                         <div>
                             <Date 
                                 identifier="begin"
@@ -419,7 +434,7 @@ class Account extends Component {
             }
             <div className="box ledger-a">
                 <div key={'x'} className="row heading">
-                    <div>R</div>
+                    <div>cleared</div>
                     <div>date</div>
                     <div>debit</div>
                     <div>credit</div>
@@ -434,21 +449,23 @@ class Account extends Component {
             {
                 this.state.async &&
                     <div className="form-a">
-                        <Date 
+                        <Date
+                            className="date"
                             value={this.state.adding.date} 
                             identifier="addDate"
                             onBlur={this.addDate}
                         />
                         <Dollars
+                            className={this.props.editable}
                             value={this.state.adding.amount}
                             identifier="addDollars"
                             onBlur={this.addAmount}
                         />
-                        <a onClick={this.addTransaction}>&#10010;</a>
+                        <a className="add" onClick={this.addTransaction}>&#10010;</a>
                     </div>
             }
         </div>;
     }
 }
 
-export default Account;
+export default Ledger;

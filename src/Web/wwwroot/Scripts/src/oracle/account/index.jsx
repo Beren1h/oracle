@@ -1,5 +1,5 @@
 import React from 'react';
-import Account from './root.jsx';
+import Ledger from '../ledger/root.jsx';
 
 
 const accounts = (props) => {
@@ -7,7 +7,7 @@ const accounts = (props) => {
     //console.log('accounts version = ', props.version);
     return (
         <div>
-            <Account year={props.year} containerId={props.containerId} />
+            <Ledger year={props.year} containerId={props.containerId} editable="credit" />
         </div>
     );
 };

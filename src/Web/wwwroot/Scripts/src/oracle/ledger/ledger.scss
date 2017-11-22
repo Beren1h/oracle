@@ -53,12 +53,12 @@
     flex-direction: column;
     display: grid;
     grid-template-columns: 100%;
-    & div, span {
-        padding: 0 10px 0 10px;
-    }
+    // & div, span {
+    //     padding: 0 10px 0 10px;
+    // }
     & .row {
         display: grid;
-        grid-template-columns: 5% 15% 25% 25% 25%;
+        grid-template-columns: 7% 15% 25% 25% 27%;
         padding: 3px;
         justify-items: end;
         cursor: pointer;
@@ -90,12 +90,13 @@
         }
         & i {
             align-self: center;
+            //padding: 0 5px 0 0;
         }
         & input{
             border: none;
             background-color: aliceblue;
             border-radius: 5px;
-            padding: 0 10px 0 10px;
+            //padding: 0 10px 0 10px;
             width: 65%;
             font-size: 20px;
             text-align: right;
@@ -104,10 +105,11 @@
                 width: 65%;
             }
             &.pending {
-                width: auto;
+               width: auto;
             }            
             &[type=checkbox] {
                 justify-self: end;
+                margin: 0;
             }
         }
         & .red {
@@ -145,7 +147,9 @@
 .form-a {
     grid-area: form;
     display: grid;
-    grid-template-columns: 15% 30% 55%;
+    //grid-template-columns: 23% 25% 51%;
+    //grid-template-columns: 23% 50% 27%;
+    grid-template-columns: 7% 15% 25% 25% 27%;
     justify-items: end;
     padding: 10px 20px 0 20px;
     margin: 5px 0 0 0;
@@ -159,6 +163,15 @@
         width: 65%;
         font-size: 20px;
         text-align: right;
+        &.date {
+            grid-column: 2
+        }  
+        &.credit {
+            grid-column: 4;
+        }   
+        &.debit {
+            grid-column: 3;
+        }   
     }
     & a {
         display: block;
@@ -171,6 +184,9 @@
         background-color: green;
         text-align: center;
         align-self: stretch;
+        &.add {
+            grid-column: 5;
+        }
     }
 }
 

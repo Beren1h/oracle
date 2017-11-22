@@ -1,5 +1,6 @@
 import React from 'react';
-import Envelope from './root.jsx';
+//import Envelope from './root.jsx';
+import Ledger from '../ledger/root.jsx';
 
 
 const envelopes = (props) => {
@@ -7,7 +8,7 @@ const envelopes = (props) => {
     //console.log('accounts version = ', props.version);
     return (
         <div>
-            <Envelope year={props.year} containerId={props.containerId} />
+            <Ledger year={props.year} containerId={props.containerId} editable="debit" />
         </div>
     );
 };

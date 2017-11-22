@@ -8,8 +8,6 @@ const dole = (props) => {
     //console.log('dole parent id = ', props.parentId);
     return (
         <div>
-            <h1>wtf</h1>
-            <i className="fa fa-camera-retro"></i> fa-camera-retro
             <Dole 
                 containerId = {props.containerId} 
                 doleId = {props.doleId} 

@@ -67,7 +67,7 @@ export const PUT = {
     transaction: (document) => {
         PUT.props.url = route.transaction.baseline;
         PUT.props.data = document;
-        console.log('PUT = ', PUT.props, document);
+        //console.log('PUT = ', PUT.props, document);
         return axios(PUT.props);
     },
     dole: (document) => {

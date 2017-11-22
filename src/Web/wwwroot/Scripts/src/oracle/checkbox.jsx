@@ -74,12 +74,12 @@ class Checkbox extends Component {
         //console.log('on change');
         //e.stopPropagation();
         const checked = e.target.checked;
-        console.log('e = ', e.target.checked);
+        //console.log('e = ', e.target.checked);
         this.setState({
             checked: e.target.checked,
             amTarget: false
         }, () => {
-            console.log('checked state = ', this.state.checked);
+            //console.log('checked state = ', this.state.checked);
         });
 
         if (this.props.onChange){
@@ -98,10 +98,10 @@ class Checkbox extends Component {
             />;
         } else {
             if (this.state.checked){
-                return <i className="fa fa-circle" />;
+                return <i className="fa fa-university" />;
             } 
             
-            return '';
+            return <div></div>;
         }
         // return <NumberFormat
         //     id={this.props.id}
