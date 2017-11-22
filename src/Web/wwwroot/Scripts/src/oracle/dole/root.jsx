@@ -40,25 +40,14 @@ class Dole extends Component {
 
     async load(){
 
-        //console.log(Get.transaction.dole(9));
-        //console.log();
-        //GetTransaction(9, 'dole');
-        //const x = get.transaction();
-        //console.log(x);
-        //console.log(await GET.container());
-
-
         let envelopes = [];
         let transactions = [];
         let dole = {};
 
-        //const getContainers = await GetContainers();
         const getContainers = await GET.container();
         envelopes = getContainers.data.filter(c => c.type == 'envelope');
         const account = getContainers.data.find(c => c._id == this.props.containerId);
 
-        console.log(account);
-        //const getDole = await GetDole(this.props.doleId);
         const getDole = await GET.dole(this.props.doleId);
         dole = getDole.data[0];
 
@@ -75,7 +64,6 @@ class Dole extends Component {
             };
         }
 
-        //const getTransactions = await GetTransaction(this.props.doleId, 'dole');
         const getTransactions = await GET.transaction(this.props.doleId, 'dole');
         transactions = getTransactions.data;
 
@@ -125,7 +113,6 @@ class Dole extends Component {
     }
 
     async generateObjectId(){
-        // const response = await GetObjectId();
         const response = await GET.objectId();
         return response.data;
     }
@@ -207,22 +194,18 @@ class Dole extends Component {
         }
 
         for (let transaction of put){
-            //PutTransaction(transaction);
             PUT.transaction(transaction);
         }
 
         for (let transaction of post){
-            //PostTransaction(transaction);
             POST.transaction(transaction);
         }
 
         for (let transaction of del){
-            //DeleteTransaction(transaction);
             DELETE.transaction(transaction);
         }
 
         if (dole.verb == 'post'){
-            //PostDole(dole)
             POST.dole(dole)
                 .then(() => {
                     this.setState({
@@ -234,7 +217,6 @@ class Dole extends Component {
                 });
         } else {
             PUT.dole(dole)
-            //PutDole(dole)
                 .then(() => {
                     const current = window.location.href;
                     window.location.href = current + '?doleId=' + dole._id;
@@ -253,7 +235,6 @@ class Dole extends Component {
         }
         
         const now = moment();
-        //console.log(now.isBefore(date));
         dole.date = date;
 
         this.setState({
@@ -275,7 +256,6 @@ class Dole extends Component {
 
 
     render() {
-        console.log(this.props);
         if (this.state.show){
             const mark = this.state.dole.verb == 'post' ? 'fa-check' : 'fa-plus';
             return <div className="dole">
@@ -313,51 +293,6 @@ class Dole extends Component {
         } else {
             return <h1>saving</h1>;
         }
-
-
-        // if (this.state.show){
-        //     return <div>
-        //         {
-        //             this.state.async &&
-        //             <div>
-        //                 <div className={'container'}>
-        //                     <div className={'heading'}>
-        //                         <label>date</label>
-        //                         <Date
-        //                             onBlur={this.dateUpdate}
-        //                             value={this.state.dole.date}
-        //                         />
-        //                     </div>
-        //                     <div className={'heading'}>
-        //                         <label>amount</label>
-        //                         <Dollars
-        //                             onBlur={this.dollarsUpdate}
-        //                             value={this.state.dole.amount}
-        //                         />
-        //                     </div>
-        //                     <div className={'save'}>
-        //                         <a onClick={this.save}>save</a>
-        //                     </div>
-        //                 </div>
-        //                 <div className={'container'}>
-        //                     <Envelopes 
-        //                         containerId={this.props.containerId} 
-        //                         transactions={this.getTransactionSlice('envelope')} 
-        //                         onDisplay={this.onDisplay} 
-        //                     />
-        //                     <Transactions 
-        //                         containerId={this.props.containerId} 
-        //                         transactions={this.getTransactionSlice('pending')} 
-        //                         onHide={this.onHide} 
-        //                         amount={this.state.dole.amount} 
-        //                     />
-        //                 </div>
-        //             </div>
-        //         }
-        //     </div>;
-        // }
-
-        // return <h1>saving</h1>;
     }
 }
 

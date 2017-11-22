@@ -3,6 +3,7 @@ import { GET} from '../api.js';
 import './dash.scss';
 import { SortByAlpha } from '../helper.js';
 import moment from 'moment';
+import Date from '../date.jsx';
 
 class Dole extends Component {
     constructor(props) {
@@ -10,6 +11,8 @@ class Dole extends Component {
 
         this.state = {
             async: false,
+            envelopes: [],
+            accounts: [],
             range: {
                 begin: '',
                 end: ''
@@ -123,13 +126,47 @@ class Dole extends Component {
         console.log('a =', accountSummary);
 
         this.setState({
-            range: range
+            async: true,
+            range: range,
+            envelopes: envelopeSummary,
+            accounts: accountSummary
+        }, () => {
+            console.log('state  = ', this.state);
         });
     }
 
 
     render() {
-        return <div>dash</div>;
+        return <div className="dash">
+                            <div className="head">
+                        <Date
+                            value={this.state.range.end} 
+                            //onBlur={this.addDate}
+                        />                
+                    </div>
+                    <div className="body">
+                        <div className="envelopes">
+                            {
+                                this.state.envelopes.map((envelope, index) =>  {
+                                    return <div key={index} className="row">
+                                        <div>{envelope.envelope.name}</div>
+                                        <div>{envelope.balance}</div>
+                                    </div>;
+                                })
+                            }
+                        </div>
+                        <div className="accounts">
+                            {
+                                this.state.accounts.map((account, index) => {
+                                    return <div key={index} className="row">
+                                        <div>{account.account.name}</div>
+                                        <div>{account.balance}</div>
+                                    </div>;
+                                })
+                            }
+                        </div>
+                    </div>
+        </div>;
     }
 }
 

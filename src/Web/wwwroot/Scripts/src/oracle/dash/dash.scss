@@ -1,0 +1,26 @@
+@import '../variables';
+@import '../index';
+
+.dash {
+    display: grid;
+    grid-template-columns: 100%;
+    & .head {
+
+    }
+    & .body {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        & .envelopes {
+            & .row {
+                display: grid;
+                grid-template-columns: 50% 50%;
+            }
+        }
+        & .accounts {
+            & .row {
+                display: grid;
+                grid-template-columns: 50% 50%;
+            }
+        }
+    }
+}
