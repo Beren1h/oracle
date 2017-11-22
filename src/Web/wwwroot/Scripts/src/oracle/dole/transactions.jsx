@@ -87,8 +87,20 @@ class Transaction extends Component {
                         return display;
                     })
                 }
+                <div className="input summary2">
+                    {
+                        this.state.transactions.length > 0 &&
+                            <NumberFormat 
+                                value={this.state.summary.balance} 
+                                displayType={'text'} 
+                                thousandSeparator={true} 
+                                prefix={'$'}
+                                decimalPrecision={2}
+                            />
+                    }
+                </div>
             </div>
-            <div className={'summary'}>
+            {/* <div className={'summary'}>
                 <NumberFormat 
                     value={this.state.summary.balance} 
                     displayType={'text'} 
@@ -96,7 +108,7 @@ class Transaction extends Component {
                     prefix={'$'}
                     decimalPrecision={2}
                 />
-            </div>
+            </div> */}
         </div>;
     }
 }

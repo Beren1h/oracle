@@ -90,8 +90,7 @@ class Dole extends Component {
             let hasBeenRed = false;
 
             const status = {
-                _id: envelope._id,
-                name: envelope.name,
+                envelope: envelope,
                 balance: 0,
                 isBlack: true
             };

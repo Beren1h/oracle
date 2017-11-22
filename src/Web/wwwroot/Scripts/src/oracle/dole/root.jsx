@@ -16,6 +16,7 @@ class Dole extends Component {
             async: false,
             show: true,
             parent: {},
+            container: {},
             transactions: [],
             envelopes: [],
             dole: {}
@@ -54,7 +55,9 @@ class Dole extends Component {
         //const getContainers = await GetContainers();
         const getContainers = await GET.container();
         envelopes = getContainers.data.filter(c => c.type == 'envelope');
+        const account = getContainers.data.find(c => c._id == this.props.containerId);
 
+        console.log(account);
         //const getDole = await GetDole(this.props.doleId);
         const getDole = await GET.dole(this.props.doleId);
         dole = getDole.data[0];
@@ -91,6 +94,7 @@ class Dole extends Component {
         this.setState ({
             dole: dole,
             transactions: transactions,
+            container: account,
             envelopes: envelopes,
             show: true,
             async: true
@@ -268,50 +272,92 @@ class Dole extends Component {
         });
     }
 
+
+
     render() {
+        console.log(this.props);
         if (this.state.show){
-            return <div>
-                {
-                    this.state.async &&
+            const mark = this.state.dole.verb == 'post' ? 'fa-check' : 'fa-plus';
+            return <div className="dole">
+                <div className="head">
+                    <div className="tag">{this.state.container.name} {this.state.container.type} dole</div>
                     <div>
-                        <div className={'container'}>
-                            <div className={'heading'}>
-                                <label>date</label>
-                                <Date
-                                    onBlur={this.dateUpdate}
-                                    value={this.state.dole.date}
-                                />
-                            </div>
-                            <div className={'heading'}>
-                                <label>amount</label>
-                                <Dollars
-                                    onBlur={this.dollarsUpdate}
-                                    value={this.state.dole.amount}
-                                />
-                            </div>
-                            <div className={'save'}>
-                                <a onClick={this.save}>save</a>
-                            </div>
-                        </div>
-                        <div className={'container'}>
-                            <Envelopes 
-                                containerId={this.props.containerId} 
-                                transactions={this.getTransactionSlice('envelope')} 
-                                onDisplay={this.onDisplay} 
-                            />
-                            <Transactions 
-                                containerId={this.props.containerId} 
-                                transactions={this.getTransactionSlice('pending')} 
-                                onHide={this.onHide} 
-                                amount={this.state.dole.amount} 
-                            />
-                        </div>
-                    </div>
-                }
+                        <Date
+                            onBlur={this.dateUpdate}
+                            value={this.state.dole.date}
+                        /> 
+                        <span>for</span>
+                        <Dollars
+                            onBlur={this.dollarsUpdate}
+                            value={this.state.dole.amount}
+                        />
+                    </div>                    
+                </div>
+                <div className="body">
+                    <Envelopes 
+                        containerId={this.props.containerId} 
+                        transactions={this.getTransactionSlice('envelope')} 
+                        onDisplay={this.onDisplay} 
+                    />
+                    <Transactions 
+                        containerId={this.props.containerId} 
+                        transactions={this.getTransactionSlice('pending')} 
+                        onHide={this.onHide} 
+                        amount={this.state.dole.amount} 
+                    />                
+                </div>
+                <div className="action">
+                    <a onClick={this.save}><i className={'fa ' + mark}/></a>
+                </div>
             </div>;
+        } else {
+            return <h1>saving</h1>;
         }
 
-        return <h1>saving</h1>;
+
+        // if (this.state.show){
+        //     return <div>
+        //         {
+        //             this.state.async &&
+        //             <div>
+        //                 <div className={'container'}>
+        //                     <div className={'heading'}>
+        //                         <label>date</label>
+        //                         <Date
+        //                             onBlur={this.dateUpdate}
+        //                             value={this.state.dole.date}
+        //                         />
+        //                     </div>
+        //                     <div className={'heading'}>
+        //                         <label>amount</label>
+        //                         <Dollars
+        //                             onBlur={this.dollarsUpdate}
+        //                             value={this.state.dole.amount}
+        //                         />
+        //                     </div>
+        //                     <div className={'save'}>
+        //                         <a onClick={this.save}>save</a>
+        //                     </div>
+        //                 </div>
+        //                 <div className={'container'}>
+        //                     <Envelopes 
+        //                         containerId={this.props.containerId} 
+        //                         transactions={this.getTransactionSlice('envelope')} 
+        //                         onDisplay={this.onDisplay} 
+        //                     />
+        //                     <Transactions 
+        //                         containerId={this.props.containerId} 
+        //                         transactions={this.getTransactionSlice('pending')} 
+        //                         onHide={this.onHide} 
+        //                         amount={this.state.dole.amount} 
+        //                     />
+        //                 </div>
+        //             </div>
+        //         }
+        //     </div>;
+        // }
+
+        // return <h1>saving</h1>;
     }
 }
 
