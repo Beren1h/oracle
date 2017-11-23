@@ -3,24 +3,136 @@
 
 .dash {
     display: grid;
-    grid-template-columns: 100%;
+    grid-template-columns: 20% 20% 20% 20%;
+    font-size: 120%;
     & .head {
+        //border-bottom: 1px solid #373737;
+        justify-self: end;
+        grid-column: 4;
+        padding: 0 5% 5px 0;
+        &.top {
+            margin: 0 0 20px 0;
+        }
+    }
+    & .summary {
+        display: grid;
+        padding: 5px;
+        width: 90%;
+        grid-template-columns: 50% 50%;
+        align-items: center;
+        & a {
+            width: 100%;
+            text-decoration: none;
+            color: #BEBEBE;
+            &:last-child {
+                text-align: right;
+            }
+        }
+        // & span {
+        //     justify-self: end;
+        // }
+        &.light {
+            background-color: #444444;
+        }
+        &.dark {
+            background-color: #373737;
+        }             
+    }
+    & .column {
+        & :nth-child(2) {
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        & :last-child {
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    }
+    & .envelopes {
+    }
+    & .accounts {
+        //background-color: purple;
+    }
+    & .dole-list {
 
     }
-    & .body {
-        display: grid;
-        grid-template-columns: 50% 50%;
-        & .envelopes {
-            & .row {
-                display: grid;
-                grid-template-columns: 50% 50%;
-            }
-        }
-        & .accounts {
-            & .row {
-                display: grid;
-                grid-template-columns: 50% 50%;
-            }
-        }
-    }
 }
+
+
+// .dash {
+//     display: grid;
+//     grid-template-columns: 100%;
+//     justify-items: end;
+//     font-size: 120%;
+//     & .head {
+
+//     }
+//     & .body {
+//         display: grid;
+//         width: 100%;
+//         grid-template-columns: 50% 50%;
+//         & .envelopes {
+//             & .row {
+//                 display: grid;
+//                 grid-template-columns: 50% 50%;
+//             }
+//         }
+//         & .accounts {
+//             display: grid;
+//             grid-template-columns: 100%;
+//             grid-row-gap: 5px;
+//             & .heading {
+//                 border-bottom: 1px solid #373737;
+//             }
+//             & .row {
+//                 display: grid;
+//                 grid-template-columns: 30% 25%;
+//                 padding: 5px;
+//                 justify-content: end;
+//                 // & a {
+//                 //     text-decoration: none;
+//                 //     color: #BEBEBE;
+//                 //     &:last-child {
+//                 //         justify-self: end;
+//                 //     }
+//                 // }
+//                 & span {
+//                     justify-self: end;
+//                 }
+//                 & .add {
+//                     grid-column: 1 /span 2;
+//                     justify-self: end;
+//                 }
+//                 &.light {
+//                     background-color: #444444;
+//                 }
+//                 &.dark {
+//                     background-color: #373737;
+//                 }                
+//                 padding: 5px;
+//                 & .doles {
+//                     display: grid;
+//                     grid-template-columns: 100%;
+//                     border-radius: 5px;
+//                     //justify-items: start !important;
+//                     background-color: #000000;
+//                     padding: 10px;
+//                     grid-column: 1 /span 2;
+//                     & .row {
+//                         //justify-items: start;
+//                         display: grid;
+//                         grid-template-columns: 50% 50%;
+//                         //grid-column: 1 /span 2;
+//                         & a {
+//                             text-decoration: none;
+//                             color: #BEBEBE;
+//                             &:last-child {
+//                                 justify-self: end;
+//                             }
+//                         }                        
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }

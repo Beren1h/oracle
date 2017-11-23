@@ -4,6 +4,7 @@ import './dash.scss';
 import { SortByAlpha } from '../helper.js';
 import moment from 'moment';
 import Date from '../date.jsx';
+import Dollars from '../dollars.jsx';
 
 class Dole extends Component {
     constructor(props) {
@@ -138,35 +139,143 @@ class Dole extends Component {
 
     render() {
         return <div className="dash">
-                            <div className="head">
-                        <Date
-                            value={this.state.range.end} 
-                            //onBlur={this.addDate}
-                        />                
-                    </div>
-                    <div className="body">
-                        <div className="envelopes">
-                            {
-                                this.state.envelopes.map((envelope, index) =>  {
-                                    return <div key={index} className="row">
-                                        <div>{envelope.envelope.name}</div>
-                                        <div>{envelope.balance}</div>
-                                    </div>;
-                                })
-                            }
+            <div className="head top">
+                <Date 
+                    value={this.state.range.end}
+                />                    
+            </div>
+            <div className="envelopes column">
+                <div className="head">
+                    envelopes
+                </div>
+                {
+                    this.state.envelopes.map((envelope, index) =>  {
+                        let theme = 'dark';
+                        if (index % 2 == 0){
+                            theme = 'light';
+                        }
+                        return <div key={index} className={'summary ' + theme}>
+                            <a href="#" target="_blank">
+                                {envelope.envelope.name}
+                            </a>
+                            <a href="#" target="_blank">
+                                <Dollars
+                                    value={envelope.balance}
+                                    isEdit={false}
+                                />
+                            </a>
+                        </div>;
+                    })
+                }                
+            </div>
+            <div className="accounts column">
+                <div className="head">
+                    accounts
+                </div>
+                {
+                    this.state.accounts.map((account, index) => {
+                        let theme = 'dark';
+                        if (index % 2 == 0){
+                            theme = 'light';
+                        }
+                        return <div key={index} className={'summary ' + theme}>
+                            <a href="#" target="_blank">
+                                {account.account.name}
+                            </a>
+                            <Dollars
+                                value={account.balance}
+                                isEdit={false}
+                            />
+                        </div>;
+                    })
+                }
+            </div>
+            {
+                this.state.accounts.map((account, index) => {
+                    return <div key={index} className="dole-list column">
+                        <div className="head">
+                            {account.account.name} dole
                         </div>
-                        <div className="accounts">
-                            {
-                                this.state.accounts.map((account, index) => {
-                                    return <div key={index} className="row">
-                                        <div>{account.account.name}</div>
-                                        <div>{account.balance}</div>
-                                    </div>;
-                                })
-                            }
-                        </div>
-                    </div>
+                        {
+                            account.doles.map((dole, index) => {
+                                let theme = 'dark';
+                                if (index % 2 == 0){
+                                    theme = 'light';
+                                }
+                                return <div key={index} className={'summary ' + theme}>
+                                    <Date
+                                        value={dole.date}
+                                        isEdit={false}
+                                    />
+                                    <Dollars
+                                        value={dole.amount}
+                                        isEdit={false}
+                                    />
+                                </div>;
+                            })
+                        }
+                    </div>;
+                })
+            }
         </div>;
+        // return <div className="dash">
+        //                     <div className="head">
+        //                 <Date
+        //                     value={this.state.range.end} 
+        //                     //onBlur={this.addDate}
+        //                 />                
+        //             </div>
+        //             <div className="body">
+        //                 <div className="envelopes">
+        //                     {
+        //                         this.state.envelopes.map((envelope, index) =>  {
+        //                             return <div key={index} className="row">
+        //                                 <div>{envelope.envelope.name}</div>
+        //                                 <Dollars
+        //                                     value={envelope.balance}
+        //                                     isEdit={false}
+        //                                 />
+        //                             </div>;
+        //                         })
+        //                     }
+        //                 </div>
+        //                 <div className="accounts">
+        //                     <div className="heading">accounts</div>
+        //                     {
+        //                         this.state.accounts.map((account, index) => {
+        //                             return <div key={index} className="row">
+        //                                 <div>{account.account.name}</div>
+        //                                 <Dollars
+        //                                     value={account.balance}
+        //                                     isEdit={false}
+        //                                 />
+        //                                 <div className="doles">
+        //                                     {
+        //                                         account.doles.map((dole, index) => {
+        //                                             let theme = 'dark';
+        //                                             if (index % 2 == 0) {
+        //                                                 theme = 'light';
+        //                                             }
+        //                                             return <div key={index} className={'row ' + theme}>
+        //                                                     <a target="_blank" href="#"><Date
+        //                                                         value={dole.date}
+        //                                                         isEdit={false}
+        //                                                     /> </a>
+        //                                                     <a target="_blank" href="#"><Dollars
+        //                                                         value={dole.amount}
+        //                                                         isEdit={false}
+        //                                                     /></a>
+        //                                                 </div>;
+        //                                         })
+        //                                     }
+        //                                 </div>
+        //                                 <div className="add">plus</div>
+        //                             </div>;
+        //                         })
+        //                     }
+        //                 </div>
+        //             </div>
+        // </div>;
     }
 }
 
