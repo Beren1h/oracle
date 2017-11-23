@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NumberFormat from 'react-number-format';
 import Dollars from '../dollars.jsx';
+import { SortByAlpha } from '../helper.js';
 
 class Transaction extends Component {
     constructor(props) {
@@ -24,7 +25,7 @@ class Transaction extends Component {
     componentWillReceiveProps(nextProps){
         if (nextProps){
             this.setState({
-                transactions: nextProps.transactions,
+                transactions: nextProps.transactions.sort((a, b) => SortByAlpha(a.envelope.name, b.envelope.name)),
                 summary: this.summary(nextProps.transactions, nextProps.containerId, nextProps.amount)
             }, () => {
                 //console.log('receive pendings = ', this.state.pendings);

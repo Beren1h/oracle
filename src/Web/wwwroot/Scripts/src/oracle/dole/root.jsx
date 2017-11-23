@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { GET, PUT, POST, DELETE, GetContainers, GetDole, PostDole, PutDole, GetObjectId, GetTransaction, PostTransaction, PutTransaction, DeleteTransaction  } from '../api.js';
 import { GET, PUT, POST, DELETE } from '../api.js';
 import Envelopes from './envelopes.jsx';
 import Transactions from './transactions.jsx';
@@ -7,6 +6,7 @@ import moment from 'moment';
 import './dole.scss';
 import Date from '../date.jsx';
 import Dollars from '../dollars.jsx';
+import { SortByAlpha } from '../helper.js';
 
 class Dole extends Component {
     constructor(props) {
@@ -67,7 +67,7 @@ class Dole extends Component {
         const getTransactions = await GET.transaction(this.props.doleId, 'dole');
         transactions = getTransactions.data;
 
-        for (let envelope of envelopes) {
+        for (let envelope of envelopes.sort((a, b) => SortByAlpha(a.name, b.name))) {
             const credit = transactions.find(t => t.containerId == envelope._id);
             if (credit){
                 credit.verb = 'post';

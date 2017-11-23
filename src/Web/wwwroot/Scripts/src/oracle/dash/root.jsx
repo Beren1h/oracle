@@ -99,7 +99,7 @@ class Dole extends Component {
 
 
         const envelopeSummary = [];
-        for (let envelope of envelopes){
+        for (let envelope of envelopes.sort((a, b) => SortByAlpha(a.name, b.name))){
             const getTransactions = await GET.transaction(envelope._id, 'container');
             const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
 
@@ -126,7 +126,7 @@ class Dole extends Component {
                     status.balance += transaction.amount;
                 }
 
-                if (status.balance <= 0 && !hasBeenRed){
+                if (status.balance < 0 && !hasBeenRed){
                     status.isBlack = false;
                     hasBeenRed = true;
                 }
