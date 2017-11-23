@@ -13,6 +13,16 @@
         &.top {
             margin: 0 0 20px 0;
         }
+        & input{
+            border: none;
+            background-color: aliceblue;
+            border-radius: 5px;
+            margin: 2px;
+            padding: 5px;
+            width: 75px;
+            font-size: 20px;
+            text-align: center;
+        }        
     }
     & .summary {
         display: grid;
@@ -28,15 +38,18 @@
                 text-align: right;
             }
         }
-        // & span {
-        //     justify-self: end;
-        // }
         &.light {
             background-color: #444444;
         }
         &.dark {
             background-color: #373737;
-        }             
+        }
+        &.red {
+            & a {
+                color: darkred;    
+            }
+            background-color: palevioletred;
+        }
     }
     & .column {
         & :nth-child(2) {

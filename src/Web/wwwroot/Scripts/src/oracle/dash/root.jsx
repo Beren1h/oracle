@@ -21,7 +21,7 @@ class Dole extends Component {
         };
 
         this.load = this.load.bind(this);
-
+        this.updateDate = this.updateDate.bind(this);
     }
 
     async componentWillMount(){
@@ -31,6 +31,7 @@ class Dole extends Component {
     async load(){
 
         let range = {};
+        const url = 'http://localhost:5000/oracle';
 
         if (!this.state.range.begin){
             range = {
@@ -53,16 +54,27 @@ class Dole extends Component {
         const getDoles = await GET.dole();
         const doles = getDoles.data;
 
-        console.log(doles);
-
         const accountSummary = [];
         for (let account of accounts){
 
-            const thing = {
+            const adjusted = doles.filter(d => d.containerId == account._id).sort((a, b) => SortByAlpha(a.date, b.date));
+            const adjustedDoles = [];
+
+            for (let dole of adjusted) {
+                const date = moment(dole.date);
+                if (date.isSameOrBefore(end)){
+                    dole.url = url + '/dole/' + account._id + '?doleId=' + dole._id;
+                    adjustedDoles.push(dole);
+                }
+            }
+
+            const status = {
                 account: account,
-                doles: doles.filter(d => d.containerId == account._id).sort((a, b) => SortByAlpha(a.date, b.date)),
-                balance: 0
+                doles: adjustedDoles,
+                balance: 0,
+                url: url + '/account/' + account._id
             };
+
             const getTransactions = await GET.transaction(account._id, 'container');
             const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
 
@@ -75,14 +87,14 @@ class Dole extends Component {
 
                 if (!transaction.pending){
                     if (transaction.accounting == 'debit'){
-                        thing.balance -= transaction.amount;
+                        status.balance -= transaction.amount;
                     } else {
-                        thing.balance += transaction.amount;
+                        status.balance += transaction.amount;
                     }
                 }
             }
 
-            accountSummary.push(thing);
+            accountSummary.push(status);
         }
 
 
@@ -96,7 +108,8 @@ class Dole extends Component {
             const status = {
                 envelope: envelope,
                 balance: 0,
-                isBlack: true
+                isBlack: true,
+                url: url + '/envelope/' + envelope._id
             };
             
             for (let transaction of transactions){
@@ -122,26 +135,33 @@ class Dole extends Component {
             envelopeSummary.push(status);
         }
 
-
-        console.log('e =', envelopeSummary);
-        console.log('a =', accountSummary);
-
         this.setState({
             async: true,
             range: range,
             envelopes: envelopeSummary,
             accounts: accountSummary
         }, () => {
-            console.log('state  = ', this.state);
+            //console.log('state  = ', this.state);
         });
     }
 
+    updateDate(date){
+        const range = Object.assign({}, this.state.range);
+        range.end = date;
+        this.setState({
+            range: range,
+            async: false
+        }, () => {
+            this.load();
+        });
+    }
 
     render() {
         return <div className="dash">
             <div className="head top">
                 <Date 
                     value={this.state.range.end}
+                    onBlur={this.updateDate}
                 />                    
             </div>
             <div className="envelopes column">
@@ -154,11 +174,14 @@ class Dole extends Component {
                         if (index % 2 == 0){
                             theme = 'light';
                         }
+                        if (!envelope.isBlack){
+                            theme = 'red';
+                        }
                         return <div key={index} className={'summary ' + theme}>
-                            <a href="#" target="_blank">
+                            <a href={envelope.url} target="_blank">
                                 {envelope.envelope.name}
                             </a>
-                            <a href="#" target="_blank">
+                            <a href={envelope.url} target="_blank">
                                 <Dollars
                                     value={envelope.balance}
                                     isEdit={false}
@@ -179,13 +202,15 @@ class Dole extends Component {
                             theme = 'light';
                         }
                         return <div key={index} className={'summary ' + theme}>
-                            <a href="#" target="_blank">
+                            <a href={account.url} target="_blank">
                                 {account.account.name}
                             </a>
-                            <Dollars
-                                value={account.balance}
-                                isEdit={false}
-                            />
+                            <a href={account.url} target="_blank">
+                                <Dollars
+                                    value={account.balance}
+                                    isEdit={false}
+                                />
+                            </a>
                         </div>;
                     })
                 }
@@ -203,14 +228,18 @@ class Dole extends Component {
                                     theme = 'light';
                                 }
                                 return <div key={index} className={'summary ' + theme}>
-                                    <Date
-                                        value={dole.date}
-                                        isEdit={false}
-                                    />
-                                    <Dollars
-                                        value={dole.amount}
-                                        isEdit={false}
-                                    />
+                                    <a href={dole.url} target="_blank">
+                                        <Date
+                                            value={dole.date}
+                                            isEdit={false}
+                                        />
+                                    </a>
+                                    <a href={dole.url} target="_blank">
+                                        <Dollars
+                                            value={dole.amount}
+                                            isEdit={false}
+                                        />
+                                    </a>
                                 </div>;
                             })
                         }
@@ -218,64 +247,6 @@ class Dole extends Component {
                 })
             }
         </div>;
-        // return <div className="dash">
-        //                     <div className="head">
-        //                 <Date
-        //                     value={this.state.range.end} 
-        //                     //onBlur={this.addDate}
-        //                 />                
-        //             </div>
-        //             <div className="body">
-        //                 <div className="envelopes">
-        //                     {
-        //                         this.state.envelopes.map((envelope, index) =>  {
-        //                             return <div key={index} className="row">
-        //                                 <div>{envelope.envelope.name}</div>
-        //                                 <Dollars
-        //                                     value={envelope.balance}
-        //                                     isEdit={false}
-        //                                 />
-        //                             </div>;
-        //                         })
-        //                     }
-        //                 </div>
-        //                 <div className="accounts">
-        //                     <div className="heading">accounts</div>
-        //                     {
-        //                         this.state.accounts.map((account, index) => {
-        //                             return <div key={index} className="row">
-        //                                 <div>{account.account.name}</div>
-        //                                 <Dollars
-        //                                     value={account.balance}
-        //                                     isEdit={false}
-        //                                 />
-        //                                 <div className="doles">
-        //                                     {
-        //                                         account.doles.map((dole, index) => {
-        //                                             let theme = 'dark';
-        //                                             if (index % 2 == 0) {
-        //                                                 theme = 'light';
-        //                                             }
-        //                                             return <div key={index} className={'row ' + theme}>
-        //                                                     <a target="_blank" href="#"><Date
-        //                                                         value={dole.date}
-        //                                                         isEdit={false}
-        //                                                     /> </a>
-        //                                                     <a target="_blank" href="#"><Dollars
-        //                                                         value={dole.amount}
-        //                                                         isEdit={false}
-        //                                                     /></a>
-        //                                                 </div>;
-        //                                         })
-        //                                     }
-        //                                 </div>
-        //                                 <div className="add">plus</div>
-        //                             </div>;
-        //                         })
-        //                     }
-        //                 </div>
-        //             </div>
-        // </div>;
     }
 }
 
