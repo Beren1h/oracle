@@ -3,11 +3,12 @@
 
 
 
-
-
 .fa {
-    font-size: 10px !important;
+    &.fa-university {
+        font-size: 12px;
+    }
 }
+
 
 .account {
     display: grid;
@@ -16,7 +17,6 @@
     grid-template-areas: "range"
                          "ledger"
                          "form";
-
 }
 
 .range-a {
@@ -176,7 +176,7 @@
     & a {
         display: block;
         width: 25%;
-        padding: 3px 15px 0 15px;
+        padding: 7px 15px 0 15px;
         margin: 2px 0 2px 0;
         border-radius: 3px; 
         cursor: pointer;

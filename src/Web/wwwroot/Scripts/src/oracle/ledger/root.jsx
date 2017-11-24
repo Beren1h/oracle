@@ -238,8 +238,12 @@ class Ledger extends Component {
                     isEdit={false} />);
             } else {
                 grid.push(<div className={'actions'} key={index + 'balance'}>
-                    <a className={'update'} onClick={(e, mode) =>this.update(e, 'update')}>&#10004;</a>
-                    <a className={'delete'} onClick={(e, mode) =>this.update(e, 'delete')}>&#10006;</a>
+                    <a className={'update'} onClick={(e, mode) =>this.update(e, 'update')}>
+                        <i className="fa fa-check" />
+                    </a>
+                    <a className={'delete'} onClick={(e, mode) =>this.update(e, 'delete')}>
+                        <i className="fa fa-times" />
+                    </a>
                 </div>);
                 mode = 'edit';
             }
@@ -462,7 +466,7 @@ class Ledger extends Component {
                             identifier="addDollars"
                             onBlur={this.addAmount}
                         />
-                        <a className="add" onClick={this.addTransaction}>&#10010;</a>
+                        <a className="add" onClick={this.addTransaction}><i className="fa fa-plus" /></a>
                     </div>
             }
         </div>;
