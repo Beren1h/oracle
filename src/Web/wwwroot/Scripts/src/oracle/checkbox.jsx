@@ -83,7 +83,12 @@ class Checkbox extends Component {
         });
 
         if (this.props.onChange){
-            this.props.onChange(e.target.checked);
+            if (this.props.identifier){
+                this.props.onChange(e.target.checked, this.props.identifier);
+            } else {
+                this.props.onChange(e.target.checked);
+                //this.props.onBlur(this.state.amount);
+            }            
         }
     }
 

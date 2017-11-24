@@ -34,13 +34,20 @@ class Ledger extends Component {
         this.dateUpdate = this.dateUpdate.bind(this);
         this.rowClick = this.rowClick.bind(this);
         this.renderRow = this.renderRow.bind(this);
-        this.update = this.update.bind(this);
-        this.editAmount = this.editAmount.bind(this);
-        this.editDate = this.editDate.bind(this);
-        this.addTransaction = this.addTransaction.bind(this);
-        this.addAmount = this.addAmount.bind(this);
-        this.addDate = this.addDate.bind(this);
-        this.editPending = this.editPending.bind(this);
+        //this.update = this.update.bind(this);
+        //this.editAmount = this.editAmount.bind(this);
+        //this.editDate = this.editDate.bind(this);
+        this.put = this.put.bind(this);
+        //this.addAmount = this.addAmount.bind(this);
+        //this.addDate = this.addDate.bind(this);
+        //this.editPending = this.editPending.bind(this);
+        this.editing = this.editing.bind(this);
+        this.adding = this.adding.bind(this);
+        this.getEditingTransactions = this.getEditingTransactions.bind(this);
+        this.post = this.post.bind(this);
+        this.delete = this.delete.bind(this);
+        this.reload = this.reload.bind(this);
+        //this.getAxiosData = this.getAxiosData.bind(this);
     }
 
     async componentWillMount(){
@@ -49,11 +56,14 @@ class Ledger extends Component {
 
     async load(){
 
-        const getContainer = await GET.container(this.props.containerId);
-        const container = getContainer.data.find(c => c._id == this.props.containerId);
+        const containers = await GET.container(this.props.containerId);
+        //console.log('container data = ', getContainer);
+        //const container = getContainer.data.find(c => c._id == this.props.containerId);
+        const container = containers.find(c => c._id == this.props.containerId);
 
-        const getTransactions = await GET.transaction(this.props.containerId, 'container');
-        const transactions = getTransactions.data;
+        const transactions = await GET.transaction(this.props.containerId, 'container');
+        //const getTransactions = await GET.transaction(this.props.containerId, 'container');
+        //const transactions = getTransactions.data;
 
         transactions.sort((a, b) => SortByAlpha(a.date, b.date));
 
@@ -190,8 +200,9 @@ class Ledger extends Component {
                 key={index + 'pending'}
                 className="pending" 
                 checked={pendingTarget} 
-                isEdit={isEdit} 
-                onChange={this.editPending} />
+                isEdit={isEdit}
+                identifier="pending" 
+                onChange={this.editing} />
             );
 
             grid.push (
@@ -200,8 +211,9 @@ class Ledger extends Component {
                     key={index + 'date'} 
                     className="date" 
                     value={dateTarget} 
-                    isEdit={isEdit} 
-                    onBlur={this.editDate} 
+                    isEdit={isEdit}
+                    identifier="date" 
+                    onBlur={this.editing} 
                 />
             );
             
@@ -211,7 +223,9 @@ class Ledger extends Component {
                     key={index + 'dollars'} 
                     value={amountTarget} 
                     isEdit={isEdit} 
-                    onBlur={(amount) => this.editAmount(amount)} 
+                    //onBlur={(amount) => this.editAmount(amount)}
+                    identifier="amount"
+                    onBlur={this.editing} 
                 />);
                 grid.push (<div key={index + 'empty'}></div>);
             } else {
@@ -221,7 +235,8 @@ class Ledger extends Component {
                     key={index + 'dollars'} 
                     value={amountTarget} 
                     isEdit={isEdit} 
-                    onBlur={this.editAmount} 
+                    identifier="amount"
+                    onBlur={this.editing} 
                 />);
             }
 
@@ -238,10 +253,12 @@ class Ledger extends Component {
                     isEdit={false} />);
             } else {
                 grid.push(<div className={'actions'} key={index + 'balance'}>
-                    <a className={'update'} onClick={(e, mode) =>this.update(e, 'update')}>
+                    {/* <a className={'update'} onClick={(mode) =>this.update('update')}> */}
+                    <a className={'post'} onClick={this.post}>
                         <i className="fa fa-check" />
                     </a>
-                    <a className={'delete'} onClick={(e, mode) =>this.update(e, 'delete')}>
+                    {/* <a className={'delete'} onClick={(mode) =>this.update('delete')}> */}
+                    <a className={'delete'} onClick={this.delete}>
                         <i className="fa fa-times" />
                     </a>
                 </div>);
@@ -260,56 +277,27 @@ class Ledger extends Component {
         }
     }
 
-    async update(e, mode){
-       
-        const transactions = this.state.transactions.slice(0);
-        const transaction = transactions.find(t => t._id == this.state.editing.id);
-        //console.log('raw transaction = ', transaction);
+    async getEditingTransactions(){
 
-        let pair;
+        const transactions = [];
+
+        const fromState = this.state.transactions.slice(0);
+        const transaction = fromState.find(t => t._id == this.state.editing.id);
+
+        transactions.push(transaction);
         
         if (transaction.pairId){
-            const getPair = await GET.transaction(transaction.pairId);
-            pair = getPair.data[0];
-        }
-                    
-        switch (mode){
-        case 'update':
-            transaction.date = this.state.editing.date;
-            transaction.amount = this.state.editing.amount;
-            transaction.pending = this.state.editing.pending;
-
-            POST.transaction(transaction);
-
-            //console.log('wtf = ', transaction.pairId);
-            //console.log('raw pair = ', transaction);
-            
-            if (pair){
-                //console.log('in = ', pair, this.state.editing);
-                pair.date = this.state.editing.date;
-                pair.amount = this.state.editing.amount;
-                pair.pending = this.state.editing.pending;
-                //console.log('out = ', pair);
-                POST.transaction(pair);
-            }
-
-            //console.log('post transaction = ', transaction);
-            //console.log('post pair = ', pair);
-            
-            break;
-        case 'delete':
-            DELETE.transaction(transaction);
-
-            if (pair){
-                DELETE.transaction(pair);
-            }
-
-            //transactions.splice(transactions.indexOf(transaction), 1);
-            break;
+            const pair = await GET.transaction(transaction.pairId);
+            //transactions.push(getPair.data[0]);
+            transactions.push(pair[0]);
         }
 
-        //this.load();
+        //console.log('editing transactions = ', transactions);
 
+        return transactions;
+    }
+
+    reload(){
         this.setState({
             async: true
         }, () => {
@@ -317,30 +305,142 @@ class Ledger extends Component {
         });
     }
 
-    editPending(pending){
-        //console.log('parent pending = ', pending);
-        const editing = Object.assign({}, this.state.editing);
-        editing.pending = pending;
+    async delete(){
+        const transactions = await this.getEditingTransactions();
+        
+        for (let transaction of transactions){
+            DELETE.transaction(transaction);
+        }
+
+        this.reload();
+    }
+
+    async post(){
+        const transactions = await this.getEditingTransactions();
+
+        for (let transaction of transactions){
+            transaction.date = this.state.editing.date;
+            transaction.amount = this.state.editing.amount;
+            transaction.pending = this.state.editing.pending;
+            
+            POST.transaction(transaction);
+        }
+
+        this.reload();
+    }
+
+    // async update(mode){
+       
+    //     const transactions = this.state.transactions.slice(0);
+    //     const transaction = transactions.find(t => t._id == this.state.editing.id);
+
+    //     let pair;
+        
+    //     if (transaction.pairId){
+    //         const getPair = await GET.transaction(transaction.pairId);
+    //         pair = getPair.data[0];
+    //     }
+                    
+    //     switch (mode){
+    //     case 'update':
+    //         transaction.date = this.state.editing.date;
+    //         transaction.amount = this.state.editing.amount;
+    //         transaction.pending = this.state.editing.pending;
+
+    //         POST.transaction(transaction);
+            
+    //         if (pair){
+    //             pair.date = this.state.editing.date;
+    //             pair.amount = this.state.editing.amount;
+    //             pair.pending = this.state.editing.pending;
+
+    //             POST.transaction(pair);
+    //         }
+           
+    //         break;
+    //     case 'delete':
+    //         DELETE.transaction(transaction);
+
+    //         if (pair){
+    //             DELETE.transaction(pair);
+    //         }
+
+    //         break;
+    //     }
+
+    //     this.getEditingTransactions();
+
+    //     this.setState({
+    //         async: true
+    //     }, () => {
+    //         this.load();
+    //     });
+    // }
+
+    // editPending(pending){
+    //     //console.log('parent pending = ', pending);
+    //     const editing = Object.assign({}, this.state.editing);
+    //     editing.pending = pending;
+    //     this.setState({
+    //         editing: editing
+    //     }, () => {
+    //         //console.log('amount edit; state editing = ', this.state.editing);
+    //     });
+    // }
+
+    // editAmount(amount) {
+    //     const editing = Object.assign({}, this.state.editing);
+    //     editing.amount = amount;
+    //     this.setState({
+    //         editing: editing
+    //     }, () => {
+    //         //console.log('amount edit; state editing = ', this.state.editing);
+    //     });
+    // }
+
+    // editDate(date) {
+    //     const editing = Object.assign({}, this.state.editing);
+    //     editing.date = date;
+    //     this.setState({
+    //         editing: editing
+    //     }, () => {
+    //         //console.log('date edit; state editing = ', this.state.editing);
+    //     });
+    // }
+
+    // addAmount(amount, identifier) {
+    //     const adding = Object.assign({}, this.state.adding);
+    //     adding.amount = amount;
+    //     this.setState({
+    //         adding: adding
+    //     }, () => {
+    //         //console.log('date add; state adding = ', this.state.adding, identifier);
+    //     });
+    // }
+
+    // addDate(date, identifier){
+    //     const adding = Object.assign({}, this.state.adding);
+    //     adding.date = date;
+    //     this.setState({
+    //         adding: adding
+    //     }, () => {
+    //         //console.log('date add; state addining = ', this.state.adding, identifier);
+    //     });
+    // }
+
+    adding(value, identifier){
+        const adding = Object.assign({}, this.state.adding);
+        adding[identifier] = value;
         this.setState({
-            editing: editing
+            adding: adding
         }, () => {
-            //console.log('amount edit; state editing = ', this.state.editing);
+            //console.log('date edit; state editing = ', this.state.editing);
         });
     }
 
-    editAmount(amount) {
+    editing(value, identifier){
         const editing = Object.assign({}, this.state.editing);
-        editing.amount = amount;
-        this.setState({
-            editing: editing
-        }, () => {
-            //console.log('amount edit; state editing = ', this.state.editing);
-        });
-    }
-
-    editDate(date) {
-        const editing = Object.assign({}, this.state.editing);
-        editing.date = date;
+        editing[identifier] = value;
         this.setState({
             editing: editing
         }, () => {
@@ -348,80 +448,95 @@ class Ledger extends Component {
         });
     }
 
-    addAmount(amount, identifier) {
-        const adding = Object.assign({}, this.state.adding);
-        adding.amount = amount;
-        this.setState({
-            adding: adding
-        }, () => {
-            //console.log('date add; state adding = ', this.state.adding, identifier);
-        });
-    }
+    // async getAxiosData(call){
+    //     const raw = await call();
+    //     return raw.data();
+    // }
 
-    addDate(date, identifier){
-        const adding = Object.assign({}, this.state.adding);
-        adding.date = date;
-        this.setState({
-            adding: adding
-        }, () => {
-            //console.log('date add; state addining = ', this.state.adding, identifier);
-        });
-    }
+    async put() {
 
-    async addTransaction() {
-
+        // don't save $0 transactions
         if (this.state.adding.amount <= 0){
             return;
         }
 
-        const getId = await GET.objectId();
-        const id = getId.data;
+        //const id = await this.getAxiosData(GET.objectId);
+        //const getId = await GET.objectId();
+        //console.log('get id = ', getId);
+        //const id = getId.data;
+        const id = await GET.objectId();
 
         let pairId = '';
 
-        if (this.state.container.type == 'envelope'){
-            const getPairId = await GET.objectId();
-            pairId = getPairId.data;
+        const shell = {
+            _id: '',
+            date: this.state.adding.date,
+            amount: this.state.adding.amount,
+            pairId: '',
+            containerId: '',
+            accounting: this.props.editable,
+            doleId: '',
+            pending: true            
+        };
 
-            const pair = {
-                _id: pairId,
-                date: this.state.adding.date,
-                amount: this.state.adding.amount,
-                pairId: id,
-                containerId: this.state.parentId,
-                accounting: this.props.editable,
-                doleId: '',
-                pending: true
-            };
+        if (this.state.container.type == 'envelope'){
+
+            //const getPairId = await GET.objectId();
+            //pairId = getPairId.data;
+            const pairId = await GET.objectId();
+
+            const pair = Object.assign({}, shell);
+
+            pair._id = pairId;
+            pair.paidId  = id;
+            pair.containerId = this.state.parentId;
+
+            // const pair = {
+            //     _id: pairId,
+            //     date: this.state.adding.date,
+            //     amount: this.state.adding.amount,
+            //     pairId: id,
+            //     containerId: this.state.parentId,
+            //     accounting: this.props.editable,
+            //     doleId: '',
+            //     pending: true
+            // };
 
             PUT.transaction(pair);
         }
         
-        const transaction = {
-            _id: id,
-            date: this.state.adding.date,
-            amount: this.state.adding.amount,
-            pairId: pairId,
-            containerId: this.props.containerId,
-            accounting: this.props.editable,
-            doleId: '',
-            pending: true
-        };
+        const transaction = Object.assign({}, shell);
+
+        transaction._id = id;
+        transaction.pairId = pairId;
+        transaction.containerId = this.props.containerId;
+
+        // const transaction = {
+        //     _id: id,
+        //     date: this.state.adding.date,
+        //     amount: this.state.adding.amount,
+        //     pairId: pairId,
+        //     containerId: this.props.containerId,
+        //     accounting: this.props.editable,
+        //     doleId: '',
+        //     pending: true
+        // };
 
         PUT.transaction(transaction);
 
-        this.setState({
-            async: true
-        }, () => {
-            this.load();
-        });
+        this.reload();
+        // this.setState({
+        //     async: true
+        // }, () => {
+        //     this.load();
+        // });
     }
 
     render() {
-        return <div className="account">
+        return <div className="ledger">
             {
                 this.state.async &&                    
-                    <div className="box narrow range-a">
+                    <div className="range box narrow">
                         <div className="tag">{this.state.container.name} {this.state.container.type}</div>
                         <div>
                             <Date 
@@ -437,9 +552,9 @@ class Ledger extends Component {
                         </div>
                     </div>
             }
-            <div className="box ledger-a">
+            <div className="detail box">
                 <div key={'x'} className="row heading">
-                    <div>cleared</div>
+                    <div>clear</div>
                     <div>date</div>
                     <div>debit</div>
                     <div>credit</div>
@@ -453,20 +568,20 @@ class Ledger extends Component {
             </div>
             {
                 this.state.async &&
-                    <div className="form-a">
+                    <div className="form">
                         <Date
                             className="date"
                             value={this.state.adding.date} 
-                            identifier="addDate"
-                            onBlur={this.addDate}
+                            identifier="date"
+                            onBlur={this.adding}
                         />
                         <Dollars
                             className={this.props.editable}
                             value={this.state.adding.amount}
-                            identifier="addDollars"
-                            onBlur={this.addAmount}
+                            identifier="amount"
+                            onBlur={this.adding}
                         />
-                        <a className="add" onClick={this.addTransaction}><i className="fa fa-plus" /></a>
+                        <a className="add" onClick={this.put}><i className="fa fa-plus" /></a>
                     </div>
             }
         </div>;

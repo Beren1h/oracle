@@ -45,14 +45,16 @@ class Dole extends Component {
         const begin = moment(range.begin);
         const end = moment(range.end);
 
-        const getContainers = await GET.container();
-        const containers = getContainers.data;
+        //const getContainers = await GET.container();
+        //const containers = getContainers.data;
+        const containers = await GET.container();
 
         const accounts = containers.filter(c => c.type == 'account');
         const envelopes = containers.filter(c => c.type == 'envelope');
 
-        const getDoles = await GET.dole();
-        const doles = getDoles.data;
+        //const getDoles = await GET.dole();
+        //const doles = getDoles.data;
+        const doles = await GET.dole();
 
         const accountSummary = [];
         for (let account of accounts){
@@ -75,8 +77,10 @@ class Dole extends Component {
                 url: url + '/account/' + account._id
             };
 
-            const getTransactions = await GET.transaction(account._id, 'container');
-            const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
+            //const getTransactions = await GET.transaction(account._id, 'container');
+            //const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
+            const raw = await GET.transaction(account._id, 'container');
+            const transactions = raw.sort((a, b) => SortByAlpha(a.date, b.date));
 
             for (let transaction of transactions){
                 const date = moment(transaction.date);
@@ -100,8 +104,10 @@ class Dole extends Component {
 
         const envelopeSummary = [];
         for (let envelope of envelopes.sort((a, b) => SortByAlpha(a.name, b.name))){
-            const getTransactions = await GET.transaction(envelope._id, 'container');
-            const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
+            //const getTransactions = await GET.transaction(envelope._id, 'container');
+            //const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
+            const raw = await GET.transaction(envelope._id, 'container');
+            const transactions = raw.sort((a, b) => SortByAlpha(a.date, b.date));
 
             let hasBeenRed = false;
 

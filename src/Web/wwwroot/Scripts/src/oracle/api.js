@@ -90,11 +90,13 @@ export const GET = {
         default:
             GET.props.url = route.transaction.baseline + '/' + id;
         }
-        return axios(GET.props);
+        //return axios(GET.props);
+        return axios(GET.props).then((response) => {return response.data;});
     },
     container: () => {
         GET.props.url = route.container.baseline;
-        return axios(GET.props);
+        return axios(GET.props).then((response) => {return response.data;});
+        //return axios(GET.props);
     },
     dole: (id) => {
         if (id){
@@ -102,11 +104,14 @@ export const GET = {
         } else {
             GET.props.url = route.dole.baseline;
         }
-        return axios(GET.props);
+        //return axios(GET.props);
+        return axios(GET.props).then((response) => {return response.data;});
+        
     },
     objectId: () => {
         GET.props.url = route.objectid.baseline;
-        return axios(GET.props);
+        //return axios(GET.props);
+        return axios(GET.props).then((response) => {return response.data;});
     }
 };
 

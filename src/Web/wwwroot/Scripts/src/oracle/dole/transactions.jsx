@@ -101,15 +101,6 @@ class Transaction extends Component {
                     }
                 </div>
             </div>
-            {/* <div className={'summary'}>
-                <NumberFormat 
-                    value={this.state.summary.balance} 
-                    displayType={'text'} 
-                    thousandSeparator={true} 
-                    prefix={'$'}
-                    decimalPrecision={2}
-                />
-            </div> */}
         </div>;
     }
 }
