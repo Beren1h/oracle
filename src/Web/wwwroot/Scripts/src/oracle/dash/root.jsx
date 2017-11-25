@@ -11,7 +11,6 @@ class Dole extends Component {
         super(props);
 
         this.state = {
-            async: false,
             envelopes: [],
             accounts: [],
             range: {
@@ -45,15 +44,10 @@ class Dole extends Component {
         const begin = moment(range.begin);
         const end = moment(range.end);
 
-        //const getContainers = await GET.container();
-        //const containers = getContainers.data;
         const containers = await GET.container();
-
         const accounts = containers.filter(c => c.type == 'account');
         const envelopes = containers.filter(c => c.type == 'envelope');
 
-        //const getDoles = await GET.dole();
-        //const doles = getDoles.data;
         const doles = await GET.dole();
 
         const accountSummary = [];
@@ -77,8 +71,6 @@ class Dole extends Component {
                 url: url + '/account/' + account._id
             };
 
-            //const getTransactions = await GET.transaction(account._id, 'container');
-            //const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
             const raw = await GET.transaction(account._id, 'container');
             const transactions = raw.sort((a, b) => SortByAlpha(a.date, b.date));
 
@@ -104,8 +96,6 @@ class Dole extends Component {
 
         const envelopeSummary = [];
         for (let envelope of envelopes.sort((a, b) => SortByAlpha(a.name, b.name))){
-            //const getTransactions = await GET.transaction(envelope._id, 'container');
-            //const transactions = getTransactions.data.sort((a, b) => SortByAlpha(a.date, b.date));
             const raw = await GET.transaction(envelope._id, 'container');
             const transactions = raw.sort((a, b) => SortByAlpha(a.date, b.date));
 
@@ -142,12 +132,9 @@ class Dole extends Component {
         }
 
         this.setState({
-            async: true,
             range: range,
             envelopes: envelopeSummary,
             accounts: accountSummary
-        }, () => {
-            //console.log('state  = ', this.state);
         });
     }
 
@@ -155,8 +142,7 @@ class Dole extends Component {
         const range = Object.assign({}, this.state.range);
         range.end = date;
         this.setState({
-            range: range,
-            async: false
+            range: range
         }, () => {
             this.load();
         });

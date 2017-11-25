@@ -3,8 +3,6 @@ import Ledger from '../ledger/root.jsx';
 
 
 const accounts = (props) => {
-    //console.log('accounts year = ', props.year);
-    //console.log('accounts version = ', props.version);
     return (
         <div>
             <Ledger year={props.year} containerId={props.containerId} editable="credit" />

@@ -12,8 +12,6 @@ class Checkbox extends Component {
 
         this.onChange = this.onChange.bind(this);
         this.onClick = this.onClick.bind(this);
-        //this.onBlur = this.onBlur.bind(this);
-        //this.onFocus = this.onFocus.bind(this);
     }
 
     componentWillMount(){
@@ -30,25 +28,9 @@ class Checkbox extends Component {
             this.setState({
                 checked: nextProps.checked,
                 isEdit: nextProps.isEdit
-            }, () => {
-                //console.log('nextProps Checkbox state = ', this.state);
             });
         }
     }
-
-    componentDidUpdate(prevProps, prevState){
-        // // i am in edit more and the intended target.  find the input control and focus.
-        // if (this.props.isEdit && this.state.amTarget){
-        //     const dom = document.getElementById(this.props.id);
-        //     if (dom){
-        //         dom.focus();
-        //         this.setState({
-        //             amTarget: false
-        //         });
-        //     }
-        // }
-    }
-
 
     onClick(e){
 
@@ -62,24 +44,14 @@ class Checkbox extends Component {
         if(this.props.isEdit){
             e.stopPropagation();
         }
-
-        //console.log('on click');
-        //e.stopPropagation();
-        //e.preventDefault();
-        //return false;
     }
 
 
     onChange(e){
-        //console.log('on change');
-        //e.stopPropagation();
         const checked = e.target.checked;
-        //console.log('e = ', e.target.checked);
         this.setState({
             checked: e.target.checked,
             amTarget: false
-        }, () => {
-            //console.log('checked state = ', this.state.checked);
         });
 
         if (this.props.onChange){
@@ -87,7 +59,6 @@ class Checkbox extends Component {
                 this.props.onChange(e.target.checked, this.props.identifier);
             } else {
                 this.props.onChange(e.target.checked);
-                //this.props.onBlur(this.state.amount);
             }            
         }
     }
@@ -108,19 +79,6 @@ class Checkbox extends Component {
             
             return <div></div>;
         }
-        // return <NumberFormat
-        //     id={this.props.id}
-        //     className={this.props.className}
-        //     value={this.state.amount} 
-        //     displayType={this.state.display} 
-        //     thousandSeparator={true} 
-        //     prefix={'$'} 
-        //     decimalPrecision={2}
-        //     onFocus={this.onFocus} 
-        //     onChange={this.onChange} 
-        //     onBlur={this.onBlur} 
-        //     onClick={this.onClick}
-        // />;
     }
 }
 

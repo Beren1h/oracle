@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Frame.Models;
 using LiteDB;
+using Frame.Collections;
 
 namespace Web.Controllers
 {
@@ -13,10 +14,13 @@ namespace Web.Controllers
     public class OracleController : Controller
     {
         private readonly AppSettings _settings;
+        private readonly IDbCollection<Container> _containers;
 
-        public OracleController(IOptions<AppSettings> settings)
+
+        public OracleController(IOptions<AppSettings> settings, IDbCollection<Container> containers)
         {
             _settings = settings.Value;
+            _containers = containers;
         }
 
         //[Route("test")]
@@ -57,10 +61,13 @@ namespace Web.Controllers
                 doleId = ObjectId.NewObjectId();
             }
 
+            var container = _containers.Get(c => c._id == containerId);
+
             ViewBag.Year = _settings.Year;
             ViewBag.Version = _settings.Version;
             ViewBag.ContainerId = containerId;
             ViewBag.DoleId = doleId;
+            ViewBag.Name = container.FirstOrDefault().Name;
 
             return View();
         }
@@ -68,9 +75,12 @@ namespace Web.Controllers
         [Route("account/{id}")]
         public IActionResult Account(ObjectId id)
         {
+            var container = _containers.Get(c => c._id == id);
+
             ViewBag.Year = _settings.Year;
             ViewBag.Version = _settings.Version;
             ViewBag.ContainerId = id;
+            ViewBag.Name = container.FirstOrDefault().Name;
 
             return View();
         }
@@ -78,9 +88,12 @@ namespace Web.Controllers
         [Route("envelope/{containerId}")]
         public IActionResult Envelope(ObjectId containerId)
         {
+            var container = _containers.Get(c => c._id == containerId);
+
             ViewBag.Year = _settings.Year;
             ViewBag.Version = _settings.Version;
             ViewBag.ContainerId = containerId;
+            ViewBag.Name = container.FirstOrDefault().Name;
 
             return View();
         }

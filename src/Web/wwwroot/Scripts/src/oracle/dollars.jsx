@@ -20,8 +20,6 @@ class Dollars extends Component {
         this.setState({
             amount: this.props.value,
             display: this.props.isEdit ? 'input' : 'text'
-        }, () => {
-            //console.log('dollars state = ', this.state, this.props);
         });
     }
 
@@ -30,8 +28,6 @@ class Dollars extends Component {
             this.setState({
                 amount: nextProps.value,
                 display: nextProps.isEdit ? 'input' : 'text'
-            }, () => {
-                //console.log('nextProps dollars state = ', this.state);
             });
         }
     }
@@ -79,9 +75,6 @@ class Dollars extends Component {
     }
 
     onBlur(e){
-        // if (this.props.onBlur){
-        //     this.props.onBlur(this.state.amount);
-        // }
 
         this.setState({
             amTarget: false

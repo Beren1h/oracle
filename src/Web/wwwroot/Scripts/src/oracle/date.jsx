@@ -21,7 +21,6 @@ class Date extends Component {
     }
 
     componentWillMount(){
-        //console.log('date props = ', this.props);
         const m = moment(this.props.value);
 
         this.setState({
@@ -30,8 +29,6 @@ class Date extends Component {
             mmdd: m.format('MM-DD'),
             display: this.props.display ? this.props.display : 'input',
             isEdit: this.props.isEdit
-        }, () => {
-            //console.log('date state = ', this.state);
         });
     }
 
@@ -45,8 +42,6 @@ class Date extends Component {
                 mmdd: m.format('MM-DD'),
                 display: nextProps.display ? nextProps.display : 'input',
                 isEdit: nextProps.isEdit
-            }, () => {
-                //console.log('date state = ', this.state);
             });
         }
     }
@@ -68,7 +63,6 @@ class Date extends Component {
     }
 
     onClick(e){
-        
         this.setState({
             amTarget: true  
         });
@@ -106,9 +100,7 @@ class Date extends Component {
     }
 
     render() {
-        //console.log('date readonly = ', this.state.readOnly);
         if(this.state.isEdit) {
-        //if (this.state.display == 'input'){
             return <InputMask 
                 id={this.props.id}
                 mask="99-99" 

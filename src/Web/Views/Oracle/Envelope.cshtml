@@ -6,9 +6,10 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Envelope</title>
+    <title>@ViewBag.Name</title>
     <script src="~/Scripts/bundle.js"></script>
     <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="shortcut icon" href="~/favicon-envelope.ico" />
 </head>
 <body>
     <div id="entry"></div>
@@ -17,7 +18,8 @@
         React.createElement(Components.Envelope, {
             year: "@ViewBag.Year",
             version: "@ViewBag.Version",
-            containerId: "@ViewBag.ContainerId"
+            containerId: "@ViewBag.ContainerId",
+            name: "@ViewBag.Name"
         }),
         document.getElementById('entry')
     );
