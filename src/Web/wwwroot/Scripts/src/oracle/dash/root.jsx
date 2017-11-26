@@ -68,7 +68,8 @@ class Dole extends Component {
                 account: account,
                 doles: adjustedDoles,
                 balance: 0,
-                url: url + '/account/' + account._id
+                url: url + '/account/' + account._id,
+                doleUrl: url + '/dole/' + account._id
             };
 
             const raw = await GET.transaction(account._id, 'container');
@@ -158,7 +159,9 @@ class Dole extends Component {
             </div>
             <div className="envelopes column">
                 <div className="head">
-                    envelopes
+                    <a href="#">
+                        <i className="fa fa-envelope" /><span>envelopes</span>
+                    </a>
                 </div>
                 {
                     this.state.envelopes.map((envelope, index) =>  {
@@ -185,7 +188,10 @@ class Dole extends Component {
             </div>
             <div className="accounts column">
                 <div className="head">
-                    accounts
+                    <a href="#">
+                        <i className="fa fa-dollar" />
+                        <span>accounts</span>
+                    </a>
                 </div>
                 {
                     this.state.accounts.map((account, index) => {
@@ -211,7 +217,10 @@ class Dole extends Component {
                 this.state.accounts.map((account, index) => {
                     return <div key={index} className="dole-list column">
                         <div className="head">
-                            {account.account.name} dole
+                            <a href={account.doleUrl} target="_blank">
+                                <i className="fa fa-tasks" />
+                                <span>{account.account.name}</span>
+                            </a>
                         </div>
                         {
                             account.doles.map((dole, index) => {

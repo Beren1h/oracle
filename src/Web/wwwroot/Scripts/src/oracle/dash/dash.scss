@@ -22,7 +22,13 @@
             width: 75px;
             font-size: 20px;
             text-align: center;
+        }
+        & i{
+            padding: 0 5px 0 0;
         }        
+        & a {
+            text-decoration: none;
+        }
     }
     & .summary {
         display: grid;
@@ -62,12 +68,25 @@
         }
     }
     & .envelopes {
+        & .head {
+            & a {
+                color: #0d47a1;
+            }
+        }
     }
     & .accounts {
-        //background-color: purple;
+        & .head {
+            & a {
+                color: #33691e
+            }
+        }
     }
     & .dole-list {
-
+        & .head {
+            & a {
+                color: #455a64
+            }
+        }
     }
 }
 

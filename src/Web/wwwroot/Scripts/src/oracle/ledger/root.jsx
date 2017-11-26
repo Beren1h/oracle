@@ -346,12 +346,12 @@ class Ledger extends Component {
 
         if (this.state.container.type == 'envelope'){
 
-            const pairId = await GET.objectId();
+            pairId = await GET.objectId();
 
             const pair = Object.assign({}, shell);
 
             pair._id = pairId;
-            pair.paidId  = id;
+            pair.pairId  = id;
             pair.containerId = this.state.parentId;
 
             PUT.transaction(pair);
