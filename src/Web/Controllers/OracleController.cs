@@ -107,9 +107,11 @@ namespace Web.Controllers
             return View();
         }
 
-        [Route("test")]
-        public IActionResult Test()
+        [Route("schedule")]
+        public IActionResult Schedule()
         {
+            ViewBag.Year = _settings.Year;
+
             return View();
         }
     }

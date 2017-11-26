@@ -5,7 +5,8 @@ module.exports = {
     Envelope: require('./oracle/envelope/index.jsx').default,
     Account: require('./oracle/account/index.jsx').default,
     Dole: require('./oracle/dole/index.jsx').default,
-    Dash: require('./oracle/dash/index.jsx').default
+    Dash: require('./oracle/dash/index.jsx').default,
+    Schedule: require('./oracle/schedule/index.jsx').default
     // Envelopes: require('./oracle/envelopes/index.jsx').default,
     // Payments: require('./oracle/payments/index.jsx').default
 };
