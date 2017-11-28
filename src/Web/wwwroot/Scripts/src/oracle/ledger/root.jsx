@@ -69,7 +69,7 @@ class Ledger extends Component {
                 end: this.props.year + '-12-31'
             };
         } else {
-            range = Object.assign({}, this.state.range);
+            range = {...this.state.range};
         }
 
         for (let i = 0; i<transactions.length; i++){
@@ -127,7 +127,7 @@ class Ledger extends Component {
 
 
     dateUpdate(date, identifier){
-        const range = Object.assign({}, this.state.range);
+        const range = {...this.state.range};
 
         if (identifier == 'begin'){
             range.begin = date;
@@ -151,7 +151,7 @@ class Ledger extends Component {
             return;
         }
         
-        let editing = Object.assign({}, this.state.editing);
+        let editing = {...this.state.editing};
         
         if (editing.id == target._id){
             editing.on = !editing.on;
@@ -307,7 +307,7 @@ class Ledger extends Component {
     }
 
     adding(value, identifier){
-        const adding = Object.assign({}, this.state.adding);
+        const adding = {...this.state.adding};
         adding[identifier] = value;
         this.setState({
             adding: adding
@@ -315,7 +315,7 @@ class Ledger extends Component {
     }
 
     editing(value, identifier){
-        const editing = Object.assign({}, this.state.editing);
+        const editing = {...this.state.editing};
         editing[identifier] = value;
         this.setState({
             editing: editing
@@ -348,7 +348,7 @@ class Ledger extends Component {
 
             pairId = await GET.objectId();
 
-            const pair = Object.assign({}, shell);
+            const pair = {...shell};
 
             pair._id = pairId;
             pair.pairId  = id;
@@ -357,7 +357,7 @@ class Ledger extends Component {
             PUT.transaction(pair);
         }
         
-        const transaction = Object.assign({}, shell);
+        const transaction = {...shell};
 
         transaction._id = id;
         transaction.pairId = pairId;

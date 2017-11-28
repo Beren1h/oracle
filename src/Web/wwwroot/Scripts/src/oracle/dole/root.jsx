@@ -181,7 +181,7 @@ class Dole extends Component {
 
     save(){
         const transactions = this.state.transactions.slice(0);
-        const dole = Object.assign({}, this.state.dole);
+        const dole = {...this.state.dole};
 
         const put = transactions.filter(t => t.verb == 'put');
         const post = transactions.filter(t => t.verb == 'post');
@@ -226,7 +226,7 @@ class Dole extends Component {
 
     dateUpdate(date){
         const transactions = this.state.transactions.slice(0);
-        const dole = Object.assign({}, this.state.dole);
+        const dole = {...this.state.dole};
         
         for (let transaction of transactions){
             transaction.date = date;
@@ -242,7 +242,7 @@ class Dole extends Component {
     };
 
     dollarsUpdate(amount){
-        const dole = Object.assign({}, this.state.dole);
+        const dole = {...this.state.dole};
         dole.amount = amount;
         this.setState({
             dole: dole

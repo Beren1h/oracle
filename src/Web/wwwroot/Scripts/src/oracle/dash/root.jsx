@@ -38,7 +38,7 @@ class Dole extends Component {
                 end: this.props.year + '-12-31'
             };
         } else {
-            range = Object.assign({}, this.state.range);
+            range = {...this.state.range};
         }
 
         const begin = moment(range.begin);
@@ -140,7 +140,7 @@ class Dole extends Component {
     }
 
     updateDate(date){
-        const range = Object.assign({}, this.state.range);
+        const range = {...this.state.range};
         range.end = date;
         this.setState({
             range: range

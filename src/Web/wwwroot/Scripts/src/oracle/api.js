@@ -41,7 +41,7 @@ const route = {
 };
 
 export const DELETE = {
-    props: Object.assign({}, props.delete()),
+    props: {...props.delete()},
     transaction: (document) => {
         DELETE.props.url = route.transaction.baseline + '/' + document._id;
         return axios(DELETE.props);
@@ -49,7 +49,7 @@ export const DELETE = {
 };
 
 export const POST = {
-    props: Object.assign({}, props.post()),
+    props: {...props.post()},
     transaction: (document) => {
         POST.props.url = route.transaction.baseline;
         POST.props.data = document;
@@ -63,7 +63,7 @@ export const POST = {
 };
 
 export const PUT = {
-    props: Object.assign({}, props.put()),
+    props: {...props.put()},
     transaction: (document) => {
         PUT.props.url = route.transaction.baseline;
         PUT.props.data = document;
@@ -77,7 +77,7 @@ export const PUT = {
 };
 
 export const GET = {
-    props: Object.assign({}, props.get()),
+    props: {...props.get()},
     transaction: (id, by) => {
         switch(by){
         case ('dole'):
