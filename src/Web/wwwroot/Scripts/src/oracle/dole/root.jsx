@@ -14,7 +14,6 @@ class Dole extends Component {
 
         this.state = {
             async: false,
-            show: true,
             parent: {},
             container: {},
             transactions: [],
@@ -87,7 +86,6 @@ class Dole extends Component {
             transactions: transactions,
             container: account,
             envelopes: envelopes,
-            show: true,
             async: true
         }, () => {
             console.log('state = ', this.state);
@@ -207,7 +205,6 @@ class Dole extends Component {
             POST.dole(dole)
                 .then(() => {
                     this.setState({
-                        show: false,
                         async: false
                     }, () => {
                         this.load();
@@ -254,36 +251,45 @@ class Dole extends Component {
     render() {
         const mark = this.state.dole.verb == 'post' ? 'fa-check' : 'fa-plus';
         return <div className="dole">
-            <div className="head">
-                <div className="tag">{this.state.container.name} {this.state.container.type} dole</div>
-                <div>
-                    <Date
-                        onBlur={this.dateUpdate}
-                        value={this.state.dole.date}
-                    /> 
-                    <span>for</span>
-                    <Dollars
-                        onBlur={this.dollarsUpdate}
-                        value={this.state.dole.amount}
+            {
+                this.state.async &&
+                <div className="head">
+                    <div className="tag">{this.state.container.name} {this.state.container.type} dole</div>
+                    <div>
+                        <Date
+                            onBlur={this.dateUpdate}
+                            value={this.state.dole.date}
+                        /> 
+                        <span>for</span>
+                        <Dollars
+                            onBlur={this.dollarsUpdate}
+                            value={this.state.dole.amount}
+                        />
+                    </div>                    
+                </div>
+            }
+            {
+                this.state.async &&
+                <div className="body">
+                    <Envelopes 
+                        containerId={this.props.containerId} 
+                        transactions={this.getTransactionSlice('envelope')} 
+                        onDisplay={this.onDisplay} 
                     />
-                </div>                    
-            </div>
-            <div className="body">
-                <Envelopes 
-                    containerId={this.props.containerId} 
-                    transactions={this.getTransactionSlice('envelope')} 
-                    onDisplay={this.onDisplay} 
-                />
-                <Transactions 
-                    containerId={this.props.containerId} 
-                    transactions={this.getTransactionSlice('pending')} 
-                    onHide={this.onHide} 
-                    amount={this.state.dole.amount} 
-                />                
-            </div>
-            <div className="action">
-                <a onClick={this.save}><i className={'fa ' + mark}/></a>
-            </div>
+                    <Transactions 
+                        containerId={this.props.containerId} 
+                        transactions={this.getTransactionSlice('pending')} 
+                        onHide={this.onHide} 
+                        amount={this.state.dole.amount} 
+                    />                
+                </div>
+            }
+            {
+                this.state.async &&
+                <div className="action">
+                    <a onClick={this.save}><i className={'fa ' + mark}/></a>
+                </div>
+            }
         </div>;
     }
 }

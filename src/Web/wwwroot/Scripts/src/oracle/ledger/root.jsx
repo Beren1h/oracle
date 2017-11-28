@@ -369,9 +369,10 @@ class Ledger extends Component {
     }
 
     render() {
-        return <div className="ledger">
-            {
-                this.state.async &&                    
+        return (
+            <div className="ledger">
+                {
+                    this.state.async &&
                     <div className="range box narrow">
                         <div className="tag">{this.state.container.name} {this.state.container.type}</div>
                         <div>
@@ -387,23 +388,26 @@ class Ledger extends Component {
                             />
                         </div>
                     </div>
-            }
-            <div className="detail box">
-                <div key={'x'} className="row heading">
-                    <div>clear</div>
-                    <div>date</div>
-                    <div>debit</div>
-                    <div>credit</div>
-                    <div>balance</div>
-                </div>
-                {
-                    this.state.transactions.map((transaction, index) => {
-                        return this.renderRow(transaction, index);
-                    })
                 }
-            </div>
-            {
-                this.state.async &&
+                {
+                    this.state.async &&
+                    <div className="detail box">
+                        <div key={'x'} className="row heading">
+                            <div>clear</div>
+                            <div>date</div>
+                            <div>debit</div>
+                            <div>credit</div>
+                            <div>balance</div>
+                        </div>
+                        {
+                            this.state.transactions.map((transaction, index) => {
+                                return this.renderRow(transaction, index);
+                            })
+                        }
+                    </div>
+                }
+                {
+                    this.state.async &&
                     <div className="form">
                         <Date
                             className="date"
@@ -420,9 +424,10 @@ class Ledger extends Component {
                         <a className="add" onClick={this.put}>
                             <i className="fa fa-plus" />
                         </a>
-                    </div>
-            }
-        </div>;
+                    </div>                    
+                }
+            </div>
+        );
     }
 }
 

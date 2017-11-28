@@ -60,7 +60,10 @@ class Dollars extends Component {
     }
 
     onFocus(e){
-        e.target.select();
+        // this was a nightmare.  NumberFormat doesn't seem to respect a 
+        // e.target.select() in the dole scenario so have to hack around it
+        const target = e.target;
+        setTimeout(() => {target.select();}, 0);
     }
 
     onChange(e){
