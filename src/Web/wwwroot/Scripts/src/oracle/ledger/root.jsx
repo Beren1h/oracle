@@ -189,93 +189,6 @@ class Ledger extends Component {
         });
     }
 
-    renderRow(transaction, index){
-        const grid = [];
-        let mode = '';
-
-        if(!transaction.include){
-            return <div></div>;
-        }
-
-        const isEdit = this.state.editing.id == transaction._id && this.state.editing.on;
-
-        let dateTarget = !isEdit ? transaction.date : this.state.editing.date;
-        let amountTarget = !isEdit ? transaction.amount : this.state.editing.amount;
-        let pendingTarget = !isEdit ? transaction.pending : this.state.editing.pending;
-
-        grid.push(<Checkbox 
-            key={index + 'pending'}
-            className="pending" 
-            checked={pendingTarget} 
-            isEdit={isEdit}
-            identifier="pending" 
-            onChange={this.editing} />
-        );
-
-        grid.push (
-            <Date 
-                id={transaction._id + 'date'}
-                key={index + 'date'} 
-                className="date" 
-                value={dateTarget} 
-                isEdit={isEdit}
-                identifier="date" 
-                onBlur={this.editing} 
-            />
-        );
-        
-        if (transaction.accounting == 'debit'){
-            grid.push (<Dollars 
-                id={transaction._id}
-                key={index + 'dollars'} 
-                value={amountTarget} 
-                isEdit={isEdit} 
-                identifier="amount"
-                onBlur={this.editing} 
-            />);
-            grid.push (<div key={index + 'empty'}></div>);
-        } else {
-            grid.push (<div key={index + 'empty'}></div>);
-            grid.push (<Dollars 
-                id={transaction._id}
-                key={index + 'dollars'} 
-                value={amountTarget} 
-                isEdit={isEdit} 
-                identifier="amount"
-                onBlur={this.editing} 
-            />);
-        }
-
-        let balance = 'black';
-        if (transaction.balance < 0){
-            balance = 'red';
-        } 
-
-        if(!isEdit){
-            grid.push(<Dollars 
-                key={index + 'balance'} 
-                className={balance} 
-                value={transaction.balance} 
-                isEdit={false} />);
-        } else {
-            grid.push(<div className={'actions'} key={index + 'balance'}>
-                <a className={'post'} onClick={this.post}>
-                    <i className="fa fa-check" />
-                </a>
-                <a className={'delete'} onClick={this.delete}>
-                    <i className="fa fa-times" />
-                </a>
-            </div>);
-            mode = 'edit';
-        }
-
-        return <div key={index} 
-            className={'row ' + transaction.theme + ' ' + mode}
-            onClick={() => this.rowClick(transaction)} >
-            {grid}
-        </div>;
-    }
-
     async getEditingTransactions(){
 
         const transactions = [];
@@ -389,69 +302,143 @@ class Ledger extends Component {
 
     renderDetail(){
         const content = [];
-        const heading = <div key={'x'} className="headers heading">
-            <div>clear</div>
-            <div>date</div>
-            <div>debit</div>
-            <div>credit</div>
-            <div>balance</div>
-        </div>;
-        const detail = <div className="detail box">
-            {
-                this.state.transactions.map((transaction, index) => {
-                    return this.renderRow(transaction, index);
-                })
-            }        
-        </div>;
-
-        content.push(heading);
-        content.push(detail);
-
-        return content;
-    }
-
-    render() {
-        return (
-            <div className="ledger">
-                {
-                    this.state.async &&
-                    <div className="range box narrow">
-                        <div className="tag">{this.state.container.name} {this.state.container.type}</div>
-                        <div>
-                            <Date 
-                                identifier="begin"
-                                value={this.state.range.begin} 
-                                onBlur={this.dateUpdate}
-                            /> <span>to</span>
-                            <Date 
-                                identifier="end"
-                                value={this.state.range.end} 
-                                onBlur={this.dateUpdate}
-                            />
-                        </div>
-                    </div>
-                }
-                {
-                    this.state.async &&
-                        this.renderDetail()
-                }
-                {/* <div key={'x'} className="headers heading">
+        const detail = 
+            <div key="detail" className="detail">
+                <div className="header">
                     <div>clear</div>
                     <div>date</div>
                     <div>debit</div>
                     <div>credit</div>
                     <div>balance</div>
                 </div>
-                <div className="detail box">
+                <div className="scroller">
                     {
                         this.state.transactions.map((transaction, index) => {
                             return this.renderRow(transaction, index);
                         })
-                    }
-                </div> */}
+                    } 
+                </div>
+            </div>;
+
+        content.push(detail);
+
+        return content;
+    }
+
+    renderRow(transaction, index){
+        const grid = [];
+        let mode = '';
+
+        if(!transaction.include){
+            return <div></div>;
+        }
+
+        const isEdit = this.state.editing.id == transaction._id && this.state.editing.on;
+
+        let dateTarget = !isEdit ? transaction.date : this.state.editing.date;
+        let amountTarget = !isEdit ? transaction.amount : this.state.editing.amount;
+        let pendingTarget = !isEdit ? transaction.pending : this.state.editing.pending;
+
+        grid.push(<Checkbox 
+            key={index + 'pending'}
+            className="pending" 
+            checked={pendingTarget} 
+            isEdit={isEdit}
+            identifier="pending" 
+            onChange={this.editing} />
+        );
+
+        grid.push (
+            <Date 
+                id={transaction._id + 'date'}
+                key={index + 'date'} 
+                className="date" 
+                value={dateTarget} 
+                isEdit={isEdit}
+                identifier="date" 
+                onBlur={this.editing} 
+            />
+        );
+        
+        if (transaction.accounting == 'debit'){
+            grid.push (<Dollars 
+                id={transaction._id}
+                key={index + 'dollars'} 
+                value={amountTarget} 
+                isEdit={isEdit} 
+                identifier="amount"
+                onBlur={this.editing} 
+            />);
+            grid.push (<div key={index + 'empty'}></div>);
+        } else {
+            grid.push (<div key={index + 'empty'}></div>);
+            grid.push (<Dollars 
+                id={transaction._id}
+                key={index + 'dollars'} 
+                value={amountTarget} 
+                isEdit={isEdit} 
+                identifier="amount"
+                onBlur={this.editing} 
+            />);
+        }
+
+        let balance = 'black';
+        if (transaction.balance < 0){
+            balance = 'red';
+        } 
+
+        if(!isEdit){
+            grid.push(<Dollars 
+                key={index + 'balance'} 
+                className={balance} 
+                value={transaction.balance} 
+                isEdit={false} />);
+        } else {
+            grid.push(<div className={'actions'} key={index + 'balance'}>
+                <a className={'post'} onClick={this.post}>
+                    <i className="fa fa-check" />
+                </a>
+                <a className={'delete'} onClick={this.delete}>
+                    <i className="fa fa-times" />
+                </a>
+            </div>);
+            mode = 'edit';
+        }
+
+        return <div key={index} 
+            className={'row ' + transaction.theme + ' ' + mode}
+            onClick={() => this.rowClick(transaction)} >
+            {grid}
+        </div>;
+    }
+    
+    render() {
+        return (
+            <div className="ledger">
                 {
                     this.state.async &&
-                    <div>
+                        <div className="range">
+                            <div className="tag">{this.state.container.name} {this.state.container.type}</div>
+                            <div>
+                                <Date 
+                                    identifier="begin"
+                                    value={this.state.range.begin} 
+                                    onBlur={this.dateUpdate}
+                                /> <span>to</span>
+                                <Date 
+                                    identifier="end"
+                                    value={this.state.range.end} 
+                                    onBlur={this.dateUpdate}
+                                />
+                            </div>
+                        </div>
+                }
+                {
+                    this.state.async &&
+                        this.renderDetail()
+                }
+                {
+                    this.state.async &&
                         <div className="form">
                             <Date
                                 className="date"
@@ -469,7 +456,6 @@ class Ledger extends Component {
                                 <i className="fa fa-plus" />
                             </a>
                         </div>
-                    </div>                    
                 }
             </div>
         );
