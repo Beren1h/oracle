@@ -163,28 +163,32 @@ class Dole extends Component {
                         <i className="fa fa-envelope" /><span>envelopes</span>
                     </a>
                 </div>
-                {
-                    this.state.envelopes.map((envelope, index) =>  {
-                        let theme = 'dark';
-                        if (index % 2 == 0){
-                            theme = 'light';
-                        }
-                        if (!envelope.isBlack){
-                            theme = 'red';
-                        }
-                        return <div key={index} className={'summary ' + theme}>
-                            <a href={envelope.url} target="_blank">
-                                {envelope.envelope.name}
-                            </a>
-                            <a href={envelope.url} target="_blank">
-                                <Dollars
-                                    value={envelope.balance}
-                                    isEdit={false}
-                                />
-                            </a>
-                        </div>;
-                    })
-                }                
+                <div className="outer">
+                    <div className="inner">
+                        {
+                            this.state.envelopes.map((envelope, index) =>  {
+                                let theme = 'dark';
+                                if (index % 2 == 0){
+                                    theme = 'light';
+                                }
+                                if (!envelope.isBlack){
+                                    theme = 'red';
+                                }
+                                return <div key={index} className={'summary ' + theme}>
+                                    <a href={envelope.url} target="_blank">
+                                        {envelope.envelope.name}
+                                    </a>
+                                    <a href={envelope.url} target="_blank">
+                                        <Dollars
+                                            value={envelope.balance}
+                                            isEdit={false}
+                                        />
+                                    </a>
+                                </div>;
+                            })
+                        }  
+                    </div>              
+                </div>
             </div>
             <div className="accounts column">
                 <div className="head">
