@@ -41,10 +41,29 @@ class Ledger extends Component {
         this.delete = this.delete.bind(this);
         this.load = this.load.bind(this);
         this.reload = this.reload.bind(this);
+        this.renderDetail = this.renderDetail.bind(this);
     }
 
     async componentWillMount(){
         await this.load();
+    }
+
+    componentDidUpdate(){
+        const h0 = document.documentElement.clientHeight;
+        const h1 = window.screen.height;
+        const h2 = document.querySelector('.range').clientHeight;
+        const h3 = document.querySelector('.form').clientHeight;
+        const h4 = document.querySelector('.detail').clientHeight;
+        const h5 = document.querySelector('.ledger').clientHeight;
+        console.log('client h = ', h0);
+        console.log('window h = ', h1);
+        console.log('range h = ', h2);
+        console.log('form h = ', h3);
+        console.log('detail h = ', h4);
+        console.log('ledger h = ', h5);
+        console.log('differental = ', h0 - (h2 + h3 + h4));
+        console.log('differental 2 = ', h5 - (h2 + h3 + h4));
+        
     }
 
     async load(){
@@ -368,6 +387,29 @@ class Ledger extends Component {
         this.reload();
     }
 
+    renderDetail(){
+        const content = [];
+        const heading = <div key={'x'} className="headers heading">
+            <div>clear</div>
+            <div>date</div>
+            <div>debit</div>
+            <div>credit</div>
+            <div>balance</div>
+        </div>;
+        const detail = <div className="detail box">
+            {
+                this.state.transactions.map((transaction, index) => {
+                    return this.renderRow(transaction, index);
+                })
+            }        
+        </div>;
+
+        content.push(heading);
+        content.push(detail);
+
+        return content;
+    }
+
     render() {
         return (
             <div className="ledger">
@@ -391,39 +433,42 @@ class Ledger extends Component {
                 }
                 {
                     this.state.async &&
-                    <div className="detail box">
-                        <div key={'x'} className="row heading">
-                            <div>clear</div>
-                            <div>date</div>
-                            <div>debit</div>
-                            <div>credit</div>
-                            <div>balance</div>
-                        </div>
-                        {
-                            this.state.transactions.map((transaction, index) => {
-                                return this.renderRow(transaction, index);
-                            })
-                        }
-                    </div>
+                        this.renderDetail()
                 }
+                {/* <div key={'x'} className="headers heading">
+                    <div>clear</div>
+                    <div>date</div>
+                    <div>debit</div>
+                    <div>credit</div>
+                    <div>balance</div>
+                </div>
+                <div className="detail box">
+                    {
+                        this.state.transactions.map((transaction, index) => {
+                            return this.renderRow(transaction, index);
+                        })
+                    }
+                </div> */}
                 {
                     this.state.async &&
-                    <div className="form">
-                        <Date
-                            className="date"
-                            value={this.state.adding.date} 
-                            identifier="date"
-                            onBlur={this.adding}
-                        />
-                        <Dollars
-                            className={this.props.editable}
-                            value={this.state.adding.amount}
-                            identifier="amount"
-                            onBlur={this.adding}
-                        />
-                        <a className="add" onClick={this.put}>
-                            <i className="fa fa-plus" />
-                        </a>
+                    <div>
+                        <div className="form">
+                            <Date
+                                className="date"
+                                value={this.state.adding.date} 
+                                identifier="date"
+                                onBlur={this.adding}
+                            />
+                            <Dollars
+                                className={this.props.editable}
+                                value={this.state.adding.amount}
+                                identifier="amount"
+                                onBlur={this.adding}
+                            />
+                            <a className="add" onClick={this.put}>
+                                <i className="fa fa-plus" />
+                            </a>
+                        </div>
                     </div>                    
                 }
             </div>

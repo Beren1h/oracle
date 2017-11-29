@@ -1,15 +1,122 @@
 @import '../variables';
 @import '../index';
 
+html, body, #entry, [data-reactroot]{
+    height: 100%;
+    margin: 0;
+}
+
+.headers {
+    grid-area: headers;
+    display: grid;
+    grid-template-columns: 7% 15% 25% 25% 27%;
+    padding: 3px;
+    justify-items: end;
+    cursor: pointer;
+    & .actions {
+        width: 100%;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-end;
+        & a {
+           display: block;
+           padding: 0 15px 0 15px;
+           margin: 0;
+           border-radius: 3px; 
+           cursor: pointer;
+            &:first-child {
+                margin: 0 3px 0 0;
+            }               
+            &.post {
+                color: yellowgreen;
+                background-color: green;                 
+            }
+            &.delete {
+               color: red;
+               background-color: darkred;
+            }
+        }
+    }
+    & .fa {
+        &.fa-university {
+            font-size: 12px;
+        }
+    }            
+    & i {
+        align-self: center;
+    }
+    & input{
+        border: none;
+        background-color: aliceblue;
+        border-radius: 5px;
+        width: 65%;
+        font-size: 20px;
+        text-align: right;
+        align-self: center;
+        &:first-child {
+            width: 65%;
+        }
+        &.pending {
+           width: auto;
+        }            
+        &[type=checkbox] {
+            justify-self: end;
+            margin: 0;
+        }
+    }
+    & .red {
+        padding: 0 3px 0 3px;
+        color: darkred;
+        background-color: palevioletred;
+        border: 1px solid darkred;
+        border-radius: 3px;
+        display: block;
+    }
+    & .black {
+        padding: 0 3px 0 0;
+    }
+    &.light {
+        background-color: #444444;
+    }
+    &.dark {
+        background-color: #373737;
+    }
+    &.future {
+        color: grey;
+    }
+    &.divider {
+        border-top: 2px solid purple;
+    }
+    &.edit{
+        background-color:aliceblue;
+    }
+    &.heading {
+        //margin: 0 0 3px 0;
+        //text-align: right;
+        //color: #202020;
+        font-size: 70%;
+        //border-bottom: 1px solid #373737;
+        & :last-child{
+            padding: 0 3px 0 0;
+        }
+    }
+}
+
+
+
 
 .ledger {
     display: grid;
+    height: 100%;
     width: 75%;
     grid-template-columns: 100%;
     grid-template-areas: "range"
+                         "headers"
                          "detail"
                          "form";
-    grid-row-gap: 20px;
+    //grid-row-gap: 20px;
     & .box {
         //background-color: #000000;
         //color: #fff;
@@ -53,19 +160,26 @@
     }
 
     & .detail {
+        //height: 100%;
+        overflow-y: auto;
+        //height: 100px;
         grid-area: detail;
-        display: flex;
-        flex-direction: column;
+        // display: flex;
+        // flex-direction: column;
         display: grid;
         grid-template-columns: 100%;
-        & :nth-child(2) {
-            border-top-left-radius: 5px;
-            border-top-right-radius: 5px;
-        }
-        & :last-child {
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }         
+        // & :nth-child(2) {
+        //     border-top-left-radius: 5px;
+        //     border-top-right-radius: 5px;
+        // }
+        // & :last-child {
+        //     border-bottom-left-radius: 5px;
+        //     border-bottom-right-radius: 5px;
+        // }  
+        // & .outer {
+        // //     //height: 300px;
+        //      overflow-y: auto;
+        // }       
         & .row {
             display: grid;
             grid-template-columns: 7% 15% 25% 25% 27%;
@@ -169,7 +283,7 @@
         display: grid;
         grid-template-columns: 7% 15% 25% 25% 27%;
         justify-items: end;
-        padding: 10px 0 0 0;
+        padding: 10px 0 10px 0;
         //margin: 5px 0 0 0;
         //border-radius: 3px;
         //border-top: 1px solid #262525;
