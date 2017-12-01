@@ -23,7 +23,7 @@ class Schedule extends Component {
 
     componentWillMount(){
         this.setState({
-            end: this.props.year + '-12-31'    
+            end: (this.props.year + 1) + '-12-31'    
         });
     }
 
