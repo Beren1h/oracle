@@ -1,0 +1,28 @@
+@import '../variables';
+@import '../index';
+
+.bill {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-gap: 5px;
+    grid-template-areas: "range .... ..."
+                         "risk item next";
+& .range {
+        grid-area: range;
+        z-index: 10;
+        grid-column: 1 / 4;
+        background-color: orange;
+    }
+    & .risk {
+        grid-area: risk;
+        background-color: red;
+    }
+    & .item {
+        grid-area: item;
+        background-color: blue;
+    }
+    & .next {
+        grid-area: next;
+        background-color: green;
+    }
+}

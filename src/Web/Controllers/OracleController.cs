@@ -23,36 +23,6 @@ namespace Web.Controllers
             _containers = containers;
         }
 
-        //[Route("test")]
-        //public IActionResult Test()
-        //{
-        //    var x = new Transaction
-        //    {
-        //        Date = DateTime.Now,
-        //        Account = Account.wellsfargo,
-        //        Amount = 100.40m,
-        //        //Envelope = null
-        //    };
-
-        //    return Ok(x);
-        //}
-
-        //[HttpPost]
-        //[Route("in")]
-        //public IActionResult In([FromBody] Transaction t)
-        //{
-        //    return Ok(t);
-        //}
-
-        [Route("accounts")]
-        public IActionResult Accounts()
-        {
-            ViewBag.Year = _settings.Year;
-            ViewBag.Version = _settings.Version;
-
-            return View();
-        }
-
         [Route("dole/{containerId}")]
         public IActionResult Dole(ObjectId doleId, ObjectId containerId)
         {
@@ -71,6 +41,15 @@ namespace Web.Controllers
 
             return View();
         }
+
+        //[Route("accounts")]
+        //public IActionResult Accounts()
+        //{
+        //    ViewBag.Year = _settings.Year;
+        //    ViewBag.Version = _settings.Version;
+
+        //    return View();
+        //}
 
         [Route("account/{id}")]
         public IActionResult Account(ObjectId id)
@@ -109,6 +88,14 @@ namespace Web.Controllers
 
         [Route("schedule")]
         public IActionResult Schedule()
+        {
+            ViewBag.Year = _settings.Year;
+
+            return View();
+        }
+
+        [Route("bill")]
+        public IActionResult Bill()
         {
             ViewBag.Year = _settings.Year;
 

@@ -1,11 +1,8 @@
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Frame.Collections;
 using Frame.Models;
 using Microsoft.Extensions.Options;
 using LiteDB;
-using System.Collections.Generic;
 
 namespace Web.Controllers
 {
@@ -16,16 +13,19 @@ namespace Web.Controllers
         private readonly IDbCollection<Transaction> _transactions;
         private readonly IDbCollection<Container> _containers;
         private readonly IDbCollection<Dole> _doles;
+        private readonly IDbCollection<Bill> _bills;
         private readonly AppSettings _settings;
 
         public ApiController(IDbCollection<Transaction> transactions,
             IDbCollection<Container> containers,
             IDbCollection<Dole> doles,
+            IDbCollection<Bill> bills,
             IOptions<AppSettings> settings)
         {
             _transactions = transactions;
             _containers = containers;
             _doles = doles;
+            _bills = bills;
             _settings = settings.Value;
         }
 
@@ -35,7 +35,7 @@ namespace Web.Controllers
             return Ok(ObjectId.NewObjectId());
         }
 
-
+        //container
         [HttpGet, Route("container")]
         public IActionResult GetContainers()
         {
@@ -43,7 +43,6 @@ namespace Web.Controllers
 
             return Ok(result);
         }
-
 
         [HttpPut, Route("container")]
         public IActionResult CreateContainer([FromBody] Container container)
@@ -72,48 +71,7 @@ namespace Web.Controllers
             return Ok(true);
         }
 
-        //[HttpPut, Route("transaction/pair")]
-        //public IActionResult CreateTransaction([FromBody] Transaction[] transactions)
-        //{
-        //    if(transactions.Length != 2)
-        //    {
-        //        return BadRequest("only 2 transactions");
-        //    }
-
-        //    var id0 = ObjectId.NewObjectId();
-
-        //    transactions[0]._id = id0;
-        //    transactions[1].PairId = id0;
-
-        //    var id1 = ObjectId.NewObjectId();
-
-        //    transactions[1]._id = id1;
-        //    transactions[0].PairId = id1;
-
-        //    var result0 = _transactions.Insert(transactions[0]);
-        //    var result1 = _transactions.Insert(transactions[1]);
-
-        //    var results = new ObjectId[2] { result0, result1 };
-
-        //    return Ok(results);
-        //}
-
-
-        //[HttpPost, Route("transaction/pair")]
-        //public IActionResult UpdateTransactionPair([FromBody] Transaction[] transactions)
-        //{
-        //    if (transactions.Length != 2)
-        //    {
-        //        return BadRequest("only 2 transactions");
-        //    }
-
-        //    var result0 = _transactions.Update(transactions[0]);
-        //    var result1 = _transactions.Update(transactions[1]);
-
-        //    return Ok(result0 && result1);
-        //}
-
-
+        //transaction
         [HttpPut, Route("transaction")]
         public IActionResult CreateTransaction([FromBody] Transaction transaction)
         {
@@ -154,14 +112,6 @@ namespace Web.Controllers
             return Ok(result);
         }
 
-        //[HttpGet, Route("transaction/{id}")]
-        //public IActionResult GetTransactionById(ObjectId id)
-        //{
-        //    var result = _transactions.Get(a => a._id == id);
-
-        //    return Ok(result);
-        //}
-
         [HttpGet, Route("transaction/dole/{id}")]
         public IActionResult GetTransactionByDole(ObjectId id)
         {
@@ -178,6 +128,7 @@ namespace Web.Controllers
             return Ok(result);
         }
 
+        // dole
         [HttpGet, Route("dole")]
         public IActionResult GetDole()
         {
@@ -221,23 +172,9 @@ namespace Web.Controllers
             return Ok(result);
         }
 
-
-
-        //[HttpDelete, Route("transaction/pair/{id0}/{id1}")]
-        //public IActionResult DeleteTransactionPair(ObjectId id0, ObjectId id1)
-        //{
-        //    var result0 = _transactions.Delete(id0);
-        //    var result1 = _transactions.Delete(id1);
-
-        //    return Ok(result0 && result1);
-        //}
-
         [HttpDelete, Route("transaction")]
         public IActionResult DeleteAllTransactions()
         {
-            //var id = new ObjectId("59ff380c830ee103e8d05e45");
-            //var id = new ObjectId("5a0ad8263450d303e8b1b7bd");
-
             var transactions = _transactions.Get(a => a._id != null);
             
             foreach (var transaction in transactions)
@@ -247,6 +184,51 @@ namespace Web.Controllers
 
             return Ok(true);
         }
+
+        // bills
+        [HttpGet, Route("bill")]
+        public IActionResult GetBill()
+        {
+            var result = _bills.Get(a => a._id != null);
+
+            return Ok(result);
+        }
+
+        [HttpGet, Route("bill/{id}")]
+        public IActionResult GetBillById(ObjectId id)
+        {
+            var result = _bills.Get(a => a._id == id);
+
+            return Ok(result);
+        }
+
+        [HttpDelete, Route("bill")]
+        public IActionResult DeleteBill()
+        {
+            foreach (var dole in _doles.Get(a => a._id != null))
+            {
+                _doles.Delete(dole._id);
+            }
+
+            return Ok(true);
+        }
+
+        [HttpPut, Route("bill")]
+        public IActionResult PutBill([FromBody] Bill bill)
+        {
+            var result = _bills.Insert(bill);
+
+            return Ok(result);
+        }
+
+        [HttpPost, Route("bill")]
+        public IActionResult PostBill([FromBody] Bill bill)
+        {
+            var result = _bills.Update(bill);
+
+            return Ok(result);
+        }
+
     }
 }
 

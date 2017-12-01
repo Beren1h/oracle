@@ -35,6 +35,9 @@ const route = {
     dole: {
         baseline: '/api/dole'
     },
+    bill: {
+        baseline: '/api/bill'
+    },
     objectid: {
         baseline: '/api/objectid'
     }
@@ -59,7 +62,12 @@ export const POST = {
         POST.props.url = route.dole.baseline;
         POST.props.data = document;
         return axios(POST.props);
-    }    
+    },
+    bill: (document) => {
+        POST.props.url = route.bill.baseline;
+        POST.props.data = document;
+        return axios(POST.props);
+    }         
 };
 
 export const PUT = {
@@ -102,8 +110,15 @@ export const GET = {
             GET.props.url = route.dole.baseline;
         }
         return axios(GET.props).then((response) => {return response.data;});
-        
     },
+    bill: (id) => {
+        if (id){
+            GET.props.url = route.bill.baseline + '/' + id;
+        } else {
+            GET.props.url = route.bill.baseline;
+        }
+        return axios(GET.props).then((response) => {return response.data;});
+    },    
     objectId: () => {
         GET.props.url = route.objectid.baseline;
         return axios(GET.props).then((response) => {return response.data;});
