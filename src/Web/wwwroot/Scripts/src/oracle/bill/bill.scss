@@ -5,24 +5,69 @@
     display: grid;
     grid-template-columns: 33% 33% 33%;
     grid-gap: 5px;
+    font-size: 120%;
     grid-template-areas: "range .... ..."
                          "risk item next";
+& a {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    justify-items: center;
+    border-radius: 3px;
+    border: 1px solid;
+    margin: 0 0 5px 0;
+    cursor: pointer;
+}                        
 & .range {
         grid-area: range;
         z-index: 10;
         grid-column: 1 / 4;
-        background-color: orange;
+        //background-color: orange;
+        display: grid;
+        grid-template-columns: 50% 50%;
+        align-items: center;
+        & span {
+            margin: 0 3px 0 0;
+        }
+        & :last-child {
+            justify-self: end;
+        }
+        & input {
+            border: none;
+            background-color: aliceblue;
+            border-radius: 5px;
+            margin: 2px;
+            padding: 5px;
+            width: 75px;
+            font-size: 20px;
+            text-align: center;
+        }        
     }
     & .risk {
         grid-area: risk;
-        background-color: red;
+        //background-color: red;
+        & a {
+            background-color: palevioletred;
+            color: darkred;
+            border-color: darkred;
+        }
     }
     & .item {
         grid-area: item;
-        background-color: blue;
+        //background-color: blue;
+        & a {
+            background-color: aliceblue;
+            color: black;
+            border-color: #373737
+        }
     }
     & .next {
         grid-area: next;
-        background-color: green;
+        //background-color: green;
+        & a {
+            background-color: #444444;
+            color: #BEBEBE;
+            border-color: #373737;
+            cursor: default;
+        }
     }
 }

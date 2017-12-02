@@ -205,9 +205,9 @@ namespace Web.Controllers
         [HttpDelete, Route("bill")]
         public IActionResult DeleteBill()
         {
-            foreach (var dole in _doles.Get(a => a._id != null))
+            foreach (var bill in _bills.Get(a => a._id != null))
             {
-                _doles.Delete(dole._id);
+                _bills.Delete(bill._id);
             }
 
             return Ok(true);
