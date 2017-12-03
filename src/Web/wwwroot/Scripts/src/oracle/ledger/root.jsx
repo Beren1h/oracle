@@ -3,7 +3,7 @@ import { GET, POST, PUT, DELETE } from '../api.js';
 import Date from '../date.jsx';
 import Dollars from '../dollars.jsx';
 import Checkbox from '../checkbox.jsx';
-import { SortByAlpha } from '../helper.js';
+import { SortByAlpha, Round } from '../helper.js';
 import moment from 'moment';
 import './ledger.scss';
 
@@ -96,9 +96,9 @@ class Ledger extends Component {
 
             if (container.type != 'account' || !transactions[i].pending){
                 if (transactions[i].accounting == 'debit'){
-                    balance = balance - transactions[i].amount;
+                    balance = Round(balance) - Round(transactions[i].amount);
                 } else {
-                    balance = balance + transactions[i].amount;
+                    balance = Round(balance) + Round(transactions[i].amount);
                 }
             }
 

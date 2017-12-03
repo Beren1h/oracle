@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { GET} from '../api.js';
 import './dash.scss';
-import { SortByAlpha } from '../helper.js';
+import { SortByAlpha, Round } from '../helper.js';
 import moment from 'moment';
 import Date from '../date.jsx';
 import Dollars from '../dollars.jsx';
@@ -83,10 +83,12 @@ class Dole extends Component {
                 }
 
                 if (!transaction.pending){
+                    const rounded = Round(transaction.amount);
+                    const balance = Round(status.balance);
                     if (transaction.accounting == 'debit'){
-                        status.balance -= transaction.amount;
+                        status.balance = (balance - rounded);
                     } else {
-                        status.balance += transaction.amount;
+                        status.balance  = (balance + rounded);
                     }
                 }
             }
@@ -117,10 +119,13 @@ class Dole extends Component {
                     break;
                 }
 
+                const rounded = Round(transaction.amount);
+                const balance = Round(status.balance);
+
                 if (transaction.accounting == 'debit'){
-                    status.balance -= transaction.amount;
+                    status.balance = (balance - rounded);
                 } else {
-                    status.balance += transaction.amount;
+                    status.balance = (balance + rounded);
                 }
 
                 if (status.balance < 0 && !hasBeenRed){

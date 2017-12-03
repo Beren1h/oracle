@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import NumberFormat from 'react-number-format';
 import Dollars from '../dollars.jsx';
-import { SortByAlpha } from '../helper.js';
+import { SortByAlpha, Round } from '../helper.js';
+
 
 class Transaction extends Component {
     constructor(props) {
@@ -13,7 +14,6 @@ class Transaction extends Component {
 
         this.onChange = this.onChange.bind(this);
         this.summary = this.summary.bind(this);
-        this.round = this.round.bind(this);
     }
 
     componentWillMount(){
@@ -69,15 +69,10 @@ class Transaction extends Component {
         }
 
         return {
-            credit: this.round(amount),
-            debit: this.round(total),
-            balance: this.round(amount) - this.round(total)
+            credit: Round(amount),
+            debit: Round(total),
+            balance: Round(amount) - Round(total)
         };        
-    }
-
-    // http://www.jacklmoore.com/notes/rounding-in-javascript/
-    round(value){
-        return Number(Math.round(value + 'e'+ 2) + 'e-'+ 2);
     }
 
     render() {

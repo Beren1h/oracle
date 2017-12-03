@@ -8,3 +8,8 @@ export const SortByAlpha = (a, b) => {
     }
     return 0;
 };
+
+// http://www.jacklmoore.com/notes/rounding-in-javascript/
+export const Round = (value) => {
+    return Number(Math.round(value + 'e'+ 2) + 'e-'+ 2);
+};
