@@ -12,7 +12,6 @@ class Bill extends Component {
         super(props);
 
         this.state = {
-            async: false,
             bills: [],
             risks: [],
             nexts: [],
@@ -39,8 +38,8 @@ class Bill extends Component {
 
         if (!this.state.range.begin){
             range = {
-                begin: moment(),
-                end: moment().add(1, 'months')
+                begin: moment('2018-01-01'),
+                end: moment('2018-01-01').add(1, 'months')
             };
         } else {
             range = {...this.state.range};
@@ -67,6 +66,7 @@ class Bill extends Component {
 
         console.log('range = ', range.begin.format('YYYY-MM-DD'), range.end.format('YYYY-MM-DD'));
         this.setState({
+            async: true,
             bills: bills.sort((a, b) => SortByAlpha(a.next, b.next)),
             risks: risks.sort((a, b) => SortByAlpha(a.next, b.next)),
             nexts: nexts.sort((a, b) => SortByAlpha(a.next, b.next)),
@@ -133,13 +133,20 @@ class Bill extends Component {
         });
     }
 
-    post() {
+    async post() {
         for (let bill of this.state.nexts){
             console.log('bill = ', bill);
             if (bill.isDirty){
-                console.log(bill);
+                await POST.bill(bill);
             }
         }
+
+        this.load();
+        // this.setState({
+        //     async: false
+        // }, () => {
+        //     this.load();
+        // });
 
     }
     
@@ -160,6 +167,28 @@ class Bill extends Component {
                     />
                 </div>
             </div>
+            {/* {
+                this.state.async &&
+                <div className="item scroller">
+                    {
+                        this.state.bills.map((bill, index) => {
+                            return <a key={index} onClick={() => this.click(bill)}>
+                                <div className="detail">
+                                    <div>{bill.name}</div>
+                                    <div>{bill.description}</div>
+                                </div>
+                                <div className="detail">
+                                    <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                                    <Dollar
+                                        value={bill.amount}
+                                        isEdit={false}
+                                    />
+                                </div>
+                            </a>;
+                        })
+                    }
+                </div>
+            } */}
             <div className="item scroller">
                 {
                     this.state.bills.map((bill, index) => {
@@ -179,6 +208,28 @@ class Bill extends Component {
                     })
                 }
             </div>
+            {/* {
+                this.state.async &&
+                <div className="next scroller">
+                    {
+                        this.state.nexts.map((bill, index) => {
+                            return <a key={index} onClick={() => this.click(bill)}>
+                                <div className="detail">
+                                    <div>{bill.name}</div>
+                                    <div>{bill.description}</div>
+                                </div>
+                                <div className="detail">
+                                    <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                                    <Dollar
+                                        value={bill.amount}
+                                        isEdit={false}
+                                    />
+                                </div>
+                            </a>;
+                        })
+                    }
+                </div>
+            } */}
             <div className="next scroller">
                 {
                     this.state.nexts.map((bill, index) => {
@@ -198,6 +249,28 @@ class Bill extends Component {
                     })
                 }
             </div>
+            {/* {
+                this.state.async &&
+                <div className="risk scroller">
+                    {
+                        this.state.risks.map((bill, index) => {
+                            return <a key={index} onClick={() => this.click(bill)}>
+                                <div className="detail">
+                                    <div>{bill.name}</div>
+                                    <div>{bill.description}</div>
+                                </div>
+                                <div className="detail">
+                                    <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                                    <Dollar
+                                        value={bill.amount}
+                                        isEdit={false}
+                                    />
+                                </div>
+                            </a>;
+                        })
+                    }
+                </div>
+            } */}
             <div className="risk scroller">
                 {
                     this.state.risks.map((bill, index) => {
