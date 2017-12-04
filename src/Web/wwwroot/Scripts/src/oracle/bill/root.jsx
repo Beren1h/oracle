@@ -3,6 +3,8 @@ import './bill.scss';
 import { GET, POST } from '../api.js';
 import moment from 'moment';
 import Date from '../date.jsx';
+import Dollar from '../dollars.jsx';
+import { SortByAlpha } from '../helper.js';
 
 
 class Bill extends Component {
@@ -20,6 +22,7 @@ class Bill extends Component {
         this.load = this.load.bind(this);
         this.click = this.click.bind(this);
         this.blur = this.blur.bind(this);
+        this.post = this.post.bind(this);
     }
 
     async componentWillMount(){
@@ -43,16 +46,8 @@ class Bill extends Component {
             range = {...this.state.range};
         }
 
-       // console.log('range = ', range.begin.format('YYYY-MM-DD'), range.end.format('YYYY-MM-DD'));
-
         for (let bill of getBills){
             const date = moment(bill.next);
-            //console.log('date = ', date.format('YYYY-MM-DD'), date.isBetween(range.being, range.end, '[]'), range.begin.format('YYYY-MM-DD'), range.end.format('YYYY-MM-DD'));
-            console.log('date = ', date.format('YYYY-MM-DD'), date.isSameOrAfter(range.begin) && date.isSameOrBefore(range.end), range.begin.format('YYYY-MM-DD'), range.end.format('YYYY-MM-DD'));
-            // if (date.isBetween(range.being, range.end, '[]')){
-            //     bill.location = 'bills';
-            //     bills.push(bill);
-            // }
 
             if (date.isSameOrAfter(range.begin) && date.isSameOrBefore(range.end)){
                 bill.location = 'bills';
@@ -70,14 +65,14 @@ class Bill extends Component {
             }
         }
 
-        console.log('bills = ', bills);
+        console.log('range = ', range.begin.format('YYYY-MM-DD'), range.end.format('YYYY-MM-DD'));
         this.setState({
-            bills: bills,
-            risks: risks,
-            nexts: nexts,
+            bills: bills.sort((a, b) => SortByAlpha(a.next, b.next)),
+            risks: risks.sort((a, b) => SortByAlpha(a.next, b.next)),
+            nexts: nexts.sort((a, b) => SortByAlpha(a.next, b.next)),
             range: range
         }, () => {
-            console.log('state = ', this.state);
+            //console.log('state = ', this.state);
         });
     }
 
@@ -104,6 +99,7 @@ class Bill extends Component {
             current[moveFrom].splice(current[moveFrom].indexOf(bill), 1);
             
             bill.location = moveTo;
+            bill.isDirty = true;
             
             if (moveTo == 'nexts'){
                 const frequency = bill.frequency.split(' ');
@@ -136,6 +132,16 @@ class Bill extends Component {
             this.load();
         });
     }
+
+    post() {
+        for (let bill of this.state.nexts){
+            console.log('bill = ', bill);
+            if (bill.isDirty){
+                console.log(bill);
+            }
+        }
+
+    }
     
     render() {
         return <div className="bill">
@@ -154,35 +160,67 @@ class Bill extends Component {
                     />
                 </div>
             </div>
-            <div className="risk">
-                {
-                    this.state.risks.map((bill, index) => {
-                        return <a key={index} onClick={() => this.click(bill)}>
-                            <div>{bill.name}</div>
-                            <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
-                        </a>;
-                    })
-                }
-            </div>
-            <div className="item">
+            <div className="item scroller">
                 {
                     this.state.bills.map((bill, index) => {
                         return <a key={index} onClick={() => this.click(bill)}>
-                            <div>{bill.name}</div>
-                            <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                            <div className="detail">
+                                <div>{bill.name}</div>
+                                <div>{bill.description}</div>
+                            </div>
+                            <div className="detail">
+                                <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                                <Dollar
+                                    value={bill.amount}
+                                    isEdit={false}
+                                />
+                            </div>
                         </a>;
                     })
                 }
             </div>
-            <div className="next">
+            <div className="next scroller">
                 {
                     this.state.nexts.map((bill, index) => {
                         return <a key={index} onClick={() => this.click(bill)}>
-                            <div>{bill.name}</div>
-                            <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                            <div className="detail">
+                                <div>{bill.name}</div>
+                                <div>{bill.description}</div>
+                            </div>
+                            <div className="detail">
+                                <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                                <Dollar
+                                    value={bill.amount}
+                                    isEdit={false}
+                                />
+                            </div>
                         </a>;
                     })
                 }
+            </div>
+            <div className="risk scroller">
+                {
+                    this.state.risks.map((bill, index) => {
+                        return <a key={index} onClick={() => this.click(bill)}>
+                            <div className="detail">
+                                <div>{bill.name}</div>
+                                <div>{bill.description}</div>
+                            </div>
+                            <div className="detail">
+                                <div>{moment(bill.next).format('YYYY-MM-DD')}</div>
+                                <Dollar
+                                    value={bill.amount}
+                                    isEdit={false}
+                                />
+                            </div>
+                        </a>;
+                    })
+                }
+            </div>
+            <div className="actions">
+                <a onClick={this.post}>
+                    <i className="fa fa-check" />
+                </a>
             </div>
         </div>;
     }
